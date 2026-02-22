@@ -1,0 +1,6 @@
+VITE_CORS_PROXY_URL=https://meal-organizer-cors-proxy.cmtesting26.workers.dev
+
+# Supabase Configuration (V1.2 — Cloud Sync)
+# Get these from: https://supabase.com/dashboard → Project Settings → API
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=

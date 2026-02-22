@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Fork and Spoon — Import and organize your favorite recipes, plan weekly meals, and track cooking recency." />
+    <meta property="og:title" content="Fork and Spoon — Your Recipe Library" />
+    <meta property="og:description" content="Import and organize your favorite recipes, plan weekly meals, and track cooking recency." />
+    <meta property="og:image" content="/icons/og-image.png" />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#D97706" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Fork and Spoon" />
+    <!-- Google Fonts: Fraunces (header serif) + DM Sans (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet" />
+    <title>Fork and Spoon — Your Recipe Library</title>
+  </head>
+  <body>
+    <!-- Inline theme detection: runs BEFORE React hydrates to prevent white flash in dark mode -->
+    <script>
+      (function() {
+        try {
+          var pref = localStorage.getItem('fs-theme-preference') || 'system';
+          var theme = pref;
+          if (pref === 'system') {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          var html = document.documentElement;
+          html.setAttribute('data-theme', theme);
+          if (theme === 'dark') {
+            html.classList.add('dark');
+            html.style.backgroundColor = '#1C1917';
+            html.style.colorScheme = 'dark';
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.content = '#1C1917';
+          } else {
+            html.style.colorScheme = 'light';
+          }
+        } catch(e) {}
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
