@@ -104,7 +104,9 @@
     "noTags": "No tags yet"
   },
   "import": {
-    "title": "Import Recipe",
+    "title": "Import from Website",
+    "socialTitle": "Import from Social Media",
+    "paste": "Paste",
     "subtitle": "Paste a recipe URL to import it automatically",
     "urlPlaceholder": "https://example.com/recipe",
     "importButton": "Import Recipe",

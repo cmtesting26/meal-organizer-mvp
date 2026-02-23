@@ -1,10 +1,9 @@
 /**
- * ImportSheet Component (Sprint 13 — Social Media Import)
+ * SocialImportSheet Component
  *
- * Updated to detect Instagram/TikTok URLs and route them through
- * the caption-based recipe parsing flow.
- *
- * Implementation Plan Phase 18 · Roadmap V1.3 Epic 2
+ * Dedicated import sheet for Instagram/TikTok recipe posts.
+ * Detects social platform from pasted URL, shows detection badge,
+ * and routes through caption-based recipe parsing.
  */
 
 import { useState, useMemo } from 'react';
@@ -15,24 +14,21 @@ import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Loader2,
-  Link as LinkIcon,
   ClipboardPaste,
   AlertCircle,
   Instagram,
 } from 'lucide-react';
-import { parseRecipeFromUrl } from '@/lib/recipeParser';
-import { isSocialMediaUrl, detectSocialPlatform, fetchSocialMediaPost } from '@/lib/socialMediaFetcher';
+import { detectSocialPlatform, fetchSocialMediaPost } from '@/lib/socialMediaFetcher';
 import { parseCaptionToRecipe } from '@/lib/captionRecipeParser';
 import type { ParsedRecipe } from '@/types/recipe';
 import type { SocialMediaFetchError } from '@/lib/socialMediaFetcher';
 
-interface ImportSheetProps {
+interface SocialImportSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onRecipeImported: (recipe: ParsedRecipe) => void;
 }
 
-/** Map SocialMediaFetchError.type → i18n key */
 function socialErrorToI18nKey(errorType: string): string {
   switch (errorType) {
     case 'unsupported_url': return 'import.socialUnsupported';
@@ -44,18 +40,16 @@ function socialErrorToI18nKey(errorType: string): string {
   }
 }
 
-/** Capitalise platform name for display */
 function platformLabel(platform: string): string {
   return platform === 'instagram' ? 'Instagram' : 'TikTok';
 }
 
-export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportSheetProps) {
+export function SocialImportSheet({ open, onOpenChange, onRecipeImported }: SocialImportSheetProps) {
   const { t } = useTranslation();
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Detect social media platform in real-time
   const detectedPlatform = useMemo(() => {
     if (!url.trim()) return null;
     return detectSocialPlatform(url.trim());
@@ -71,17 +65,21 @@ export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportShee
     }
   };
 
-  /** Import from social media: fetch caption → parse → deliver */
-  const handleSocialImport = async (importUrl: string) => {
+  const handleImport = async () => {
+    const trimmed = url.trim();
+    if (!trimmed) { setError(t('import.enterUrl')); return; }
+    try { new URL(trimmed); } catch { setError(t('import.invalidUrl')); return; }
+
+    setLoading(true);
+    setError(null);
+
     try {
-      const post = await fetchSocialMediaPost(importUrl);
+      const post = await fetchSocialMediaPost(trimmed);
       const recipe = parseCaptionToRecipe(post.caption, {
         postTitle: post.postTitle,
         sourceUrl: post.sourceUrl,
         imageUrl: post.imageUrl,
       });
-
-      // Always send to review form, even if parsing was imperfect
       onRecipeImported(recipe);
       setUrl('');
       setError(null);
@@ -92,45 +90,6 @@ export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportShee
       } else {
         setError(t('import.importFailed'));
       }
-    }
-  };
-
-  /** Import from regular recipe website */
-  const handleWebsiteImport = async (importUrl: string) => {
-    try {
-      const recipe = await parseRecipeFromUrl(importUrl);
-      if (recipe.success) {
-        onRecipeImported(recipe);
-        setUrl('');
-        setError(null);
-      } else {
-        if (recipe.title || recipe.ingredients.length > 0) {
-          onRecipeImported(recipe);
-          setUrl('');
-          setError(null);
-        } else {
-          setError(recipe.error || t('import.parseFailed'));
-        }
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t('import.importFailed'));
-    }
-  };
-
-  const handleImport = async () => {
-    const trimmed = url.trim();
-    if (!trimmed) { setError(t('import.enterUrl')); return; }
-    try { new URL(trimmed); } catch { setError(t('import.invalidUrl')); return; }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      if (isSocialMediaUrl(trimmed)) {
-        await handleSocialImport(trimmed);
-      } else {
-        await handleWebsiteImport(trimmed);
-      }
     } finally {
       setLoading(false);
     }
@@ -140,7 +99,6 @@ export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportShee
     if (e.key === 'Enter' && !loading) handleImport();
   };
 
-  // Loading text changes for social media
   const loadingText = detectedPlatform
     ? t('import.socialImporting', { platform: platformLabel(detectedPlatform) })
     : t('import.importing');
@@ -149,18 +107,14 @@ export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportShee
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="rounded-t-[16px] pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))]">
         <SheetHeader className="pb-1">
-          <SheetTitle>{t('import.title')}</SheetTitle>
+          <SheetTitle>{t('import.socialTitle')}</SheetTitle>
           <SheetDescription className="text-xs">{t('import.subtitle')}</SheetDescription>
         </SheetHeader>
         <div className="mt-3 space-y-3 pb-2">
-          {/* URL Input with platform detection indicator */}
+          {/* URL Input — always shows Instagram icon */}
           <div className="flex gap-2">
             <div className="relative flex-1">
-              {detectedPlatform ? (
-                <Instagram className="absolute left-3 top-1/2 transform -translate-y-1/2 text-pink-500 w-4 h-4" />
-              ) : (
-                <LinkIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              )}
+              <Instagram className="absolute left-3 top-1/2 transform -translate-y-1/2 text-pink-500 w-4 h-4" />
               <Input
                 type="url"
                 placeholder={t('import.urlPlaceholder')}
@@ -169,7 +123,7 @@ export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportShee
                 onKeyDown={handleKeyDown}
                 disabled={loading}
                 className="pl-10"
-                aria-label="Recipe URL"
+                aria-label="Social media URL"
               />
             </div>
             <Button variant="outline" onClick={handlePaste} disabled={loading} className="flex-shrink-0">
@@ -193,17 +147,14 @@ export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportShee
             </Alert>
           )}
 
-          {/* Import button */}
+          {/* Import button — always shows Instagram icon */}
           <Button onClick={handleImport} disabled={loading || !url.trim()} className="w-full" size="lg">
             {loading ? (
               <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{loadingText}</>
-            ) : detectedPlatform ? (
-              <><Instagram className="w-4 h-4 mr-2" />{t('import.importButton')}</>
             ) : (
-              <><LinkIcon className="w-4 h-4 mr-2" />{t('import.importButton')}</>
+              <><Instagram className="w-4 h-4 mr-2" />{t('import.importButton')}</>
             )}
           </Button>
-
         </div>
       </SheetContent>
     </Sheet>

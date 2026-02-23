@@ -13,6 +13,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from
 import { useTranslation } from 'react-i18next';
 import { RecipeLibrary } from './components/recipes/RecipeLibrary';
 import { ImportSheet } from './components/recipes/ImportSheet';
+import { SocialImportSheet } from './components/recipes/SocialImportSheet';
 import { RecipeForm } from './components/recipes/RecipeForm';
 import { WeeklySchedule } from './components/schedule/WeeklySchedule';
 import { BottomNav } from './components/layout/BottomNav';
@@ -52,6 +53,7 @@ function AppContent() {
   const { t } = useTranslation();
   const { isAuthenticated, loading: authLoading, profile, household } = useAuth();
   const [showImportSheet, setShowImportSheet] = useState(false);
+  const [showSocialImportSheet, setShowSocialImportSheet] = useState(false);
   const [showRecipeForm, setShowRecipeForm] = useState(false);
   const [showAddRecipeSheet, setShowAddRecipeSheet] = useState(false);
   const [importedRecipe, setImportedRecipe] = useState<ParsedRecipe | null>(null);
@@ -495,18 +497,23 @@ function AppContent() {
         open={showAddRecipeSheet}
         onOpenChange={setShowAddRecipeSheet}
         onWebsiteImport={() => setShowImportSheet(true)}
-        onSocialImport={() => setShowImportSheet(true)}
+        onSocialImport={() => setShowSocialImportSheet(true)}
         onScanImport={() => { if (handleOcrImport) handleOcrImport(); }}
         onManualAdd={handleManualAdd}
       />
 
-      {/* Import Sheet */}
+      {/* Import Sheet — Website */}
       <ImportSheet
         open={showImportSheet}
         onOpenChange={setShowImportSheet}
         onRecipeImported={handleRecipeImported}
-        onManualAdd={handleManualAdd}
-        onOcrImport={handleOcrImport}
+      />
+
+      {/* Import Sheet — Social Media */}
+      <SocialImportSheet
+        open={showSocialImportSheet}
+        onOpenChange={setShowSocialImportSheet}
+        onRecipeImported={handleRecipeImported}
       />
 
       {/* OCR Photo Capture — S24-03: bottom sheet */}

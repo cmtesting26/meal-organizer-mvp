@@ -182,7 +182,7 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
                   className="h-24 flex flex-col gap-2"
                   onClick={startCamera}
                 >
-                  <Camera className="w-8 h-8 text-primary" />
+                  <Camera className="!w-8 !h-8 text-amber-600" />
                   <span className="text-sm">{t('ocr.useCamera')}</span>
                 </Button>
 
@@ -191,7 +191,7 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
                   className="h-24 flex flex-col gap-2"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload className="w-8 h-8 text-primary" />
+                  <Upload className="!w-8 !h-8 text-amber-600" />
                   <span className="text-sm">{t('ocr.uploadPhoto')}</span>
                 </Button>
               </div>
