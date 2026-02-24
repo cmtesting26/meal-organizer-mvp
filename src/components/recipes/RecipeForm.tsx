@@ -6,7 +6,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -140,219 +140,230 @@ export function RecipeForm({ open, onOpenChange, recipe, onSave }: RecipeFormPro
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t('recipeForm.reviewTitle')}</DialogTitle>
-          <DialogDescription>{t('recipeForm.reviewDescription')}</DialogDescription>
-        </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="bottom"
+        className="rounded-t-[16px] pb-0 flex flex-col max-h-[90vh]"
+      >
+        <SheetHeader className="pb-1">
+          <SheetTitle>{t('recipeForm.reviewTitle')}</SheetTitle>
+          <SheetDescription>{t('recipeForm.reviewDescription')}</SheetDescription>
+        </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* S25-07: Optional photo upload field */}
-          <div className="flex justify-center">
-            {photoPreview ? (
-              <div className="relative" style={{ width: '160px', height: '120px' }}>
-                <img
-                  src={photoPreview}
-                  alt="Recipe preview"
-                  className="w-full h-full object-cover rounded-xl"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (photoPreview && !photoPreview.startsWith('http')) {
-                      URL.revokeObjectURL(photoPreview);
-                    }
-                    setPhotoFile(null);
-                    setPhotoPreview(null);
-                  }}
-                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs hover:bg-red-600"
-                  aria-label="Remove photo"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ) : (
-              <div className="relative" ref={photoMenuRef}>
-                <button
-                  type="button"
-                  onClick={() => setPhotoMenuOpen(!photoMenuOpen)}
-                  className="flex flex-col items-center justify-center transition-opacity hover:opacity-80"
-                  style={{
-                    width: '160px',
-                    height: '120px',
-                    border: '1px dashed #D6D3D1',
-                    borderRadius: '12px',
-                    backgroundColor: 'var(--fs-bg-base, #FAFAF9)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Camera className="w-5 h-5 mb-1" style={{ color: '#A8A29E' }} />
-                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#A8A29E' }}>
-                    {t('photoUpload.addPhoto')}
-                  </span>
-                </button>
-
-                {/* Hidden inputs for camera and file */}
-                <input
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  className="hidden"
-                  id="photo-camera-input"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setPhotoFile(file);
-                      setPhotoPreview(createPreviewUrl(file));
-                    }
-                    e.target.value = '';
-                    setPhotoMenuOpen(false);
-                  }}
-                />
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  id="photo-file-input"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setPhotoFile(file);
-                      setPhotoPreview(createPreviewUrl(file));
-                    }
-                    e.target.value = '';
-                    setPhotoMenuOpen(false);
-                  }}
-                />
-
-                {/* Dropdown menu */}
-                {photoMenuOpen && (
-                  <div
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+          {/* Scrollable form body */}
+          <div className="flex-1 overflow-y-auto space-y-4 py-4">
+            {/* Photo upload */}
+            <div className="flex justify-center">
+              {photoPreview ? (
+                <div className="relative" style={{ width: '160px', height: '120px' }}>
+                  <img
+                    src={photoPreview}
+                    alt="Recipe preview"
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (photoPreview && !photoPreview.startsWith('http')) {
+                        URL.revokeObjectURL(photoPreview);
+                      }
+                      setPhotoFile(null);
+                      setPhotoPreview(null);
+                    }}
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs hover:bg-red-600"
+                    aria-label="Remove photo"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : (
+                <div className="relative" ref={photoMenuRef}>
+                  <button
+                    type="button"
+                    onClick={() => setPhotoMenuOpen(!photoMenuOpen)}
+                    className="flex flex-col items-center justify-center transition-opacity hover:opacity-80"
                     style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      marginTop: '4px',
-                      backgroundColor: 'var(--fs-bg-surface, white)',
+                      width: '160px',
+                      height: '120px',
+                      border: '1px dashed #D6D3D1',
                       borderRadius: '12px',
-                      border: '1px solid var(--fs-border-default, #E7E5E4)',
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                      width: '180px',
-                      zIndex: 20,
-                      overflow: 'hidden',
+                      backgroundColor: 'var(--fs-bg-base, #FAFAF9)',
+                      cursor: 'pointer',
                     }}
                   >
-                    <button
-                      type="button"
-                      onClick={() => document.getElementById('photo-camera-input')?.click()}
-                      className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity"
+                    <Camera className="w-5 h-5 mb-1" style={{ color: '#A8A29E' }} />
+                    <span style={{ fontSize: '13px', fontWeight: 500, color: '#A8A29E' }}>
+                      {t('photoUpload.addPhoto')}
+                    </span>
+                  </button>
+
+                  {/* Hidden inputs for camera and file */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    id="photo-camera-input"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setPhotoFile(file);
+                        setPhotoPreview(createPreviewUrl(file));
+                      }
+                      e.target.value = '';
+                      setPhotoMenuOpen(false);
+                    }}
+                  />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    id="photo-file-input"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setPhotoFile(file);
+                        setPhotoPreview(createPreviewUrl(file));
+                      }
+                      e.target.value = '';
+                      setPhotoMenuOpen(false);
+                    }}
+                  />
+
+                  {/* Dropdown menu */}
+                  {photoMenuOpen && (
+                    <div
                       style={{
-                        padding: '12px 16px',
-                        fontSize: '13px',
-                        fontWeight: 500,
-                        color: 'var(--fs-text-primary, #1C1917)',
-                        borderBottom: '1px solid var(--fs-border-default, #E7E5E4)',
+                        position: 'absolute',
+                        top: '100%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        marginTop: '4px',
+                        backgroundColor: 'var(--fs-bg-surface, white)',
+                        borderRadius: '12px',
+                        border: '1px solid var(--fs-border-default, #E7E5E4)',
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                        width: '180px',
+                        zIndex: 20,
+                        overflow: 'hidden',
                       }}
                     >
-                      <Camera className="w-4 h-4" style={{ stroke: '#D97706' }} />
-                      {t('photoUpload.takePhoto')}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => document.getElementById('photo-file-input')?.click()}
-                      className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity"
-                      style={{
-                        padding: '12px 16px',
-                        fontSize: '13px',
-                        fontWeight: 500,
-                        color: 'var(--fs-text-primary, #1C1917)',
-                      }}
-                    >
-                      <Upload className="w-4 h-4" style={{ stroke: '#D97706' }} />
-                      {t('photoUpload.uploadFile')}
-                    </button>
-                  </div>
-                )}
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('photo-camera-input')?.click()}
+                        className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity"
+                        style={{
+                          padding: '12px 16px',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          color: 'var(--fs-text-primary, #1C1917)',
+                          borderBottom: '1px solid var(--fs-border-default, #E7E5E4)',
+                        }}
+                      >
+                        <Camera className="w-4 h-4" style={{ stroke: '#D97706' }} />
+                        {t('photoUpload.takePhoto')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('photo-file-input')?.click()}
+                        className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity"
+                        style={{
+                          padding: '12px 16px',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          color: 'var(--fs-text-primary, #1C1917)',
+                        }}
+                      >
+                        <Upload className="w-4 h-4" style={{ stroke: '#D97706' }} />
+                        {t('photoUpload.uploadFile')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {imageUrl && !photoPreview && (
+              <div className="w-full h-48 bg-gray-100 rounded-lg overflow-hidden">
+                <img src={imageUrl} alt={title || 'Recipe'} className="w-full h-full object-cover"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }} />
               </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="title">{t('recipeForm.titleLabel')}</Label>
+              <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)}
+                placeholder={t('recipeForm.titlePlaceholder')} required />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="ingredients">{t('recipeForm.ingredientsLabel')}</Label>
+              <Textarea id="ingredients" value={ingredients} onChange={(e) => setIngredients(e.target.value)}
+                placeholder={t('recipeForm.ingredientsPlaceholder')} rows={6} required />
+              <p className="text-sm text-gray-500">{t('recipeForm.ingredientsHelp')}</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="instructions">{t('recipeForm.instructionsLabel')}</Label>
+              <Textarea id="instructions" value={instructions} onChange={(e) => setInstructions(e.target.value)}
+                placeholder={t('recipeForm.instructionsPlaceholder')} rows={8} required />
+              <p className="text-sm text-gray-500">{t('recipeForm.instructionsHelp')}</p>
+            </div>
+
+            {/* Tags */}
+            <div className="space-y-2">
+              <Label>{t('recipeForm.tagsLabel')}</Label>
+              <TagInput tags={tags} onChange={setTags} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="imageUrl">{t('recipeForm.imageUrlLabel')}</Label>
+              <Input id="imageUrl" type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
+                placeholder={t('recipeForm.imageUrlPlaceholder')} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="sourceUrl">{t('recipeForm.sourceUrlLabel')}</Label>
+              <Input id="sourceUrl" type="url" value={sourceUrl} onChange={(e) => setSourceUrl(e.target.value)}
+                placeholder={t('recipeForm.sourceUrlPlaceholder')} />
+            </div>
+
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {showSuccess && (
+              <Alert className="border-green-200 bg-green-50">
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <AlertDescription className="text-green-800">{t('recipeForm.savedSuccess')}</AlertDescription>
+              </Alert>
             )}
           </div>
 
-          {imageUrl && !photoPreview && (
-            <div className="w-full h-48 bg-gray-100 rounded-lg overflow-hidden">
-              <img src={imageUrl} alt={title || 'Recipe'} className="w-full h-full object-cover"
-                onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-            </div>
-          )}
-
-          <div className="space-y-2">
-            <Label htmlFor="title">{t('recipeForm.titleLabel')}</Label>
-            <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)}
-              placeholder={t('recipeForm.titlePlaceholder')} required />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="ingredients">{t('recipeForm.ingredientsLabel')}</Label>
-            <Textarea id="ingredients" value={ingredients} onChange={(e) => setIngredients(e.target.value)}
-              placeholder={t('recipeForm.ingredientsPlaceholder')} rows={6} required />
-            <p className="text-sm text-gray-500">{t('recipeForm.ingredientsHelp')}</p>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="instructions">{t('recipeForm.instructionsLabel')}</Label>
-            <Textarea id="instructions" value={instructions} onChange={(e) => setInstructions(e.target.value)}
-              placeholder={t('recipeForm.instructionsPlaceholder')} rows={8} required />
-            <p className="text-sm text-gray-500">{t('recipeForm.instructionsHelp')}</p>
-          </div>
-
-          {/* Tags */}
-          <div className="space-y-2">
-            <Label>{t('recipeForm.tagsLabel')}</Label>
-            <TagInput tags={tags} onChange={setTags} />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="imageUrl">{t('recipeForm.imageUrlLabel')}</Label>
-            <Input id="imageUrl" type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
-              placeholder={t('recipeForm.imageUrlPlaceholder')} />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="sourceUrl">{t('recipeForm.sourceUrlLabel')}</Label>
-            <Input id="sourceUrl" type="url" value={sourceUrl} onChange={(e) => setSourceUrl(e.target.value)}
-              placeholder={t('recipeForm.sourceUrlPlaceholder')} />
-          </div>
-
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          {showSuccess && (
-            <Alert className="border-green-200 bg-green-50">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">{t('recipeForm.savedSuccess')}</AlertDescription>
-            </Alert>
-          )}
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleCancel} disabled={loading}>
+          {/* Sticky footer with top border */}
+          <div className="flex gap-2 border-t px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
+            <Button type="button" variant="outline" className="flex-1" onClick={handleCancel} disabled={loading}>
               <X className="w-4 h-4 mr-2" />
               {t('recipeForm.cancel')}
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button
+              type="submit"
+              className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold"
+              disabled={loading}
+            >
               {loading ? (
                 <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t('recipeForm.saving')}</>
               ) : (
                 <><Save className="w-4 h-4 mr-2" />{t('recipeForm.save')}</>
               )}
             </Button>
-          </DialogFooter>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }
