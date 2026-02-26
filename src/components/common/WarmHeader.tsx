@@ -61,49 +61,48 @@ export const WarmHeader: FC<WarmHeaderProps> = ({
       ref={headerRef}
       className="sticky top-0 z-40"
       style={{
-        backgroundColor: 'var(--fs-warm-header-bg, #FFFBEB)',
-        borderBottom: '1px solid var(--fs-warm-header-border, #FDE68A)',
+        backgroundColor: 'var(--fs-warm-header-bg, transparent)',
+        borderBottom: '1px solid var(--fs-warm-header-border, transparent)',
       }}
     >
-      <div className="px-4 py-3">
-        {/* Title row */}
+      <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {/* Title Row */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5 min-w-0">
             {backButton ? (
               <button
                 onClick={onBack}
-                className="flex items-center justify-center shrink-0"
+                className="flex items-center justify-center shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1"
                 style={{
-                  width: '36px',
-                  height: '36px',
-                  backgroundColor: 'var(--fs-warm-header-btn-bg, #FFFFFF)',
-                  border: '1px solid var(--fs-warm-header-btn-border, #E7E5E4)',
-                  borderRadius: '8px',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+                  width: '44px',
+                  height: '44px',
+                  backgroundColor: 'transparent',
+                  border: 'none',
                 }}
                 aria-label="Go back"
               >
                 <ArrowLeft
-                  className="w-5 h-5"
-                  style={{ color: 'var(--fs-text-muted, #78716C)' }}
+                  className="w-6 h-6"
+                  style={{ color: 'var(--fs-text-primary, #2D2522)' }}
                 />
               </button>
             ) : icon ? (
               <span
                 className="shrink-0 flex items-center justify-center"
-                style={{ color: '#D97706' }}
+                style={{ color: 'var(--fs-accent, #D4644E)' }}
               >
                 {icon}
               </span>
             ) : null}
             <h1
-              className="font-bold truncate"
+              className="truncate"
               style={{
                 fontFamily: "'Fraunces', serif",
-                fontSize: backButton ? '20px' : '22px',
-                fontWeight: 700,
-                color: 'var(--fs-text-primary, #1C1917)',
-                lineHeight: 1.2,
+                fontSize: '26px',
+                fontWeight: 600,
+                letterSpacing: '-0.5px',
+                color: 'var(--fs-text-primary, #2D2522)',
+                lineHeight: 1.15,
               }}
             >
               {title}
@@ -114,8 +113,8 @@ export const WarmHeader: FC<WarmHeaderProps> = ({
           )}
         </div>
 
-        {/* Optional children (e.g., week nav, search bar) */}
-        {children && <div className="mt-2">{children}</div>}
+        {/* Optional children (e.g., week nav) */}
+        {children}
       </div>
     </header>
   );

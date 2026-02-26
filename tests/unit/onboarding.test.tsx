@@ -1,17 +1,14 @@
 /**
- * Onboarding Tests (Sprint 17 — S17-13)
+ * Onboarding Tests
  *
  * Tests onboarding flow for:
- * - First launch: shows 3-screen onboarding
+ * - First launch: shows 4-screen onboarding (Welcome, Schedule, Library, Invite)
  * - Repeat visit: skips onboarding (localStorage flag)
  * - Skip button: marks complete and dismisses
  * - Next/Get Started navigation through all screens
  * - Invite-link path: shows condensed highlights
  * - i18n: all strings use translation keys
  * - Accessibility: keyboard navigation, ARIA attributes
- *
- * Design Spec V1.4 Flows 12-13
- * Implementation Plan Phase 24
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -47,10 +44,9 @@ describe('OnboardingScreen', () => {
         <OnboardingScreen
           slide={mockSlide}
           currentIndex={0}
-          totalSlides={3}
+          totalSlides={4}
           onNext={vi.fn()}
           onSkip={vi.fn()}
-          isLastSlide={false}
         />
       </Wrapper>
     );
@@ -65,31 +61,29 @@ describe('OnboardingScreen', () => {
         <OnboardingScreen
           slide={mockSlide}
           currentIndex={1}
-          totalSlides={3}
+          totalSlides={4}
           onNext={vi.fn()}
           onSkip={vi.fn()}
-          isLastSlide={false}
         />
       </Wrapper>
     );
 
     const dots = screen.getAllByRole('tab');
-    expect(dots).toHaveLength(3);
+    expect(dots).toHaveLength(4);
     // Second dot should be selected
     expect(dots[1]).toHaveAttribute('aria-selected', 'true');
     expect(dots[0]).toHaveAttribute('aria-selected', 'false');
   });
 
-  it('shows "Next" button on non-last slides', () => {
+  it('shows "Next" by default when no ctaKey provided', () => {
     render(
       <Wrapper>
         <OnboardingScreen
           slide={mockSlide}
           currentIndex={0}
-          totalSlides={3}
+          totalSlides={4}
           onNext={vi.fn()}
           onSkip={vi.fn()}
-          isLastSlide={false}
         />
       </Wrapper>
     );
@@ -97,16 +91,19 @@ describe('OnboardingScreen', () => {
     expect(screen.getByText('Next')).toBeInTheDocument();
   });
 
-  it('shows "Get Started" button on last slide', () => {
+  it('shows custom CTA label when ctaKey is provided', () => {
+    const slideWithCta: OnboardingSlide = {
+      ...mockSlide,
+      ctaKey: 'onboarding.getStarted',
+    };
     render(
       <Wrapper>
         <OnboardingScreen
-          slide={mockSlide}
-          currentIndex={2}
-          totalSlides={3}
+          slide={slideWithCta}
+          currentIndex={0}
+          totalSlides={4}
           onNext={vi.fn()}
           onSkip={vi.fn()}
-          isLastSlide={true}
         />
       </Wrapper>
     );
@@ -121,10 +118,9 @@ describe('OnboardingScreen', () => {
         <OnboardingScreen
           slide={mockSlide}
           currentIndex={0}
-          totalSlides={3}
+          totalSlides={4}
           onNext={vi.fn()}
           onSkip={onSkip}
-          isLastSlide={false}
         />
       </Wrapper>
     );
@@ -140,10 +136,9 @@ describe('OnboardingScreen', () => {
         <OnboardingScreen
           slide={mockSlide}
           currentIndex={0}
-          totalSlides={3}
+          totalSlides={4}
           onNext={onNext}
           onSkip={vi.fn()}
-          isLastSlide={false}
         />
       </Wrapper>
     );
@@ -158,10 +153,9 @@ describe('OnboardingScreen', () => {
         <OnboardingScreen
           slide={mockSlide}
           currentIndex={0}
-          totalSlides={3}
+          totalSlides={4}
           onNext={vi.fn()}
           onSkip={vi.fn()}
-          isLastSlide={false}
         />
       </Wrapper>
     );
@@ -176,37 +170,41 @@ describe('OnboardingFlow', () => {
     localStorage.clear();
   });
 
-  it('starts on slide 1 (scheduling)', () => {
+  it('starts on the Welcome slide', () => {
     render(
       <Wrapper>
         <OnboardingFlow onComplete={vi.fn()} />
       </Wrapper>
     );
 
-    expect(screen.getByText('Plan Your Week')).toBeInTheDocument();
-  });
-
-  it('navigates through all 3 slides on Next clicks', () => {
-    render(
-      <Wrapper>
-        <OnboardingFlow onComplete={vi.fn()} />
-      </Wrapper>
-    );
-
-    // Screen 1
-    expect(screen.getByText('Plan Your Week')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('Next'));
-
-    // Screen 2
-    expect(screen.getByText('Import Any Recipe')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('Next'));
-
-    // Screen 3
-    expect(screen.getByText('Cook Together')).toBeInTheDocument();
+    expect(screen.getByText('Welcome to Fork & Spoon')).toBeInTheDocument();
     expect(screen.getByText('Get Started')).toBeInTheDocument();
   });
 
-  it('calls onComplete and sets localStorage when Get Started clicked', () => {
+  it('navigates through all 4 slides', () => {
+    render(
+      <Wrapper>
+        <OnboardingFlow onComplete={vi.fn()} />
+      </Wrapper>
+    );
+
+    // Screen 0 — Welcome
+    expect(screen.getByText('Welcome to Fork & Spoon')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Get Started'));
+
+    // Screen 1 — Schedule
+    expect(screen.getByText('Plan Your Week')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Next'));
+
+    // Screen 2 — Library
+    expect(screen.getByText('Build Your Library')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Next'));
+
+    // Screen 3 — Invite
+    expect(screen.getByText('Cook Together')).toBeInTheDocument();
+  });
+
+  it('calls onComplete and sets localStorage on last slide Next click', () => {
     const onComplete = vi.fn();
     render(
       <Wrapper>
@@ -214,10 +212,11 @@ describe('OnboardingFlow', () => {
       </Wrapper>
     );
 
-    // Navigate to last slide
-    fireEvent.click(screen.getByText('Next'));
-    fireEvent.click(screen.getByText('Next'));
+    // Navigate through all slides
     fireEvent.click(screen.getByText('Get Started'));
+    fireEvent.click(screen.getByText('Next'));
+    fireEvent.click(screen.getByText('Next'));
+    fireEvent.click(screen.getByText('Next'));
 
     expect(onComplete).toHaveBeenCalledTimes(1);
     expect(localStorage.getItem('fork-spoon-onboarding-complete')).toBe('true');

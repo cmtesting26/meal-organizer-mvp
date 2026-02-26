@@ -1,15 +1,9 @@
 /**
- * OnboardingScreen Component (Sprint 17 — S17-01)
+ * OnboardingScreen Component
  *
- * Full-screen onboarding slide layout.
- * - Illustration area: top ~60%
- * - Content area: bottom ~40% (title, description, action)
- * - Pagination dots
- * - Skip button (top-right)
- *
- * Design Spec V1.4 · Onboarding Screen component
- * Implementation Plan Phase 24
- * Roadmap V1.4 Epic 5
+ * Full-screen onboarding slide layout matching D3 design spec.
+ * Layout: SkipRow → CenterArea (illustration + text) → BottomArea (dots + CTA)
+ * Uses justify-content: space-between for natural vertical distribution.
  */
 
 import { type FC, type ReactNode } from 'react';
@@ -20,6 +14,8 @@ export interface OnboardingSlide {
   icon: ReactNode;
   titleKey: string;
   descriptionKey: string;
+  /** Override the CTA button label (translation key). Defaults to 'onboarding.next'. */
+  ctaKey?: string;
 }
 
 interface OnboardingScreenProps {
@@ -28,7 +24,6 @@ interface OnboardingScreenProps {
   totalSlides: number;
   onNext: () => void;
   onSkip: () => void;
-  isLastSlide: boolean;
 }
 
 export const OnboardingScreen: FC<OnboardingScreenProps> = ({
@@ -37,78 +32,123 @@ export const OnboardingScreen: FC<OnboardingScreenProps> = ({
   totalSlides,
   onNext,
   onSkip,
-  isLastSlide,
 }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col" style={{ backgroundColor: 'var(--fs-bg-base, #FAF9F6)' }}>
-      {/* Skip button — top right */}
-      <div className="flex justify-end p-4 pb-0">
+    <div
+      className="fixed inset-0 z-[100] flex flex-col justify-between"
+      style={{ backgroundColor: '#FAF8F6' }}
+    >
+      {/* Skip row — top right */}
+      <div
+        className="flex items-center justify-end"
+        style={{ height: 44, padding: '16px 24px' }}
+      >
         <button
           onClick={onSkip}
-          className="text-sm font-medium text-gray-500 hover:text-gray-700
-                     min-w-[44px] min-h-[44px] flex items-center justify-center
-                     transition-colors"
+          className="transition-colors"
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 14,
+            fontWeight: 500,
+            color: '#7A6E66',
+          }}
           aria-label={t('onboarding.skip')}
         >
           {t('onboarding.skip')}
         </button>
       </div>
 
-      {/* Illustration area — ~60% */}
-      <div className="flex-[3] flex items-center justify-center px-8">
-        <div className="w-full max-w-xs flex items-center justify-center">
-          {slide.icon}
-        </div>
-      </div>
+      {/* Center area — illustration + text */}
+      <div
+        className="flex flex-col items-center"
+        style={{ padding: '0 24px' }}
+      >
+        {/* Illustration */}
+        {slide.icon}
 
-      {/* Content area — ~40% */}
-      <div className="flex-[2] flex flex-col items-center justify-between px-8 pb-12">
-        <div className="text-center max-w-sm">
-          <h2 className="text-2xl font-bold mb-3" style={{ color: 'var(--fs-text-primary, #1C1917)' }}>
+        {/* Text area */}
+        <div
+          className="flex flex-col items-center"
+          style={{ marginTop: 32, width: '100%' }}
+        >
+          <h2
+            className="text-center"
+            style={{
+              fontFamily: "'Fraunces', serif",
+              fontSize: 26,
+              fontWeight: 600,
+              letterSpacing: '-0.5px',
+              color: '#2D2522',
+              lineHeight: 1.2,
+            }}
+          >
             {t(slide.titleKey)}
           </h2>
-          <p className="text-base leading-relaxed" style={{ color: 'var(--fs-text-secondary, #57534E)' }}>
+          <p
+            className="text-center"
+            style={{
+              marginTop: 10,
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 15,
+              fontWeight: 400,
+              color: '#7A6E66',
+              lineHeight: 1.5,
+              maxWidth: 280,
+            }}
+          >
             {t(slide.descriptionKey)}
           </p>
         </div>
+      </div>
 
-        {/* Pagination dots + action button */}
-        <div className="flex flex-col items-center gap-6 w-full max-w-sm">
-          {/* Pagination dots */}
-          <div className="flex gap-2" role="tablist" aria-label={t('onboarding.pagination')}>
-            {Array.from({ length: totalSlides }).map((_, i) => (
-              <div
-                key={i}
-                role="tab"
-                aria-selected={i === currentIndex}
-                aria-label={t('onboarding.slide', { current: i + 1, total: totalSlides })}
-                className={`h-2 rounded-full transition-all duration-300
-                  ${i === currentIndex
-                    ? 'w-8 bg-amber-600'
-                    : 'w-2 bg-gray-300'
-                  }`}
-              />
-            ))}
-          </div>
-
-          {/* Action button */}
-          <button
-            onClick={onNext}
-            className="w-full py-3.5 px-6 rounded-xl font-semibold text-base
-                       bg-amber-600 text-white
-                       hover:bg-amber-700 active:bg-amber-800
-                       transition-colors
-                       focus:outline-none focus:ring-2 focus:ring-amber-600 focus:ring-offset-2
-                       min-h-[44px]"
-          >
-            {isLastSlide
-              ? t('onboarding.getStarted')
-              : t('onboarding.next')
-            }
-          </button>
+      {/* Bottom area — dots + CTA */}
+      <div
+        className="flex flex-col items-center"
+        style={{ padding: '0 24px 48px 24px', gap: 20 }}
+      >
+        {/* Pagination dots */}
+        <div
+          className="flex"
+          style={{ gap: 8 }}
+          role="tablist"
+          aria-label={t('onboarding.pagination')}
+        >
+          {Array.from({ length: totalSlides }).map((_, i) => (
+            <div
+              key={i}
+              role="tab"
+              aria-selected={i === currentIndex}
+              aria-label={t('onboarding.slide', { current: i + 1, total: totalSlides })}
+              className="rounded-full transition-colors duration-300"
+              style={{
+                width: 8,
+                height: 8,
+                backgroundColor: i === currentIndex ? '#D4644E' : '#E8DDD8',
+              }}
+            />
+          ))}
         </div>
+
+        {/* CTA button */}
+        <button
+          onClick={onNext}
+          className="w-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+          style={{
+            height: 48,
+            borderRadius: 14,
+            backgroundColor: '#D4644E',
+            color: '#FFFFFF',
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 16,
+            fontWeight: 600,
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          {t(slide.ctaKey || 'onboarding.next')}
+        </button>
       </div>
     </div>
   );

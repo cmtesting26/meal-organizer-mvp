@@ -120,7 +120,7 @@ export function OcrReviewForm({
         <CardContent className="space-y-6">
           {/* Image preview */}
           {imageUrl && (
-            <div className="rounded-lg overflow-hidden bg-gray-100 max-h-48">
+            <div className="rounded-lg overflow-hidden max-h-48" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
               <img
                 src={imageUrl}
                 alt={t('ocr.capturedPhoto')}
@@ -148,7 +148,7 @@ export function OcrReviewForm({
             <label className="flex items-center gap-2 text-sm font-medium mb-2">
               {t('recipeDetail.ingredientsTitle')}
               <ConfidenceIndicator level={confidence.ingredients} />
-              <span className="text-xs text-gray-400">({ingredients.filter(i => i.trim()).length})</span>
+              <span className="text-xs" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>({ingredients.filter(i => i.trim()).length})</span>
             </label>
             <div className="space-y-2">
               {ingredients.map((ing, idx) => (
@@ -158,6 +158,7 @@ export function OcrReviewForm({
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateIngredient(idx, e.target.value)}
                     placeholder={t('ocr.ingredientPlaceholder')}
                     className="flex-1 text-sm"
+                    aria-label={t('ocr.ingredientNumber', 'Ingredient {{number}}', { number: idx + 1 })}
                   />
                   <Button
                     variant="ghost"
@@ -165,6 +166,7 @@ export function OcrReviewForm({
                     onClick={() => removeIngredient(idx)}
                     className="text-red-500 hover:text-red-700 shrink-0"
                     disabled={ingredients.length <= 1}
+                    aria-label={t('ocr.removeIngredient', 'Remove ingredient {{number}}', { number: idx + 1 })}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -182,7 +184,7 @@ export function OcrReviewForm({
             <label className="flex items-center gap-2 text-sm font-medium mb-2">
               {t('recipeDetail.instructionsTitle')}
               <ConfidenceIndicator level={confidence.instructions} />
-              <span className="text-xs text-gray-400">({instructions.filter(i => i.trim()).length} {t('recipes.steps', { count: instructions.filter(i => i.trim()).length })})</span>
+              <span className="text-xs" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>({instructions.filter(i => i.trim()).length} {t('recipes.steps', { count: instructions.filter(i => i.trim()).length })})</span>
             </label>
             <div className="space-y-2">
               {instructions.map((step, idx) => (
@@ -196,6 +198,7 @@ export function OcrReviewForm({
                     placeholder={t('ocr.instructionPlaceholder')}
                     className="flex-1 text-sm border rounded-md px-3 py-2 min-h-[60px] resize-y focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     rows={2}
+                    aria-label={t('ocr.instructionNumber', 'Step {{number}}', { number: idx + 1 })}
                   />
                   <Button
                     variant="ghost"
@@ -203,6 +206,7 @@ export function OcrReviewForm({
                     onClick={() => removeInstruction(idx)}
                     className="text-red-500 hover:text-red-700 shrink-0 mt-1"
                     disabled={instructions.length <= 1}
+                    aria-label={t('ocr.removeInstruction', 'Remove step {{number}}', { number: idx + 1 })}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -221,12 +225,13 @@ export function OcrReviewForm({
               variant="ghost"
               size="sm"
               onClick={() => setShowRawText(!showRawText)}
-              className="text-xs text-gray-500"
+              className="text-xs"
+              style={{ color: 'var(--fs-text-muted, #7A6E66)' }}
             >
               {showRawText ? t('ocr.hideRawText') : t('ocr.showRawText')}
             </Button>
             {showRawText && (
-              <pre className="mt-2 p-3 bg-gray-50 rounded-lg text-xs text-gray-600 whitespace-pre-wrap max-h-48 overflow-y-auto border">
+              <pre className="mt-2 p-3 rounded-lg text-xs whitespace-pre-wrap max-h-48 overflow-y-auto border" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)', color: 'var(--fs-text-secondary, #7A6E66)' }}>
                 {parsedRecipe.rawText}
               </pre>
             )}

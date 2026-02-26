@@ -23,17 +23,17 @@ export function BulkActionBar({ selectedCount, onBulkDelete, onBulkTag, onClearS
 
   return (
     <div className="fixed bottom-20 left-0 right-0 z-50 flex justify-center px-4 animate-in slide-in-from-bottom-4">
-      <div className="bg-gray-900 text-white rounded-full shadow-lg px-4 py-2 flex items-center gap-3 max-w-md">
+      <div className="text-white rounded-full shadow-lg px-4 py-2 flex items-center gap-3 max-w-md" style={{ backgroundColor: '#1C1917' }}>
         <span className="text-sm font-medium whitespace-nowrap">
           {t('bulk.selected', { count: selectedCount })}
         </span>
 
-        <div className="h-4 w-px bg-gray-600" />
+        <div className="h-4 w-px" style={{ backgroundColor: '#57534E' }} />
 
         <Button
           variant="ghost"
           size="sm"
-          className="text-white hover:bg-gray-700 h-8 px-3 gap-1.5"
+          className="text-white hover:bg-stone-700 h-8 px-3 gap-1.5"
           onClick={onBulkTag}
         >
           <Tag className="w-4 h-4" />
@@ -50,12 +50,13 @@ export function BulkActionBar({ selectedCount, onBulkDelete, onBulkTag, onClearS
           <span className="text-sm">{t('bulk.delete')}</span>
         </Button>
 
-        <div className="h-4 w-px bg-gray-600" />
+        <div className="h-4 w-px" style={{ backgroundColor: '#57534E' }} />
 
         <Button
           variant="ghost"
           size="sm"
-          className="text-gray-400 hover:bg-gray-700 hover:text-white h-8 w-8 p-0"
+          className="hover:bg-stone-700 hover:text-white h-8 w-8 p-0 min-w-[44px] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1"
+          style={{ color: 'var(--fs-text-muted, #7A6E66)' }}
           onClick={onClearSelection}
           aria-label={t('bulk.clearSelection')}
         >

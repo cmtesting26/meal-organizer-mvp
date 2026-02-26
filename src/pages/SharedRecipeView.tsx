@@ -72,8 +72,8 @@ export function SharedRecipeView() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-base, #FAF9F6)' }}>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: '#D97706' }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)' }}>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: '#D4644E' }} />
       </div>
     );
   }
@@ -81,13 +81,13 @@ export function SharedRecipeView() {
   // Error state
   if (error || !recipe) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: 'var(--fs-bg-base, #FAF9F6)' }}>
+      <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)' }}>
         <div className="rounded-xl shadow-sm max-w-md w-full p-8 text-center" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)' }}>
           <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: 'var(--fs-text-placeholder, #A8A29E)' }} />
-          <h1 className="text-lg font-semibold mb-2" style={{ color: 'var(--fs-text-primary, #1C1917)' }}>
+          <h1 className="text-lg font-semibold mb-2" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
             {t('publicRecipe.notFoundTitle')}
           </h1>
-          <p className="text-sm mb-6" style={{ color: 'var(--fs-text-muted, #78716C)' }}>
+          <p className="text-sm mb-6" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
             {error || t('publicRecipe.notFound')}
           </p>
           <Link to="/">
@@ -109,24 +109,24 @@ export function SharedRecipeView() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--fs-bg-base, #FAF9F6)' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)' }}>
       {/* Branded header bar — warm amber style */}
       <header
         className="sticky top-0 z-40"
         style={{
-          background: 'linear-gradient(180deg, #FFFBEB 0%, #FFFBEB 100%)',
-          borderBottom: '1px solid #FDE68A',
+          background: 'linear-gradient(180deg, #FAF8F6 0%, #FAF8F6 100%)',
+          borderBottom: '1px solid #E8C4B8',
         }}
       >
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <ForkAndSpoonLogo size={28} />
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm" style={{ color: 'var(--fs-text-primary, #1C1917)', fontFamily: "'Fraunces', serif" }}>
+              <span className="font-semibold text-sm" style={{ color: 'var(--fs-text-primary, #2D2522)', fontFamily: "'Fraunces', serif" }}>
                 Fork &amp; Spoon
               </span>
               <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: '#FEF3C7', color: '#92400E' }}>
+                style={{ backgroundColor: '#FEF0E8', color: '#B84835' }}>
                 <BookOpen className="w-3 h-3" />
                 {t('publicRecipe.sharedRecipe')}
               </span>
@@ -134,7 +134,7 @@ export function SharedRecipeView() {
           </div>
           <Link to="/">
             <Button size="sm" variant="outline" className="text-xs"
-              style={{ borderColor: '#D97706', color: '#D97706' }}>
+              style={{ borderColor: '#D4644E', color: '#D4644E' }}>
               {t('publicRecipe.openApp')}
             </Button>
           </Link>
@@ -142,11 +142,11 @@ export function SharedRecipeView() {
       </header>
 
       {/* Content — matches RecipeDetail V1.6 layout */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+      <main className="max-w-4xl mx-auto px-6 py-6">
         {/* Hero Image */}
         {recipe.imageUrl && (
-          <div className="w-full h-56 sm:h-72 rounded-xl overflow-hidden mb-6"
-            style={{ backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)' }}>
+          <div className="w-full h-56 sm:h-72 overflow-hidden mb-6"
+            style={{ backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)', borderRadius: '14px' }}>
             <img
               src={recipe.imageUrl}
               alt={recipe.title}
@@ -158,21 +158,21 @@ export function SharedRecipeView() {
         )}
 
         {/* Title */}
-        <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--fs-text-primary, #1C1917)' }}>
+        <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
           {recipe.title}
         </h1>
 
         {/* Metadata row */}
         <div className="flex flex-wrap items-center gap-3 mb-4">
-          <span className="text-sm" style={{ color: 'var(--fs-text-muted, #78716C)' }}>
+          <span className="text-sm" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
             {recipe.ingredients.length} {t('recipeDetail.ingredientsTitle', 'Ingredients')}
           </span>
-          <span className="text-sm" style={{ color: 'var(--fs-text-muted, #78716C)' }}>
+          <span className="text-sm" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
             {recipe.instructions.length} {t('recipeDetail.instructionsTitle', 'Steps')}
           </span>
           {recipe.sourceUrl && (
             <a href={recipe.sourceUrl} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm" style={{ color: 'var(--fs-accent, #D97706)' }}>
+              className="inline-flex items-center gap-1 text-sm" style={{ color: 'var(--fs-accent-text, #B84835)' }}>
               <ExternalLink className="w-3 h-3" />
               {t('recipes.source')}
             </a>
@@ -189,8 +189,8 @@ export function SharedRecipeView() {
                 className="px-2 py-0.5 text-xs"
                 style={{
                   backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)',
-                  color: 'var(--fs-text-secondary, #57534E)',
-                  borderColor: 'var(--fs-border-default, #E7E5E4)',
+                  color: 'var(--fs-text-secondary, #7A6E66)',
+                  borderColor: 'var(--fs-border-default, #C5B5AB)',
                 }}
               >
                 {tag}
@@ -211,10 +211,10 @@ export function SharedRecipeView() {
                   <li
                     key={index}
                     className="flex items-start gap-2 text-sm"
-                    style={{ color: 'var(--fs-text-secondary, #57534E)' }}
+                    style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: '#D97706' }} />
-                    <span style={{ color: 'var(--fs-text-primary, #1C1917)' }}>{ingredient}</span>
+                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: '#D4644E' }} />
+                    <span style={{ color: 'var(--fs-text-primary, #2D2522)' }}>{ingredient}</span>
                   </li>
                 ))}
               </ul>
@@ -229,12 +229,12 @@ export function SharedRecipeView() {
                     <span className="shrink-0 flex items-center justify-center"
                       style={{
                         width: '24px', height: '24px', borderRadius: '9999px',
-                        backgroundColor: '#FEF3C7', color: '#92400E',
+                        backgroundColor: '#FEF0E8', color: '#B84835',
                         fontSize: '12px', fontWeight: 700,
                       }}>
                       {index + 1}
                     </span>
-                    <p className="text-sm leading-relaxed pt-0.5" style={{ color: 'var(--fs-text-primary, #1C1917)' }}>{step}</p>
+                    <p className="text-sm leading-relaxed pt-0.5" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>{step}</p>
                   </li>
                 ))}
               </ol>
@@ -244,16 +244,16 @@ export function SharedRecipeView() {
 
         {/* CTA — warm amber style */}
         <div className="rounded-xl p-6 text-center mt-8 mb-8"
-          style={{ backgroundColor: '#FFFBEB', border: '1px solid #FDE68A' }}>
-          <ChefHat className="w-8 h-8 mx-auto mb-2" style={{ color: '#D97706' }} />
-          <p className="text-sm font-medium mb-1" style={{ color: 'var(--fs-text-primary, #1C1917)' }}>
+          style={{ backgroundColor: '#FAF8F6', border: '1px solid #E8C4B8' }}>
+          <ChefHat className="w-8 h-8 mx-auto mb-2" style={{ color: '#D4644E' }} />
+          <p className="text-sm font-medium mb-1" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
             {t('publicRecipe.ctaTitle')}
           </p>
-          <p className="text-xs mb-3" style={{ color: 'var(--fs-text-muted, #78716C)' }}>
+          <p className="text-xs mb-3" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
             {t('publicRecipe.ctaDescription')}
           </p>
           <Link to="/">
-            <Button size="sm" style={{ backgroundColor: '#D97706', color: 'white' }}>
+            <Button size="sm" style={{ backgroundColor: '#D4644E', color: 'white' }}>
               {t('publicRecipe.ctaButton')}
             </Button>
           </Link>
@@ -264,17 +264,16 @@ export function SharedRecipeView() {
       {recipe.instructions.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-30"
           style={{
-            backgroundColor: 'var(--fs-bg-base, #FAF9F6)',
-            borderTop: '1px solid var(--fs-border-default, #E7E5E4)',
-            paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+            backgroundColor: 'var(--fs-bg-base, #FAF8F6)',
+            paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))',
           }}>
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3">
+          <div className="max-w-4xl mx-auto px-6" style={{ paddingTop: '12px' }}>
             <button onClick={() => setShowCookingMode(true)}
               className="w-full flex items-center justify-center gap-2 transition-colors"
               style={{
-                backgroundColor: '#D97706', color: 'white', borderRadius: '12px',
+                backgroundColor: '#D4644E', color: 'white', borderRadius: '14px',
                 padding: '14px', fontSize: '15px', fontWeight: 700,
-                boxShadow: '0 4px 12px rgba(217,119,6,0.3)',
+                boxShadow: '0 4px 12px rgba(212,100,78,0.3)',
               }}>
               <Play className="w-5 h-5" />
               {t('cookingMode.startCooking')}

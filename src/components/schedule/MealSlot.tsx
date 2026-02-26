@@ -9,7 +9,7 @@
 import { useTranslation } from 'react-i18next';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { Button } from '@/components/ui/button';
-import { X, UtensilsCrossed, GripVertical } from 'lucide-react';
+import { X, Plus, UtensilsCrossed, GripVertical } from 'lucide-react';
 import type { Recipe } from '@/types/recipe';
 
 /** Unique identifier for a meal slot (used as dnd-kit id) */
@@ -59,28 +59,30 @@ export function MealSlot({ mealType, date, recipe, entryId, onAdd, onRemove, onR
   return (
     <div
       ref={setDropRef}
-      className={`flex items-center justify-between py-2 min-h-[44px] rounded transition-colors ${
+      className={`flex items-center justify-between rounded transition-colors ${
         isOver ? 'bg-primary/10 ring-1 ring-primary/30' : ''
       }`}
+      style={{ padding: '10px 0' }}
     >
-      <span className="text-sm text-gray-500 w-16 shrink-0">{mealLabel}</span>
+      <span className="text-xs font-medium shrink-0" style={{ color: 'var(--fs-text-muted, #7A6E66)', width: '44px' }}>{mealLabel}</span>
       {recipe ? (
         <div
           ref={setDragRef}
           style={dragStyle}
-          className={`flex items-center gap-2 flex-1 min-w-0 ml-2 ${isDragging ? 'shadow-lg bg-white rounded px-2' : ''}`}
+          className={`flex items-center flex-1 min-w-0 ${isDragging ? 'shadow-lg bg-white rounded px-2' : ''}`}
           {...attributes}
         >
           {/* Drag handle */}
           <button
-            className="touch-none cursor-grab active:cursor-grabbing shrink-0 text-gray-300 hover:text-gray-500 p-0.5"
+            className="touch-none cursor-grab active:cursor-grabbing shrink-0 hover:text-[var(--fs-text-muted)] p-1 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1 rounded"
+            style={{ color: '#D4D4D4' }}
             aria-label={t('schedule.dragMeal', { title: recipe.title })}
             {...listeners}
           >
             <GripVertical className="w-4 h-4" />
           </button>
           {/* Recipe Thumbnail */}
-          <div className="w-8 h-8 rounded overflow-hidden bg-gray-100 shrink-0">
+          <div className="w-8 h-8 overflow-hidden shrink-0 ml-2" style={{ borderRadius: 6, backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
             {recipe.imageUrl ? (
               <img
                 src={recipe.imageUrl}
@@ -98,16 +100,16 @@ export function MealSlot({ mealType, date, recipe, entryId, onAdd, onRemove, onR
               className={`w-full h-full items-center justify-center ${recipe.imageUrl ? 'hidden' : 'flex'}`}
               aria-hidden="true"
             >
-              <UtensilsCrossed className="w-4 h-4 text-gray-400" />
+              <UtensilsCrossed className="w-4 h-4" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
             </div>
           </div>
           <button onClick={() => onRecipeClick?.(recipe)}
-            className="text-sm font-medium text-gray-900 truncate hover:text-primary transition-colors text-left">
+            className="text-sm font-medium truncate hover:text-primary transition-colors text-left ml-2" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
             {recipe.title}
           </button>
           {entryId && onRemove && (
             <Button variant="ghost" size="sm"
-              className="h-6 w-6 p-0 shrink-0 text-gray-400 hover:text-red-500"
+              className="h-8 w-8 p-0 shrink-0 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1 ml-auto" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}
               onClick={(e) => { e.stopPropagation(); onRemove(entryId); }}
               aria-label={t('schedule.removeRecipe', { title: recipe.title, mealType: mealLabel })}>
               <X className="h-3.5 w-3.5" />
@@ -115,11 +117,22 @@ export function MealSlot({ mealType, date, recipe, entryId, onAdd, onRemove, onR
           )}
         </div>
       ) : (
-        <div className="flex items-center gap-2 ml-2">
-          <Button variant="outline" size="sm" className="text-xs h-8" onClick={onAdd}>
-            {t('schedule.emptySlot')}
-          </Button>
-        </div>
+        <button
+          onClick={onAdd}
+          className="flex items-center font-semibold ml-auto"
+          style={{
+            gap: 6,
+            padding: '6px 14px',
+            borderRadius: 12,
+            backgroundColor: 'var(--fs-accent, #D4644E)',
+            color: '#FFFFFF',
+            fontSize: '12px',
+            fontFamily: "'DM Sans', sans-serif",
+          }}
+        >
+          <Plus className="w-3.5 h-3.5" />
+          {t('schedule.add', 'Add')}
+        </button>
       )}
     </div>
   );

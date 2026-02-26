@@ -35,7 +35,7 @@ export function PWAPrompt() {
     <div className="fixed bottom-20 left-4 right-4 z-50 bg-white border border-green-200 rounded-lg shadow-lg p-4 flex items-center justify-between gap-3 animate-in slide-in-from-bottom">
       <div className="flex items-center gap-2">
         <RefreshCw className="w-5 h-5 text-green-600" />
-        <p className="text-sm font-medium text-gray-800">
+        <p className="text-sm font-medium" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
           {t('pwa.updateAvailable')}
         </p>
       </div>

@@ -26,15 +26,15 @@ export function EmptyState({ onImportClick, onManualAddClick }: EmptyStateProps)
             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
         </svg>
       </div>
-      <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--fs-text-primary, #1C1917)' }}>
+      <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
         {t('emptyState.title')}
       </h2>
-      <p className="mb-8 max-w-md" style={{ color: 'var(--fs-text-secondary, #57534E)' }}>
+      <p className="mb-8 max-w-md" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
         {t('emptyState.description')}
       </p>
       <div className="flex flex-col sm:flex-row gap-4">
         <Button onClick={onImportClick} size="lg" className="min-w-[160px]"
-          style={{ backgroundColor: 'var(--fs-accent, #D97706)', color: 'white' }}>
+          style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: 'white' }}>
           <Link className="w-4 h-4 mr-2" />
           {t('emptyState.importButton')}
         </Button>
@@ -43,7 +43,7 @@ export function EmptyState({ onImportClick, onManualAddClick }: EmptyStateProps)
           {t('emptyState.manualButton')}
         </Button>
       </div>
-      <p className="text-sm mt-8" style={{ color: 'var(--fs-text-muted, #78716C)' }}>
+      <p className="text-sm mt-8" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
         {t('emptyState.tip')} ✨
       </p>
     </div>

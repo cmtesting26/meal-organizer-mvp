@@ -380,6 +380,9 @@
     }
   },
   "auth": {
+    "tagline": "Your household recipe planner",
+    "or": "or",
+    "footer": "By continuing, you agree to our Terms & Privacy Policy",
     "welcome": {
       "title": "Fork and Spoon",
       "subtitle": "Track your recipes, plan your meals, share with your household.",
@@ -389,6 +392,7 @@
     },
     "register": {
       "title": "Create Account",
+      "subtitle": "Join your household",
       "email": "Email address",
       "password": "Password",
       "confirmPassword": "Confirm password",
@@ -397,10 +401,12 @@
       "passwordMismatch": "Passwords do not match.",
       "passwordTooShort": "Password must be at least 6 characters.",
       "haveAccount": "Already have an account?",
-      "signInInstead": "Sign in"
+      "signInInstead": "Sign In Instead"
     },
     "login": {
       "title": "Sign In",
+      "welcomeBack": "Welcome Back",
+      "subtitle": "Sign in to your account",
       "email": "Email address",
       "password": "Password",
       "signIn": "Sign In",
@@ -421,9 +427,14 @@
     },
     "household": {
       "createTitle": "Set Up Your Household",
+      "setupSubtitle": "Create or join a household to share meal plans with your family.",
       "createDescription": "Create a household so your recipes and meal plan sync across devices and family members.",
+      "createCardTitle": "Create a Household",
+      "createCardSubtitle": "Start fresh and invite others to join",
+      "joinCardTitle": "Join with Invite Code",
+      "joinCardSubtitle": "Enter the code shared by your household",
       "yourName": "Your name",
-      "householdName": "Household name (optional)",
+      "householdName": "Household name",
       "defaultName": "My Household",
       "create": "Create Household",
       "creating": "Creating…",
@@ -571,13 +582,17 @@
     "getStarted": "Get Started",
     "pagination": "Onboarding progress",
     "slide": "Slide {{current}} of {{total}}",
+    "welcome": {
+      "title": "Welcome to Fork & Spoon",
+      "description": "Your all-in-one household meal planner. Plan meals, manage recipes, and cook together."
+    },
     "screen1": {
       "title": "Plan Your Week",
-      "description": "Drag and drop meals into your weekly schedule. See what's for lunch and dinner at a glance."
+      "description": "Organize meals for the whole week with a simple drag and drop."
     },
     "screen2": {
-      "title": "Import Any Recipe",
-      "description": "Paste a URL, scan a photo, or type it in. Your recipes, all in one place."
+      "title": "Build Your Library",
+      "description": "Import recipes from websites, Instagram, or photos. Your entire collection, always at hand."
     },
     "screen3": {
       "title": "Cook Together",

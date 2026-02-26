@@ -9,12 +9,12 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'prompt',
-      includeAssets: ['favicon.ico', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'],
+      includeAssets: ['favicon-32.png', 'favicon-16.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'],
       manifest: {
         name: 'Fork and Spoon',
         short_name: 'Fork & Spoon',
         description: 'Import and organize your favorite recipes, plan weekly meals, and track cooking recency.',
-        theme_color: '#D97706',
+        theme_color: '#D4644E',
         background_color: '#FAFAF9',
         display: 'standalone',
         orientation: 'portrait-primary',

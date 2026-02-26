@@ -23,7 +23,8 @@ export function ScaledIngredientList({ ingredients, isScaled }: ScaledIngredient
       {ingredients.map((ing, index) => (
         <li
           key={index}
-          className="flex items-start gap-2 text-sm text-gray-700"
+          className="flex items-start gap-2 text-sm"
+          style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}
         >
           <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
           <span>
@@ -31,14 +32,15 @@ export function ScaledIngredientList({ ingredients, isScaled }: ScaledIngredient
               <>
                 <span
                   className={`font-medium tabular-nums ${
-                    isScaled ? 'text-green-700' : 'text-gray-900'
+                    isScaled ? 'text-green-700' : ''
                   }`}
+                  style={!isScaled ? { color: 'var(--fs-text-primary, #2D2522)' } : undefined}
                 >
                   {ing.quantity}
                   {ing.quantityMax ? `–${ing.quantityMax}` : ''}
                 </span>
                 {ing.unit && (
-                  <span className="text-gray-600"> {ing.unit}</span>
+                  <span style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}> {ing.unit}</span>
                 )}
                 {ing.name && (
                   <span> {ing.name}</span>

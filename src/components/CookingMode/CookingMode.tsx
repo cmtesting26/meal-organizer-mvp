@@ -356,7 +356,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
           style={{
             fontSize: '11px',
             fontWeight: 600,
-            color: '#D97706',
+            color: 'var(--fs-accent-text, #B84835)',
             textTransform: 'uppercase' as const,
             letterSpacing: '0.5px',
           }}
@@ -371,7 +371,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
           <button
             onClick={() => setShowAllIngredientsOverlay(true)}
             className="text-xs font-medium underline transition-colors"
-            style={{ color: '#D97706' }}
+            style={{ color: 'var(--fs-accent, #D4644E)' }}
           >
             {t('cookingMode.showAllIngredients')}
           </button>
@@ -391,7 +391,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
                   width: '6px',
                   height: '6px',
                   borderRadius: '9999px',
-                  backgroundColor: '#D97706',
+                  backgroundColor: 'var(--fs-accent, #D4644E)',
                 }}
               />
               <span>{ing.text}</span>
@@ -430,7 +430,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
                   width: idx === currentStepIndex ? '8px' : '6px',
                   height: idx === currentStepIndex ? '8px' : '6px',
                   backgroundColor:
-                    idx === currentStepIndex ? '#D97706' : 'var(--fs-border-default)',
+                    idx === currentStepIndex ? 'var(--fs-accent, #D4644E)' : 'var(--fs-border-default)',
                 }}
               />
             ))}
@@ -477,7 +477,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
         }}
       >
         <div className="flex items-center gap-2 min-w-0">
-          <ChefHat className="w-5 h-5 shrink-0" style={{ color: '#D97706' }} />
+          <ChefHat className="w-5 h-5 shrink-0" style={{ color: 'var(--fs-accent, #D4644E)' }} />
           <h1 className="font-semibold truncate" style={{ fontSize: '14px', color: 'var(--fs-text-primary)' }}>
             {recipe.title}
           </h1>
@@ -492,10 +492,10 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
           {/* S25-03: X button — instant exit */}
           <button
             onClick={handleExit}
-            className="flex items-center justify-center shrink-0 transition-colors"
+            className="flex items-center justify-center shrink-0 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1"
             style={{
-              width: '32px',
-              height: '32px',
+              width: '44px',
+              height: '44px',
               borderRadius: '8px',
               backgroundColor: 'var(--fs-bg-elevated)',
               border: 'none',
@@ -537,7 +537,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
                 onClick={handleMiniTimerTap}
                 className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl transition-colors whitespace-nowrap"
                 style={{
-                  backgroundColor: '#D97706',
+                  backgroundColor: 'var(--fs-accent, #D4644E)',
                   color: 'white',
                   minWidth: 0,
                 }}
@@ -572,7 +572,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
               className="flex items-center gap-2 font-semibold"
               style={{ fontSize: '14px', color: 'var(--fs-text-primary)' }}
             >
-              <UtensilsCrossed className="w-5 h-5" style={{ color: '#D97706' }} />
+              <UtensilsCrossed className="w-5 h-5" style={{ color: 'var(--fs-accent, #D4644E)' }} />
               {t('cookingMode.allIngredients')}
             </h2>
             <button
@@ -601,7 +601,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
                       width: '6px',
                       height: '6px',
                       borderRadius: '9999px',
-                      backgroundColor: '#D97706',
+                      backgroundColor: 'var(--fs-accent, #D4644E)',
                     }}
                   />
                   <span>{ing}</span>

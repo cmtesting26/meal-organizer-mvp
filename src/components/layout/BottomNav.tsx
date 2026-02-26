@@ -29,9 +29,10 @@ const NavItem: FC<NavItemProps> = ({ icon, label, active, onClick, showBadge, ba
     <button
       onClick={onClick}
       className="flex flex-col items-center justify-center gap-0.5
-                  min-w-[44px] min-h-[44px] transition-colors relative"
+                  min-w-[44px] min-h-[44px] transition-colors relative
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1 rounded"
       style={{
-        color: active ? '#D97706' : 'var(--fs-nav-text, #78716C)',
+        color: active ? 'var(--fs-nav-text-active, #B84835)' : 'var(--fs-nav-text, #3D3530)',
       }}
       aria-current={active ? 'page' : undefined}
       aria-label={label}
@@ -41,7 +42,7 @@ const NavItem: FC<NavItemProps> = ({ icon, label, active, onClick, showBadge, ba
         <NotificationDot visible={!!showBadge} label={badgeLabel} />
       </span>
       <span
-        className="text-[11px] leading-tight"
+        className="text-[10px] leading-tight"
         style={{ fontWeight: active ? 600 : 500 }}
       >
         {label}
@@ -68,15 +69,23 @@ export function BottomNav({ onAddClick, showLibraryBadge, newRecipeCount }: Bott
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50"
+      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center"
       aria-label={t('nav.main', 'Main navigation')}
       style={{
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-        backgroundColor: 'var(--fs-nav-bg)',
-        borderTop: '1px solid var(--fs-nav-border)',
       }}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-around h-14 px-6">
+      <div
+        className="flex items-center justify-around relative"
+        style={{
+          width: '340px',
+          height: '56px',
+          borderRadius: '28px',
+          backgroundColor: '#FFFFFF',
+          boxShadow: '0 4px 24px rgba(45, 37, 34, 0.09)',
+          marginBottom: '12px',
+        }}
+      >
         {/* Schedule tab (left) */}
         <NavItem
           to="/"
@@ -87,16 +96,20 @@ export function BottomNav({ onAddClick, showLibraryBadge, newRecipeCount }: Bott
         />
 
         {/* Elevated FAB (center) — raised above nav bar */}
-        <div className="flex items-center justify-center -mt-10">
+        <div className="flex items-center justify-center" style={{ marginTop: '-26px' }}>
           <button
             onClick={onAddClick}
             className="flex items-center justify-center
                        w-[60px] h-[60px] rounded-full
-                       bg-amber-600 text-white
-                       shadow-lg shadow-amber-600/30
-                       hover:bg-amber-700 active:bg-amber-800
+                       text-white
+                       shadow-lg
                        transition-colors focus:outline-none focus:ring-2
-                       focus:ring-amber-600 focus:ring-offset-2"
+                       focus:ring-offset-2"
+            style={{
+              backgroundColor: 'var(--fs-accent, #D4644E)',
+              boxShadow: '0 4px 24px 2px rgba(212, 100, 78, 0.27)',
+              '--tw-ring-color': 'var(--fs-accent, #D4644E)',
+            } as React.CSSProperties}
             aria-label={t('nav.addRecipe', 'Add Recipe')}
           >
             <Plus className="w-8 h-8" strokeWidth={2.5} />

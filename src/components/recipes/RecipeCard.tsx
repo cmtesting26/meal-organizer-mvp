@@ -54,10 +54,13 @@ export function RecipeCard({ recipe, onClick, onLongPress, cookCount, cookCountL
 
   return (
     <div
-      className="flex items-center gap-3 p-3 rounded-xl cursor-pointer select-none transition-all duration-150"
+      className="flex items-center cursor-pointer select-none transition-all duration-150"
       style={{
+        gap: 12,
+        padding: 12,
         backgroundColor: 'var(--fs-card-bg, #FFFFFF)',
-        border: '1px solid var(--fs-card-border, #E7E5E4)',
+        borderRadius: '14px',
+        boxShadow: '0 2px 10px rgba(45, 37, 34, 0.03)',
       }}
       onClick={handleClick}
       onMouseDown={startLongPress}
@@ -78,11 +81,12 @@ export function RecipeCard({ recipe, onClick, onLongPress, cookCount, cookCountL
     >
       {/* 56px Thumbnail */}
       <div
-        className="shrink-0 rounded-lg overflow-hidden"
+        className="shrink-0 overflow-hidden"
         style={{
           width: '56px',
           height: '56px',
-          backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)',
+          borderRadius: '10px',
+          backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)',
         }}
       >
         {recipe.imageUrl ? (
@@ -106,24 +110,24 @@ export function RecipeCard({ recipe, onClick, onLongPress, cookCount, cookCountL
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 min-w-0">
+      {/* Content — gap: 4, vertical, fill */}
+      <div className="flex-1 min-w-0" style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
         <h3
           className="font-semibold text-sm truncate"
-          style={{ color: 'var(--fs-text-primary, #1C1917)' }}
+          style={{ color: 'var(--fs-text-primary, #2D2522)' }}
           title={recipe.title}
         >
           {recipe.title}
         </h3>
 
-        {/* Tags + Cook count row */}
-        <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+        {/* Tags + recency row — gap: 6 */}
+        <div className="flex items-center flex-wrap" style={{ gap: 6 }}>
           {cookCount != null && cookCount > 0 && (
             <span
               className="inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[11px] font-semibold"
               style={{
-                backgroundColor: 'var(--fs-accent-light, #FEF3C7)',
-                color: 'var(--fs-accent-text, #92400E)',
+                backgroundColor: 'var(--fs-accent-light, #FEF0E8)',
+                color: 'var(--fs-accent-text, #B84835)',
               }}
               title={cookCountLabel}
             >
@@ -138,26 +142,22 @@ export function RecipeCard({ recipe, onClick, onLongPress, cookCount, cookCountL
               className="text-[11px] px-2 py-0.5"
               style={{
                 backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)',
-                color: 'var(--fs-text-secondary, #57534E)',
-                borderColor: 'var(--fs-border-default, #E7E5E4)',
+                color: 'var(--fs-text-secondary, #7A6E66)',
+                borderColor: 'var(--fs-border-default, #C5B5AB)',
               }}
             >
               {tag}
             </Badge>
           ))}
           {tags.length > 2 && (
-            <span className="text-[11px]" style={{ color: 'var(--fs-text-muted, #78716C)' }}>
+            <span className="text-[11px]" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
               +{tags.length - 2}
             </span>
           )}
-        </div>
-
-        {/* S26-07: Restored RecencyBadge */}
-        {!cookCount && (
-          <div className="mt-1">
+          {!cookCount && (
             <RecencyBadge lastCookedDate={lastCookedDate} compact />
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

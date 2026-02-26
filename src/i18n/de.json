@@ -378,6 +378,9 @@
     }
   },
   "auth": {
+    "tagline": "Euer Rezeptplaner für Zuhause",
+    "or": "oder",
+    "footer": "Durch die Nutzung stimmst du unseren Nutzungsbedingungen & Datenschutzrichtlinien zu",
     "welcome": {
       "title": "Fork and Spoon",
       "subtitle": "Rezepte verwalten, Mahlzeiten planen, mit dem Haushalt teilen.",
@@ -387,6 +390,7 @@
     },
     "register": {
       "title": "Konto erstellen",
+      "subtitle": "Tritt deinem Haushalt bei",
       "email": "E-Mail-Adresse",
       "password": "Passwort",
       "confirmPassword": "Passwort bestätigen",
@@ -395,10 +399,12 @@
       "passwordMismatch": "Passwörter stimmen nicht überein.",
       "passwordTooShort": "Passwort muss mindestens 6 Zeichen lang sein.",
       "haveAccount": "Bereits ein Konto?",
-      "signInInstead": "Anmelden"
+      "signInInstead": "Stattdessen anmelden"
     },
     "login": {
       "title": "Anmelden",
+      "welcomeBack": "Willkommen zurück",
+      "subtitle": "Melde dich in deinem Konto an",
       "email": "E-Mail-Adresse",
       "password": "Passwort",
       "signIn": "Anmelden",
@@ -419,9 +425,14 @@
     },
     "household": {
       "createTitle": "Haushalt einrichten",
+      "setupSubtitle": "Erstelle oder tritt einem Haushalt bei, um Essenspläne mit deiner Familie zu teilen.",
       "createDescription": "Erstelle einen Haushalt, damit Rezepte und Essensplan geräte- und familienübergreifend synchronisiert werden.",
+      "createCardTitle": "Haushalt erstellen",
+      "createCardSubtitle": "Starte neu und lade andere ein",
+      "joinCardTitle": "Mit Einladungscode beitreten",
+      "joinCardSubtitle": "Gib den Code ein, den dein Haushaltsmitglied geteilt hat",
       "yourName": "Dein Name",
-      "householdName": "Haushaltsname (optional)",
+      "householdName": "Haushaltsname",
       "defaultName": "Mein Haushalt",
       "create": "Haushalt erstellen",
       "creating": "Wird erstellt…",
@@ -569,13 +580,17 @@
     "getStarted": "Los geht's",
     "pagination": "Onboarding-Fortschritt",
     "slide": "Folie {{current}} von {{total}}",
+    "welcome": {
+      "title": "Willkommen bei Fork & Spoon",
+      "description": "Dein All-in-One Mahlzeitenplaner für den Haushalt. Plane Mahlzeiten, verwalte Rezepte und koche gemeinsam."
+    },
     "screen1": {
       "title": "Plane deine Woche",
-      "description": "Ziehe Mahlzeiten per Drag & Drop in deinen Wochenplan. Sieh auf einen Blick, was es zum Mittag- und Abendessen gibt."
+      "description": "Organisiere Mahlzeiten für die ganze Woche mit einfachem Drag & Drop."
     },
     "screen2": {
-      "title": "Importiere jedes Rezept",
-      "description": "Füge eine URL ein, scanne ein Foto oder tippe es ein. Alle deine Rezepte an einem Ort."
+      "title": "Baue deine Bibliothek",
+      "description": "Importiere Rezepte von Webseiten, Instagram oder Fotos. Deine gesamte Sammlung immer griffbereit."
     },
     "screen3": {
       "title": "Gemeinsam kochen",

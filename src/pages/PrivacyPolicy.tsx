@@ -1,11 +1,10 @@
 /**
- * PrivacyPolicy Page (Sprint 7 — i18n)
+ * PrivacyPolicy Page (Sprint 7 — i18n, updated to D3 design)
  */
 
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { WarmHeader } from '@/components/common/WarmHeader';
 
 const sectionKeys = [
   'dataStorage', 'cloudSync', 'publicSharing', 'noAccounts', 'recipeImport', 'cookies', 'thirdParty', 'dataControl', 'contact'
@@ -16,29 +15,49 @@ export function PrivacyPolicy() {
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4">
-        <ArrowLeft className="w-4 h-4 mr-1" />
-        {t('privacyPolicy.backButton')}
-      </Button>
+    <div>
+      <WarmHeader
+        title={t('privacyPolicy.title')}
+        backButton
+        onBack={() => navigate(-1)}
+      />
 
-      <div className="flex items-center gap-3 mb-6">
-        <Shield className="w-7 h-7 text-primary" />
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('privacyPolicy.title')}</h1>
-          <p className="text-xs text-gray-500">{t('privacyPolicy.lastUpdated')}</p>
-        </div>
-      </div>
-
-      <div className="space-y-6 pb-8">
-        <p className="text-sm text-gray-600 leading-relaxed">{t('privacyPolicy.intro')}</p>
+      <div className="max-w-2xl mx-auto px-6 pb-8" style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingTop: '8px' }}>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '12px', color: 'var(--fs-text-secondary, #7A6E66)' }}>
+          {t('privacyPolicy.lastUpdated')}
+        </p>
 
         {sectionKeys.map((key) => (
-          <div key={key} className="border rounded-lg p-4 bg-white">
-            <h2 className="font-semibold text-gray-900 mb-2">
+          <div
+            key={key}
+            style={{
+              borderRadius: '14px',
+              backgroundColor: 'var(--fs-card-bg, #FFFFFF)',
+              border: '1px solid var(--fs-border-decorative, #E8DDD8)',
+              padding: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: '15px',
+                fontWeight: 600,
+                color: 'var(--fs-text-primary, #2D2522)',
+              }}
+            >
               {t(`privacyPolicy.sections.${key}.title`)}
             </h2>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: '14px',
+                lineHeight: 1.5,
+                color: 'var(--fs-text-secondary, #7A6E66)',
+              }}
+            >
               {t(`privacyPolicy.sections.${key}.content`)}
             </p>
           </div>

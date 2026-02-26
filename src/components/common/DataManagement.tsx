@@ -80,53 +80,64 @@ export function DataManagement({ onImportComplete }: DataManagementProps) {
   const cancelImport = () => { setPreview(null); setPendingFile(null); setError(null); };
 
   return (
-    <div className="bg-white rounded-lg border p-4 mb-2">
-      {/* Compact header: icon + text left, buttons right */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3 min-w-0">
-          <Database className="w-5 h-5 text-gray-500 flex-shrink-0" />
-          <div className="min-w-0">
-            <p className="font-medium text-gray-900 text-sm">{t('dataManagement.title')}</p>
-            <p className="text-xs text-gray-500 truncate">{t('settings.dataManagementDescription', 'Export or restore your data')}</p>
-          </div>
+    <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: '#FFFFFF', boxShadow: '0 2px 12px #2D252208' }}>
+      {/* Header: icon + text */}
+      <div className="flex items-center gap-3 mb-3">
+        <Database className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
+        <div className="min-w-0">
+          <p className="font-semibold text-sm" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>{t('dataManagement.title')}</p>
+          <p className="text-xs" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{t('settings.dataManagementDescription', 'Export or restore your data')}</p>
         </div>
-        <div className="flex gap-2 flex-shrink-0">
-          <Button
-            onClick={handleExport}
-            disabled={exporting}
-            size="sm"
-            variant="outline"
-            className="text-xs"
-          >
-            <Download className="w-3.5 h-3.5 mr-1" />
-            {exporting ? '...' : t('settings.export', 'Export')}
-          </Button>
-          <input ref={fileInputRef} type="file" accept=".json" onChange={handleFileSelect}
-            className="hidden" id="import-file" aria-label={t('dataManagement.selectFile')} />
-          <Button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={importing}
-            size="sm"
-            variant="outline"
-            className="text-xs"
-          >
-            <Upload className="w-3.5 h-3.5 mr-1" />
-            {t('settings.import', 'Import')}
-          </Button>
-        </div>
+      </div>
+      {/* Action buttons row */}
+      <div className="flex gap-2">
+        <button
+          onClick={handleExport}
+          disabled={exporting}
+          className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium transition-colors disabled:opacity-50"
+          style={{
+            height: '36px',
+            borderRadius: '8px',
+            backgroundColor: '#FFFFFF',
+            color: 'var(--fs-text-secondary, #7A6E66)',
+            border: '1px solid #C5B5AB',
+            cursor: 'pointer',
+          }}
+        >
+          <Download className="w-3.5 h-3.5" />
+          {exporting ? '...' : t('settings.export', 'Export')}
+        </button>
+        <input ref={fileInputRef} type="file" accept=".json" onChange={handleFileSelect}
+          className="hidden" id="import-file" aria-label={t('dataManagement.selectFile')} />
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={importing}
+          className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium transition-colors disabled:opacity-50"
+          style={{
+            height: '36px',
+            borderRadius: '8px',
+            backgroundColor: '#FFFFFF',
+            color: 'var(--fs-text-secondary, #7A6E66)',
+            border: '1px solid #C5B5AB',
+            cursor: 'pointer',
+          }}
+        >
+          <Upload className="w-3.5 h-3.5" />
+          {t('settings.import', 'Import')}
+        </button>
       </div>
 
       {/* Import preview (expands inline) */}
       {preview && (
-        <div className="mt-4 border rounded-md p-3 bg-gray-50">
+        <div className="mt-4 border rounded-md p-3" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
           <div className="flex items-center gap-2 mb-2">
-            <FileJson className="w-4 h-4 text-gray-600" />
+            <FileJson className="w-4 h-4" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }} />
             <span className="text-sm font-medium">{t('dataManagement.backupPreview', 'Backup Preview')}</span>
           </div>
 
           {preview.valid ? (
             <>
-              <div className="text-sm text-gray-600 space-y-1">
+              <div className="text-sm space-y-1" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
                 <p>📦 {preview.recipeCount} {t('dataManagement.recipesLabel', 'recipes')}</p>
                 <p>📅 {preview.scheduleEntryCount} {t('dataManagement.schedulesLabel', 'schedule entries')}</p>
                 {preview.exportedAt && (

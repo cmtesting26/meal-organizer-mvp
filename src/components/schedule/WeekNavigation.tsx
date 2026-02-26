@@ -3,7 +3,6 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatWeekRange } from '@/lib/dateHelpers';
 
@@ -18,18 +17,38 @@ export function WeekNavigation({ currentWeekStart, onPrevWeek, onNextWeek, onCur
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-center justify-between mb-4">
-      <Button variant="ghost" size="sm" onClick={onPrevWeek} aria-label={t('schedule.previousWeek', 'Previous week')}>
-        <ChevronLeft className="h-4 w-4" />
-      </Button>
-      <button onClick={onCurrentWeek}
-        className="text-sm font-medium text-gray-700 hover:text-primary transition-colors"
-        title={t('schedule.thisWeek')}>
+    <div
+      className="flex items-center justify-between mb-4 rounded-xl px-1"
+      style={{
+        backgroundColor: 'var(--fs-bg-surface)',
+        height: 44,
+        boxShadow: '0 2px 8px rgba(45,37,34,0.03)',
+      }}
+    >
+      <button
+        onClick={onPrevWeek}
+        aria-label={t('schedule.previousWeek', 'Previous week')}
+        className="flex items-center justify-center rounded-lg hover:bg-[var(--fs-hover-bg)] transition-colors"
+        style={{ width: 36, height: 36 }}
+      >
+        <ChevronLeft className="h-[18px] w-[18px]" style={{ color: 'var(--fs-text-secondary)' }} />
+      </button>
+      <button
+        onClick={onCurrentWeek}
+        className="text-sm font-semibold hover:text-primary transition-colors"
+        style={{ color: 'var(--fs-text-primary)' }}
+        title={t('schedule.thisWeek')}
+      >
         {t('schedule.weekOf', { range: formatWeekRange(currentWeekStart) })}
       </button>
-      <Button variant="ghost" size="sm" onClick={onNextWeek} aria-label={t('schedule.nextWeek', 'Next week')}>
-        <ChevronRight className="h-4 w-4" />
-      </Button>
+      <button
+        onClick={onNextWeek}
+        aria-label={t('schedule.nextWeek', 'Next week')}
+        className="flex items-center justify-center rounded-lg hover:bg-[var(--fs-hover-bg)] transition-colors"
+        style={{ width: 36, height: 36 }}
+      >
+        <ChevronRight className="h-[18px] w-[18px]" style={{ color: 'var(--fs-text-secondary)' }} />
+      </button>
     </div>
   );
 }

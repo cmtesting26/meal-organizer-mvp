@@ -1,11 +1,11 @@
 /**
- * TagFilterChips Component (Sprint 23 update)
+ * TagFilterChips Component (D3 update)
  *
  * Horizontal scrollable row of tag filter chips.
- * Sprint 23: Updated from blue to warm stone/amber palette (Design Spec V1.6).
+ * D3: Cream & Nordic / Terracotta palette.
  *
- * Default: bg #F5F5F4, text #57534E, border #E7E5E4 (warm stone)
- * Active:  bg #FEF3C7, text #92400E, border #D97706 (amber)
+ * Default: bg white, text #7A6E66, border #C5B5AB
+ * Active:  bg #FEF0E8, text #B84835, border #E8C4B8 (terracotta)
  */
 
 import { useTranslation } from 'react-i18next';
@@ -26,18 +26,19 @@ export function TagFilterChips({ availableTags, selectedTag, onSelectTag }: TagF
       {/* "All" chip */}
       <button
         onClick={() => onSelectTag(null)}
-        className="shrink-0 rounded-full text-xs font-medium transition-colors"
+        className="shrink-0 rounded-full text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1"
         style={{
-          padding: '4px 12px',
+          padding: '8px 16px',
+          fontWeight: selectedTag === null ? 600 : 500,
           backgroundColor: selectedTag === null
-            ? 'var(--fs-accent-light, #FEF3C7)'
-            : 'var(--fs-bg-elevated, #F5F5F4)',
+            ? 'var(--fs-filter-active-bg, #FEF0E8)'
+            : 'var(--fs-bg-surface, #FFFFFF)',
           color: selectedTag === null
-            ? 'var(--fs-accent-text, #92400E)'
-            : 'var(--fs-text-secondary, #57534E)',
+            ? 'var(--fs-accent-text, #B84835)'
+            : 'var(--fs-text-secondary, #44403C)',
           border: `1px solid ${selectedTag === null
-            ? 'var(--fs-border-accent, #D97706)'
-            : 'var(--fs-border-default, #E7E5E4)'}`,
+            ? 'var(--fs-filter-active-border, #E8C4B8)'
+            : 'var(--fs-border-default, #C5B5AB)'}`,
         }}
       >
         {t('tags.allRecipes')}
@@ -48,18 +49,19 @@ export function TagFilterChips({ availableTags, selectedTag, onSelectTag }: TagF
         <button
           key={tag}
           onClick={() => onSelectTag(selectedTag === tag ? null : tag)}
-          className="shrink-0 rounded-full text-xs font-medium transition-colors"
+          className="shrink-0 rounded-full text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1"
           style={{
-            padding: '4px 12px',
+            padding: '8px 16px',
+            fontWeight: selectedTag === tag ? 600 : 500,
             backgroundColor: selectedTag === tag
-              ? 'var(--fs-accent-light, #FEF3C7)'
-              : 'var(--fs-bg-elevated, #F5F5F4)',
+              ? 'var(--fs-filter-active-bg, #FEF0E8)'
+              : 'var(--fs-bg-surface, #FFFFFF)',
             color: selectedTag === tag
-              ? 'var(--fs-accent-text, #92400E)'
-              : 'var(--fs-text-secondary, #57534E)',
+              ? 'var(--fs-accent-text, #B84835)'
+              : 'var(--fs-text-secondary, #44403C)',
             border: `1px solid ${selectedTag === tag
-              ? 'var(--fs-border-accent, #D97706)'
-              : 'var(--fs-border-default, #E7E5E4)'}`,
+              ? 'var(--fs-filter-active-border, #E8C4B8)'
+              : 'var(--fs-border-default, #C5B5AB)'}`,
           }}
         >
           {tag}

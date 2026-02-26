@@ -62,7 +62,7 @@ export const InviteHighlights: FC<InviteHighlightsProps> = ({
 
   const features = [
     {
-      icon: <CalendarDays className="w-8 h-8 text-amber-600" />,
+      icon: <CalendarDays className="w-8 h-8" style={{ color: 'var(--fs-accent, #D4644E)' }} />,
       titleKey: 'onboarding.invite.feature1Title',
       descKey: 'onboarding.invite.feature1Desc',
     },
@@ -72,7 +72,7 @@ export const InviteHighlights: FC<InviteHighlightsProps> = ({
       descKey: 'onboarding.invite.feature2Desc',
     },
     {
-      icon: <Users className="w-8 h-8" style={{ color: '#D97706' }} />,
+      icon: <Users className="w-8 h-8" style={{ color: 'var(--fs-accent, #D4644E)' }} />,
       titleKey: 'onboarding.invite.feature3Title',
       descKey: 'onboarding.invite.feature3Desc',
     },
@@ -88,13 +88,13 @@ export const InviteHighlights: FC<InviteHighlightsProps> = ({
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         {/* Welcome message */}
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
             {householdName
               ? t('onboarding.invite.welcomeHousehold', { name: householdName })
               : t('onboarding.invite.welcome')
             }
           </h2>
-          <p className="text-base text-gray-600">
+          <p className="text-base" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
             {t('onboarding.invite.subtitle')}
           </p>
         </div>
@@ -103,14 +103,14 @@ export const InviteHighlights: FC<InviteHighlightsProps> = ({
         <div className="w-full max-w-sm space-y-6 mb-10">
           {features.map((feature, i) => (
             <div key={i} className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
                 {feature.icon}
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 text-sm">
+                <h3 className="font-semibold text-sm" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
                   {t(feature.titleKey)}
                 </h3>
-                <p className="text-sm text-gray-500 mt-0.5">
+                <p className="text-sm mt-0.5" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
                   {t(feature.descKey)}
                 </p>
               </div>
@@ -122,11 +122,11 @@ export const InviteHighlights: FC<InviteHighlightsProps> = ({
         <button
           onClick={handleContinue}
           className="w-full max-w-sm py-3.5 px-6 rounded-xl font-semibold text-base
-                     bg-amber-600 text-white
-                     hover:bg-amber-700 active:bg-amber-800
+                     text-white
                      transition-colors flex items-center justify-center gap-2
-                     focus:outline-none focus:ring-2 focus:ring-amber-600 focus:ring-offset-2
+                     focus:outline-none focus:ring-2 focus:ring-offset-2
                      min-h-[44px]"
+          style={{ backgroundColor: 'var(--fs-accent, #D4644E)' }}
         >
           {t('onboarding.invite.continue')}
           <ArrowRight className="w-5 h-5" />

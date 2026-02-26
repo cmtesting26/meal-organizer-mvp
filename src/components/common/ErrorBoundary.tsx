@@ -48,10 +48,10 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-4">
             <AlertTriangle className="w-8 h-8 text-red-600" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="text-xl font-semibold mb-2" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
             Something went wrong
           </h2>
-          <p className="text-gray-600 mb-6 max-w-md">
+          <p className="mb-6 max-w-md" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
             An unexpected error occurred. Your data is safe — try refreshing the page.
           </p>
           <div className="flex gap-3">

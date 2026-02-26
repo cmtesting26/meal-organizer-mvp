@@ -13,7 +13,7 @@ import { useState, useEffect } from 'react';
 interface SplashScreenProps {
   /** Animation duration in ms (default: 400, per spec: 300-500ms) */
   duration?: number;
-  /** Background color (default: #FAFAF9 — Warm Stone 50) */
+  /** Background color (default: #FAF8F6 — Cream) */
   backgroundColor?: string;
   /** Callback when splash finishes */
   onComplete?: () => void;
@@ -23,7 +23,7 @@ interface SplashScreenProps {
 
 const SplashScreen = ({
   duration = 400,
-  backgroundColor = '#FAFAF9',
+  backgroundColor = '#FAF8F6',
   onComplete = () => {},
   iconSrc = '/icon-512.png',
 }: SplashScreenProps) => {
@@ -55,13 +55,14 @@ const SplashScreen = ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        gap: 16,
         backgroundColor,
         opacity: phase === 'complete' ? 0 : 1,
         transition: 'opacity 0.4s ease-out',
         zIndex: 9999,
       }}
     >
-      {/* S26-14: Icon with circular clip — no white frame */}
+      {/* App icon with rounded corners */}
       <div
         style={{
           animation: `splashFadeScale ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) forwards`,
@@ -69,36 +70,71 @@ const SplashScreen = ({
       >
         <img
           src={iconSrc}
-          alt="Fork and Spoon"
+          alt="Fork & Spoon"
           style={{
-            width: 120,
-            height: 120,
-            borderRadius: '50%',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08)',
+            width: 80,
+            height: 80,
+            borderRadius: 18,
             objectFit: 'cover',
           }}
         />
       </div>
 
-      {/* App name with staggered fade+slide */}
+      {/* App name */}
       <div
         style={{
           animation: `splashFadeUp ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards`,
           opacity: 0,
-          marginTop: 20,
         }}
       >
         <span
           style={{
             fontFamily: "'Fraunces', 'Lora', Georgia, serif",
-            fontSize: 28,
+            fontSize: 32,
             fontWeight: 600,
-            color: '#1C1917',
+            color: '#2D2522',
             letterSpacing: '-0.5px',
           }}
         >
-          Fork and Spoon
+          Fork &amp; Spoon
         </span>
+      </div>
+
+      {/* Tagline */}
+      <div
+        style={{
+          animation: `splashFadeUp ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) 300ms forwards`,
+          opacity: 0,
+          marginTop: -4,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 15,
+            fontWeight: 400,
+            color: '#7A6E66',
+          }}
+        >
+          Your household recipe planner
+        </span>
+      </div>
+
+      {/* Accent bar */}
+      <div
+        style={{
+          animation: `splashFadeUp ${duration}ms cubic-bezier(0.16, 1, 0.3, 1) 400ms forwards`,
+          opacity: 0,
+        }}
+      >
+        <div
+          style={{
+            width: 40,
+            height: 4,
+            borderRadius: 9999,
+            backgroundColor: '#D4644E',
+          }}
+        />
       </div>
 
       <style>{`

@@ -117,10 +117,10 @@ export function WeeklySchedule({ onRecipeClick, schedule: externalSchedule }: We
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="pt-4">
+      <div style={{ paddingTop: 12 }}>
         {/* WeekNavigation now rendered in WarmHeader (App.tsx) — S23-06 */}
 
-        <div className="space-y-3">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {weekDays.map((day) => {
             const dateStr = toISODateString(day);
             return (
@@ -150,16 +150,16 @@ export function WeeklySchedule({ onRecipeClick, schedule: externalSchedule }: We
       <DragOverlay>
         {activeRecipe ? (
           <div className="flex items-center gap-2 bg-white shadow-lg rounded-lg px-3 py-2 border border-primary/30">
-            <div className="w-8 h-8 rounded overflow-hidden bg-gray-100 shrink-0">
+            <div className="w-8 h-8 rounded overflow-hidden shrink-0" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
               {activeRecipe.imageUrl ? (
                 <img src={activeRecipe.imageUrl} alt="" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <UtensilsCrossed className="w-4 h-4 text-gray-400" />
+                  <UtensilsCrossed className="w-4 h-4" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
                 </div>
               )}
             </div>
-            <span className="text-sm font-medium text-gray-900 truncate max-w-[150px]">
+            <span className="text-sm font-medium truncate max-w-[150px]" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
               {activeRecipe.title}
             </span>
           </div>

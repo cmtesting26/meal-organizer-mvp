@@ -10,7 +10,8 @@
 
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { X } from 'lucide-react';
 import { PhotoCapture, type PhotoCaptureResult } from '@/components/ocr/PhotoCapture';
 
 interface PhotoImportSheetProps {
@@ -39,15 +40,52 @@ export const PhotoImportSheet: FC<PhotoImportSheetProps> = ({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="rounded-t-[16px] pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))]"
+        className="!p-0 !gap-0 rounded-t-[20px] [&>button.absolute]:hidden"
+        style={{ backgroundColor: '#FFFFFF' }}
       >
-        <SheetHeader className="pb-1">
-          <SheetTitle>{t('ocr.title', 'Import from Photo')}</SheetTitle>
-          <SheetDescription className="text-xs">{t('ocr.chooseSource', 'Take a photo of a cookbook page or upload an existing image.')}</SheetDescription>
-        </SheetHeader>
+        {/* DragHandle — padding: [12, 0, 4, 0] */}
+        <div className="flex justify-center" style={{ padding: '12px 0 4px 0' }}>
+          <div style={{ width: 32, height: 4, borderRadius: 9999, backgroundColor: '#E8DDD8' }} />
+        </div>
 
-        {/* PhotoCapture content */}
-        <div className="mt-2">
+        {/* SheetHeader — padding: [8, 24, 12, 24] */}
+        <div className="flex items-center justify-between" style={{ padding: '8px 24px 12px 24px' }}>
+          <h2
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 18,
+              fontWeight: 600,
+              lineHeight: 1,
+              color: 'var(--fs-text-primary, #2D2522)',
+            }}
+          >
+            {t('ocr.title', 'Import from Photo')}
+          </h2>
+          <button
+            onClick={() => onOpenChange(false)}
+            className="flex items-center justify-center rounded-full hover:bg-[var(--fs-hover-bg)] transition-colors"
+            style={{ width: 44, height: 44 }}
+            aria-label={t('common.close', 'Close')}
+          >
+            <X style={{ width: 20, height: 20, color: 'var(--fs-text-secondary, #7A6E66)' }} />
+          </button>
+        </div>
+
+        {/* SheetBody — padding: [4, 24, 32, 24], gap: 16 */}
+        <div style={{ padding: '4px 24px 32px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Description */}
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14,
+              fontWeight: 400,
+              color: 'var(--fs-text-secondary, #7A6E66)',
+            }}
+          >
+            {t('ocr.chooseSource', 'Take a photo or upload an existing image.')}
+          </p>
+
+          {/* PhotoCapture content */}
           <PhotoCapture
             onComplete={handleComplete}
             onClose={handleClose}

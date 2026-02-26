@@ -48,10 +48,10 @@ function SignOutConfirmDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-xl p-6 max-w-sm mx-4 shadow-xl">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
           {t('account.signOutConfirmTitle')}
         </h3>
-        <p className="text-sm text-gray-600 mb-6">
+        <p className="text-sm mb-6" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
           {t('account.signOutConfirmMessage')}
         </p>
         <div className="flex gap-3">
@@ -92,12 +92,12 @@ function SyncStatusDisplay() {
     syncing: {
       icon: <RefreshCw className="w-4 h-4 animate-spin" />,
       label: t('sync.syncing'),
-      color: 'text-amber-600',
+      color: 'text-[var(--fs-accent)]',
     },
     offline: {
       icon: <CloudOff className="w-4 h-4" />,
       label: t('sync.offline'),
-      color: 'text-gray-500',
+      color: 'text-[var(--fs-text-muted)]',
     },
     error: {
       icon: <CloudOff className="w-4 h-4" />,
@@ -113,7 +113,7 @@ function SyncStatusDisplay() {
     : null;
 
   return (
-    <div className="border-t pt-3 mt-3">
+    <div className="pt-3 mt-3" style={{ borderTop: '1px solid #E8DDD8' }}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className={config.color}>{config.icon}</span>
@@ -123,14 +123,14 @@ function SyncStatusDisplay() {
           <button
             onClick={() => forceSync()}
             className="text-xs underline"
-            style={{ color: 'var(--fs-accent, #D97706)' }}
+            style={{ color: 'var(--fs-accent-text, #B84835)' }}
           >
             {t('account.syncNow')}
           </button>
         )}
       </div>
 
-      <div className="mt-1 flex items-center gap-4 text-xs text-gray-500">
+      <div className="mt-1 flex items-center gap-4 text-xs" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
         {syncState.queueLength > 0 && (
           <span>{t('account.pendingChanges', { count: syncState.queueLength })}</span>
         )}
@@ -242,13 +242,13 @@ function HouseholdSection() {
   };
 
   return (
-    <div className="border-t pt-3 mt-3">
+    <div className="pt-3 mt-3" style={{ borderTop: '1px solid #E8DDD8' }}>
       <div className="flex items-center gap-2 mb-3">
-        <Users className="w-4 h-4 text-gray-500" />
-        <span className="text-sm font-medium text-gray-700">
+        <Users className="w-4 h-4" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
+        <span className="text-sm font-medium" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
           {household.name}
           {memberNames.length > 0 && (
-            <span className="font-normal text-gray-500">
+            <span className="font-normal" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
               {' '}({t('account.togetherWith', { members: memberNames.join(', ') })})
             </span>
           )}
@@ -257,21 +257,21 @@ function HouseholdSection() {
 
       {/* S24-04: Simplified one-tap invite */}
       <div
-        className="rounded-lg p-3"
+        className="rounded-xl p-3"
         style={{
-          backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)',
-          border: '1px solid var(--fs-border-default, #E7E5E4)',
+          backgroundColor: '#FAF6F3',
         }}
       >
-        <p className="text-xs mb-2" style={{ color: 'var(--fs-text-muted, #78716C)' }}>
+        <p className="text-xs mb-2" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
           {t('account.invitePartnerLabel', 'Invite your partner to share recipes')}
         </p>
         <button
           onClick={handleShareInvite}
           disabled={generatingLink}
-          className="w-full flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50"
           style={{
-            backgroundColor: 'var(--fs-accent, #D97706)',
+            height: '40px',
+            backgroundColor: 'var(--fs-accent, #D4644E)',
             color: 'white',
           }}
         >
@@ -292,7 +292,7 @@ function HouseholdSection() {
 
         {/* Invite link status */}
         {inviteUrl && (
-          <p className="text-xs mt-2 text-center" style={{ color: 'var(--fs-text-muted, #78716C)' }}>
+          <p className="text-xs mt-2 text-center" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
             {t('account.inviteLinkActive', 'Invite link active')} ✓
           </p>
         )}
@@ -329,10 +329,10 @@ export function AccountSection() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg border p-4 mb-2">
+      <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: '#FFFFFF', boxShadow: '0 2px 12px #2D252208' }}>
         <div className="flex items-center gap-3">
-          <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
-          <span className="text-sm text-gray-500">{t('common.loading')}</span>
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
+          <span className="text-sm" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{t('common.loading')}</span>
         </div>
       </div>
     );
@@ -342,12 +342,12 @@ export function AccountSection() {
 
   if (!isAuthenticated) {
     return (
-      <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200 p-4 mb-2">
+      <div className="rounded-2xl p-4 mb-3" style={{ backgroundImage: 'linear-gradient(to bottom right, var(--fs-accent-light, #FEF0E8), #FFF7ED)', boxShadow: '0 2px 12px #2D252208' }}>
         <div className="flex items-center gap-3 mb-2">
           <Cloud className="w-5 h-5 text-green-600" />
-          <p className="font-medium text-gray-900 text-sm">{t('account.guestTitle')}</p>
+          <p className="font-medium text-sm" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>{t('account.guestTitle')}</p>
         </div>
-        <p className="text-xs text-gray-600 mb-3 ml-8">
+        <p className="text-xs mb-3 ml-8" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
           {t('account.guestDescription')}
         </p>
         <Button
@@ -366,18 +366,18 @@ export function AccountSection() {
   // ─── Authenticated State (S12-05) ───────────────────────────────────
 
   return (
-    <div className="bg-white rounded-lg border p-4 mb-2">
+    <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: '#FFFFFF', boxShadow: '0 2px 12px #2D252208' }}>
       {/* User Info */}
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
-          <User className="w-5 h-5 text-green-600" />
+        <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: '#FAF6F3' }}>
+          <User className="w-[18px] h-[18px]" style={{ color: '#7A6E66' }} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-gray-900 text-sm truncate">
+          <p className="font-medium text-sm truncate" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
             {profile?.displayName || profile?.email || t('account.anonymous')}
           </p>
           {profile?.email && profile?.displayName && (
-            <p className="text-xs text-gray-500 truncate">{profile.email}</p>
+            <p className="text-xs truncate" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{profile.email}</p>
           )}
         </div>
       </div>
@@ -389,26 +389,26 @@ export function AccountSection() {
       <SyncStatusDisplay />
 
       {/* Sign Out (S12-07) */}
-      <div className="border-t pt-3 mt-3">
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full"
+      <div className="pt-3 mt-3" style={{ borderTop: '1px solid #E8DDD8' }}>
+        <button
+          className="w-full flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
           style={{
-            color: '#DC2626',
-            borderColor: '#FCA5A5',
+            height: '40px',
+            color: '#D4644E',
+            border: '1px solid #D4644E',
             backgroundColor: 'transparent',
+            cursor: 'pointer',
           }}
           onClick={() => setShowSignOutConfirm(true)}
           disabled={signingOut}
         >
           {signingOut ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <LogOut className="w-4 h-4 mr-2" />
+            <LogOut className="w-4 h-4" />
           )}
           {t('settings.signOut')}
-        </Button>
+        </button>
       </div>
 
       {/* Sign Out Confirmation Dialog */}

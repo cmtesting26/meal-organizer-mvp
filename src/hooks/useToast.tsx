@@ -86,14 +86,21 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
   const colors = {
     success: 'bg-green-50 border-green-200 text-green-800',
     error: 'bg-red-50 border-red-200 text-red-800',
-    info: 'bg-amber-50 border-amber-200 text-amber-800'
+    info: ''
   };
+
+  const infoStyle = toast.type === 'info' ? {
+    backgroundColor: 'var(--fs-accent-light, #FEF0E8)',
+    borderColor: 'var(--fs-accent-muted, #E8C4B8)',
+    color: 'var(--fs-accent-text, #B84835)',
+  } : undefined;
 
   const Icon = icons[toast.type];
 
   return (
-    <div 
+    <div
       className={`flex items-center gap-3 p-4 rounded-lg border shadow-lg animate-in slide-in-from-right ${colors[toast.type]}`}
+      style={infoStyle}
       role="alert"
     >
       <Icon className="w-5 h-5 flex-shrink-0" />

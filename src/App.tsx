@@ -28,7 +28,7 @@ import { useNewRecipes } from './hooks/useNewRecipes';
 import { SyncStatusBadge } from './components/common/SyncStatusBadge';
 import { AuthFlow } from './components/auth/AuthFlow';
 import { isSupabaseConfigured } from './lib/supabase';
-import { Settings as SettingsIcon, CalendarDays, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Settings as SettingsIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { WarmHeader } from './components/common/WarmHeader';
 import { useSchedule } from './hooks/useSchedule';
 import { formatWeekRange } from './lib/dateHelpers';
@@ -119,7 +119,7 @@ function AppContent() {
   // Show loading spinner while auth is initializing
   if (authLoading && isSupabaseConfigured) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600" />
       </div>
     );
@@ -157,13 +157,14 @@ function AppContent() {
     // Show a helpful message with retry instead of spinning forever.
     if (!authLoading && !isAuthenticated) {
       return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
           <div className="text-center px-6">
-            <p className="text-gray-700 font-medium mb-2">{t('auth.callbackFailed', 'Verification could not be completed')}</p>
-            <p className="text-gray-500 text-sm mb-4">{t('auth.callbackRetry', 'Please try signing in again.')}</p>
+            <p className="font-medium mb-2" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>{t('auth.callbackFailed', 'Verification could not be completed')}</p>
+            <p className="text-sm mb-4" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{t('auth.callbackRetry', 'Please try signing in again.')}</p>
             <button
               onClick={() => navigate('/auth')}
-              className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-amber-600 hover:bg-amber-700"
+              className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white"
+              style={{ backgroundColor: 'var(--fs-accent, #D4644E)' }}
             >
               {t('auth.goToSignIn', 'Go to Sign In')}
             </button>
@@ -172,10 +173,10 @@ function AppContent() {
       );
     }
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600 mx-auto" />
-          <p className="mt-4 text-gray-600 text-sm">{t('auth.verifying', 'Verifying your account...')}</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: 'var(--fs-accent, #D4644E)' }} />
+          <p className="mt-4 text-sm" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>{t('auth.verifying', 'Verifying your account...')}</p>
         </div>
       </div>
     );
@@ -348,62 +349,65 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--fs-bg-base, #FAF9F6)', paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)', paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))' }}>
       {/* Warm Amber Header — Sprint 23 Design Spec V1.6 */}
       {isMainPage && (
         <WarmHeader
-          icon={isSchedulePage
-            ? <CalendarDays className="w-6 h-6" />
-            : <BookOpen className="w-6 h-6" />
-          }
           title={pageTitle}
           rightAction={
             <div className="flex items-center gap-2">
               <SyncStatusBadge />
               <button
                 onClick={() => navigate('/settings')}
-                className="flex items-center justify-center"
+                className="flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)]"
                 style={{
-                  width: '36px',
-                  height: '36px',
-                  backgroundColor: 'var(--fs-warm-header-btn-bg, #FFFFFF)',
-                  border: '1px solid var(--fs-warm-header-btn-border, #E7E5E4)',
-                  borderRadius: '8px',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+                  width: '44px',
+                  height: '44px',
+                  backgroundColor: 'transparent',
+                  border: 'none',
                 }}
                 aria-label={t('nav.settings')}
               >
-                <SettingsIcon className="w-5 h-5" style={{ color: 'var(--fs-text-muted, #78716C)' }} />
+                <SettingsIcon className="w-6 h-6" style={{ color: 'var(--fs-text-primary, #2D2522)' }} />
               </button>
             </div>
           }
         >
           {/* S23-06: Week navigation inside WarmHeader for Schedule */}
           {isSchedulePage && (
-            <div className="flex items-center justify-between">
+            <div
+              className="flex items-center justify-between"
+              style={{
+                height: '44px',
+                borderRadius: '12px',
+                backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
+                boxShadow: '0 2px 8px rgba(45, 37, 34, 0.03)',
+                padding: '0 4px',
+              }}
+            >
               <button
                 onClick={schedule.goToPrevWeek}
-                className="flex items-center justify-center w-8 h-8 rounded-md transition-colors"
-                style={{ color: 'var(--fs-text-muted, #78716C)' }}
+                className="flex items-center justify-center rounded-lg transition-colors hover:bg-[var(--fs-hover-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)]"
+                style={{ width: '36px', height: '36px', color: 'var(--fs-text-secondary, #7A6E66)' }}
                 aria-label={t('schedule.previousWeek', 'Previous week')}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-[18px] w-[18px]" />
               </button>
               <button
                 onClick={schedule.goToCurrentWeek}
-                className="text-sm font-medium transition-colors"
-                style={{ color: 'var(--fs-text-secondary, #44403C)' }}
+                className="font-semibold transition-colors text-sm"
+                style={{ color: 'var(--fs-text-primary, #2D2522)' }}
                 title={t('schedule.thisWeek')}
               >
                 {t('schedule.weekOf', { range: formatWeekRange(schedule.currentWeekStart) })}
               </button>
               <button
                 onClick={schedule.goToNextWeek}
-                className="flex items-center justify-center w-8 h-8 rounded-md transition-colors"
-                style={{ color: 'var(--fs-text-muted, #78716C)' }}
+                className="flex items-center justify-center rounded-lg transition-colors hover:bg-[var(--fs-hover-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)]"
+                style={{ width: '36px', height: '36px', color: 'var(--fs-text-secondary, #7A6E66)' }}
                 aria-label={t('schedule.nextWeek', 'Next week')}
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-[18px] w-[18px]" />
               </button>
             </div>
           )}
@@ -415,7 +419,7 @@ function AppContent() {
         <Route
           path="/recipe/shared/:recipeId"
           element={
-            <Suspense fallback={<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6"><SkeletonLoader count={5} type="text" /></div>}>
+            <Suspense fallback={<div className="max-w-7xl mx-auto px-6 lg:px-8 pt-6"><SkeletonLoader count={5} type="text" /></div>}>
               <SharedRecipeView />
             </Suspense>
           }
@@ -423,7 +427,7 @@ function AppContent() {
         <Route
           path="/recipe/:id"
           element={
-            <Suspense fallback={<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6"><SkeletonLoader count={1} type="text" /></div>}>
+            <Suspense fallback={<div className="max-w-7xl mx-auto px-6 lg:px-8 pt-6"><SkeletonLoader count={1} type="text" /></div>}>
               <RecipeDetail />
             </Suspense>
           }
@@ -431,8 +435,24 @@ function AppContent() {
         <Route
           path="/settings"
           element={
-            <Suspense fallback={<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6"><SkeletonLoader count={3} type="list" /></div>}>
+            <Suspense fallback={<div className="max-w-7xl mx-auto px-6 lg:px-8 pt-6"><SkeletonLoader count={3} type="list" /></div>}>
               <SettingsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/privacy"
+          element={
+            <Suspense fallback={<div className="max-w-7xl mx-auto px-6 lg:px-8 pt-6"><SkeletonLoader count={5} type="text" /></div>}>
+              <PrivacyPolicy />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/help"
+          element={
+            <Suspense fallback={<div className="max-w-7xl mx-auto px-6 lg:px-8 pt-6"><SkeletonLoader count={5} type="text" /></div>}>
+              <HelpFaq />
             </Suspense>
           }
         />
@@ -440,7 +460,7 @@ function AppContent() {
       </Routes>
 
       {/* Main Content — constrained width for Schedule, Library, etc. */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+      <main className="max-w-7xl mx-auto px-6 lg:px-8 pb-6">
         <ErrorBoundary>
           <Routes>
             <Route
@@ -460,23 +480,9 @@ function AppContent() {
                 />
               }
             />
-            <Route
-              path="/privacy"
-              element={
-                <Suspense fallback={<SkeletonLoader count={5} type="text" />}>
-                  <PrivacyPolicy />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/help"
-              element={
-                <Suspense fallback={<SkeletonLoader count={5} type="text" />}>
-                  <HelpFaq />
-                </Suspense>
-              }
-            />
-            {/* RecipeDetail and SharedRecipeView are rendered above */}
+            {/* These pages are rendered in the full-width routes section above */}
+            <Route path="/privacy" element={null} />
+            <Route path="/help" element={null} />
             <Route path="/recipe/shared/:recipeId" element={null} />
             <Route path="/recipe/:id" element={null} />
           </Routes>

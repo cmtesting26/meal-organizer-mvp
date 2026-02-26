@@ -65,7 +65,7 @@ export function BulkTagDialog({
           {/* Existing tags to quickly pick */}
           {existingTags.length > 0 && (
             <div>
-              <p className="text-sm text-gray-500 mb-2">{t('bulk.existingTags')}</p>
+              <p className="text-sm mb-2" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{t('bulk.existingTags')}</p>
               <div className="flex flex-wrap gap-2">
                 {existingTags.map((tag) => (
                   <Badge
@@ -83,7 +83,7 @@ export function BulkTagDialog({
 
           {/* New tag input */}
           <div>
-            <p className="text-sm text-gray-500 mb-2">{t('bulk.orNewTag')}</p>
+            <p className="text-sm mb-2" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{t('bulk.orNewTag')}</p>
             <div className="flex gap-2">
               <Input
                 value={newTag}

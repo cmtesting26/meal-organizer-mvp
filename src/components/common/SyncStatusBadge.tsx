@@ -23,13 +23,13 @@ const statusConfig = {
   },
   syncing: {
     icon: RefreshCw,
-    dotColor: 'bg-amber-500',
+    dotColor: 'bg-[var(--fs-accent)]',
     textKey: 'sync.syncing',
     animate: true,
   },
   offline: {
     icon: CloudOff,
-    dotColor: 'bg-gray-400',
+    dotColor: 'bg-[var(--fs-text-muted)]',
     textKey: 'sync.offline',
     animate: false,
   },
@@ -60,7 +60,8 @@ export function SyncStatusBadge({ showLabel = false }: SyncStatusBadgeProps) {
   return (
     <button
       onClick={() => forceSync()}
-      className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+      className="flex items-center gap-1.5 text-xs hover:text-[var(--fs-text-secondary)] transition-colors"
+      style={{ color: 'var(--fs-text-muted, #7A6E66)' }}
       title={
         syncState.error
           ? `${label}: ${syncState.error}`
@@ -92,7 +93,7 @@ export function SyncStatusBadge({ showLabel = false }: SyncStatusBadgeProps) {
 
       {/* Queue count badge */}
       {syncState.queueLength > 0 && (
-        <span className="bg-amber-100 text-amber-700 text-[10px] font-medium px-1 rounded-full">
+        <span className="text-[10px] font-medium px-1 rounded-full" style={{ backgroundColor: 'var(--fs-filter-active-bg, #FEF0E8)', color: 'var(--fs-accent-text, #B84835)' }}>
           {syncState.queueLength}
         </span>
       )}

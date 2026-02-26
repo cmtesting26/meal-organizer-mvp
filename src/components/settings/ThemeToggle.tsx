@@ -41,7 +41,7 @@ export function ThemeToggle() {
           <button
             key={opt.value}
             onClick={() => setTheme(opt.value)}
-            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1 ${
               isActive
                 ? 'border-[var(--fs-border-accent)] text-[var(--fs-accent-text)]'
                   + ' bg-[var(--fs-accent-light)]'

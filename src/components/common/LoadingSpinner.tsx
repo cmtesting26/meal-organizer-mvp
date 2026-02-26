@@ -38,11 +38,11 @@ export function LoadingSpinner({
     <div className={cn('flex flex-col items-center justify-center', className)}>
       <Loader2 
         className={cn('animate-spin', sizeClasses[size])} 
-        style={{ color: 'var(--fs-accent, #D97706)' }}
+        style={{ color: 'var(--fs-accent, #D4644E)' }}
         aria-label="Loading"
       />
       {message && (
-        <p className="mt-4 text-sm" style={{ color: 'var(--fs-text-muted, #78716C)' }}>{message}</p>
+        <p className="mt-4 text-sm" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{message}</p>
       )}
     </div>
   );

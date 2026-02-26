@@ -110,19 +110,19 @@ export function RecipeDetail() {
 
   if (!recipe) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-base, #FAF9F6)' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)' }}>
         <div className="text-center">
           <ChefHat className="w-16 h-16 mx-auto mb-4" style={{ color: 'var(--fs-text-placeholder, #A8A29E)' }} />
-          <h2 className="text-xl font-semibold mb-2" style={{ color: 'var(--fs-text-primary, #1C1917)' }}>
+          <h2 className="text-xl font-semibold mb-2" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
             {t('recipes.notFound')}
           </h2>
-          <p className="mb-4" style={{ color: 'var(--fs-text-muted, #78716C)' }}>
+          <p className="mb-4" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
             {t('recipes.notFoundDescription')}
           </p>
           <button
             onClick={() => navigate('/')}
             className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium"
-            style={{ backgroundColor: 'var(--fs-accent, #D97706)', color: 'white' }}
+            style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: 'white' }}
           >
             {t('recipeDetail.back')}
           </button>
@@ -207,7 +207,7 @@ export function RecipeDetail() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--fs-bg-base, #FAF9F6)' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)' }}>
       {/* S24-01: WarmHeader — back button + recipe name + dots menu */}
       <WarmHeader
         title={recipe.title}
@@ -217,8 +217,8 @@ export function RecipeDetail() {
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex items-center justify-center w-9 h-9 rounded-lg transition-colors"
-              style={{ color: 'var(--fs-text-muted, #78716C)' }}
+              className="flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1"
+              style={{ color: 'var(--fs-text-primary, #2D2522)' }}
               aria-label={t('recipeDetail.moreActions', 'More actions')}
               aria-expanded={menuOpen}
               aria-haspopup="true"
@@ -233,7 +233,7 @@ export function RecipeDetail() {
                 style={{
                   backgroundColor: 'var(--fs-card-bg, #FFFFFF)',
                   borderRadius: '12px',
-                  border: '1px solid var(--fs-border-default, #E7E5E4)',
+                  border: '1px solid var(--fs-border-default, #C5B5AB)',
                   boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
                   minWidth: '160px',
                 }}
@@ -247,12 +247,12 @@ export function RecipeDetail() {
                     fontFamily: "'DM Sans', sans-serif",
                     fontSize: '13px',
                     fontWeight: 500,
-                    color: 'var(--fs-text-primary, #1C1917)',
-                    borderBottom: '1px solid var(--fs-border-default, #E7E5E4)',
+                    color: 'var(--fs-text-primary, #2D2522)',
+                    borderBottom: '1px solid var(--fs-border-default, #C5B5AB)',
                   }}
                   role="menuitem"
                 >
-                  <Share2 className="w-4 h-4" style={{ color: 'var(--fs-text-muted, #78716C)' }} />
+                  <Share2 className="w-4 h-4" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
                   {t('recipeDetail.shareRecipe', 'Share')}
                 </button>
                 <button
@@ -263,12 +263,12 @@ export function RecipeDetail() {
                     fontFamily: "'DM Sans', sans-serif",
                     fontSize: '13px',
                     fontWeight: 500,
-                    color: 'var(--fs-text-primary, #1C1917)',
-                    borderBottom: '1px solid var(--fs-border-default, #E7E5E4)',
+                    color: 'var(--fs-text-primary, #2D2522)',
+                    borderBottom: '1px solid var(--fs-border-default, #C5B5AB)',
                   }}
                   role="menuitem"
                 >
-                  <Pencil className="w-4 h-4" style={{ color: 'var(--fs-text-muted, #78716C)' }} />
+                  <Pencil className="w-4 h-4" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
                   {t('recipeDetail.editRecipe', 'Edit')}
                 </button>
                 <button
@@ -293,10 +293,10 @@ export function RecipeDetail() {
       />
 
       {/* Content — with bottom padding for pinned button */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6" style={{ paddingBottom: '80px' }}>
+      <main className="max-w-4xl mx-auto px-6" style={{ paddingBottom: '80px' }}>
         {/* Hero Image / Placeholder */}
         {recipe.imageUrl ? (
-          <div className="w-full h-56 sm:h-72 rounded-xl overflow-hidden mt-4 mb-4" style={{ backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)' }}>
+          <div className="w-full h-56 sm:h-72 overflow-hidden mb-4" style={{ backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)', borderRadius: '14px' }}>
             <img src={recipe.imageUrl} alt={recipe.title} className="w-full h-full object-cover"
               onError={(e) => {
                 // Hide the entire container, not just the img — avoids empty gray box
@@ -305,8 +305,8 @@ export function RecipeDetail() {
               }} />
           </div>
         ) : (
-          <div className="w-full h-40 sm:h-48 rounded-xl overflow-hidden mt-4 mb-4 flex items-center justify-center relative"
-            style={{ backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)' }}>
+          <div className="w-full h-40 sm:h-48 overflow-hidden mb-4 flex items-center justify-center relative"
+            style={{ backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)', borderRadius: '14px' }}>
             <UtensilsCrossed className="w-16 h-16" style={{ color: 'var(--fs-text-placeholder, #A8A29E)' }} />
             {/* S25-05: Add Photo button for recipes without custom photos */}
             <AddPhotoButton
@@ -326,8 +326,8 @@ export function RecipeDetail() {
               <Badge key={tag} variant="outline" className="px-2 py-0.5 text-xs"
                 style={{
                   backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)',
-                  color: 'var(--fs-text-secondary, #57534E)',
-                  borderColor: 'var(--fs-border-default, #E7E5E4)',
+                  color: 'var(--fs-text-secondary, #7A6E66)',
+                  borderColor: 'var(--fs-border-default, #C5B5AB)',
                 }}>
                 {tag}
               </Badge>
@@ -336,12 +336,12 @@ export function RecipeDetail() {
         )}
 
         {/* Quick stats row — S26-01: removed ingredients/steps count, S26-02: conditional CookFrequency */}
-        <div className="flex flex-wrap items-center gap-3 mb-4">
+        <div className="flex flex-wrap items-center gap-3" style={{ paddingBottom: '14px' }}>
           <RecencyBadge lastCookedDate={getLastCookedDate(recipe.id)} />
           <CookFrequency recipeId={recipe.id} />
           {recipe.sourceUrl && (
             <a href={recipe.sourceUrl} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm" style={{ color: 'var(--fs-accent, #D97706)' }}>
+              className="inline-flex items-center gap-1 text-sm" style={{ color: 'var(--fs-accent-text, #B84835)' }}>
               <ExternalLink className="w-3 h-3" />
               {t('recipes.source')}
             </a>
@@ -369,11 +369,11 @@ export function RecipeDetail() {
                       style={{
                         backgroundColor: 'var(--fs-card-bg, #FFFFFF)',
                         borderRadius: '8px',
-                        border: '1px solid var(--fs-border-default, #E7E5E4)',
+                        border: '1px solid var(--fs-border-default, #C5B5AB)',
                         padding: '10px 12px',
                       }}>
                       <div className="shrink-0" style={{ width: '18px', height: '18px', borderRadius: '4px', border: '1.5px solid #D6D3D1' }} />
-                      <span className="text-sm" style={{ color: 'var(--fs-text-primary, #1C1917)' }}>{ingredient}</span>
+                      <span className="text-sm" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>{ingredient}</span>
                     </div>
                   ))}
                 </div>
@@ -389,12 +389,12 @@ export function RecipeDetail() {
                     <span className="shrink-0 flex items-center justify-center"
                       style={{
                         width: '24px', height: '24px', borderRadius: '9999px',
-                        backgroundColor: '#FEF3C7', color: '#92400E',
+                        backgroundColor: '#FEF0E8', color: '#B84835',
                         fontSize: '12px', fontWeight: 700,
                       }}>
                       {index + 1}
                     </span>
-                    <p className="text-sm leading-relaxed pt-0.5" style={{ color: 'var(--fs-text-primary, #1C1917)' }}>{step}</p>
+                    <p className="text-sm leading-relaxed pt-0.5" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>{step}</p>
                   </li>
                 ))}
               </ol>
@@ -407,17 +407,16 @@ export function RecipeDetail() {
       {recipe.instructions.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-30"
           style={{
-            backgroundColor: 'var(--fs-bg-base, #FAF9F6)',
-            borderTop: '1px solid var(--fs-border-default, #E7E5E4)',
-            paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+            backgroundColor: 'var(--fs-bg-base, #FAF8F6)',
+            paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))',
           }}>
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3">
+          <div className="max-w-4xl mx-auto px-6" style={{ paddingTop: '12px' }}>
             <button onClick={() => setShowCookingMode(true)}
-              className="w-full flex items-center justify-center gap-2 transition-colors"
+              className="w-full flex items-center justify-center gap-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--fs-accent)]"
               style={{
-                backgroundColor: '#D97706', color: 'white', borderRadius: '12px',
-                padding: '14px', fontSize: '15px', fontWeight: 700,
-                boxShadow: '0 4px 12px rgba(217,119,6,0.3)',
+                backgroundColor: '#D4644E', color: 'white', borderRadius: '14px',
+                height: '48px', fontSize: '14px', fontWeight: 700,
+                boxShadow: '0 4px 12px rgba(212,100,78,0.3)',
               }}>
               <Play className="w-5 h-5" />
               {t('cookingMode.startCooking')}

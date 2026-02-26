@@ -1,109 +1,112 @@
 /**
- * Help/FAQ Page (Sprint 7 — i18n)
+ * Help/FAQ Page (Sprint 7 — i18n, updated to D3 design)
  */
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, HelpCircle, ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { WarmHeader } from '@/components/common/WarmHeader';
 
 interface FaqItem {
   question: string;
   answer: string;
 }
 
-function useFaqSections(): { title: string; items: FaqItem[] }[] {
+function useFaqItems(): FaqItem[] {
   const { t } = useTranslation();
 
-  return [
-    {
-      title: t('helpFaq.sections.gettingStarted.title'),
-      items: [
-        { question: t('helpFaq.sections.gettingStarted.q1'), answer: t('helpFaq.sections.gettingStarted.a1') },
-        { question: t('helpFaq.sections.gettingStarted.q2'), answer: t('helpFaq.sections.gettingStarted.a2') },
-        { question: t('helpFaq.sections.gettingStarted.q3'), answer: t('helpFaq.sections.gettingStarted.a3') },
-      ],
-    },
-    {
-      title: t('helpFaq.sections.recipes.title'),
-      items: [
-        { question: t('helpFaq.sections.recipes.q1'), answer: t('helpFaq.sections.recipes.a1') },
-        { question: t('helpFaq.sections.recipes.q2'), answer: t('helpFaq.sections.recipes.a2') },
-        { question: t('helpFaq.sections.recipes.q3'), answer: t('helpFaq.sections.recipes.a3') },
-        { question: t('helpFaq.sections.recipes.q4'), answer: t('helpFaq.sections.recipes.a4') },
-      ],
-    },
-    {
-      title: t('helpFaq.sections.dataPrivacy.title'),
-      items: [
-        { question: t('helpFaq.sections.dataPrivacy.q1'), answer: t('helpFaq.sections.dataPrivacy.a1') },
-        { question: t('helpFaq.sections.dataPrivacy.q2'), answer: t('helpFaq.sections.dataPrivacy.a2') },
-        { question: t('helpFaq.sections.dataPrivacy.q3'), answer: t('helpFaq.sections.dataPrivacy.a3') },
-      ],
-    },
-    {
-      title: t('helpFaq.sections.troubleshooting.title'),
-      items: [
-        { question: t('helpFaq.sections.troubleshooting.q1'), answer: t('helpFaq.sections.troubleshooting.a1') },
-        { question: t('helpFaq.sections.troubleshooting.q2'), answer: t('helpFaq.sections.troubleshooting.a2') },
-        { question: t('helpFaq.sections.troubleshooting.q3'), answer: t('helpFaq.sections.troubleshooting.a3') },
-      ],
-    },
+  const sections = [
+    { key: 'gettingStarted', count: 3 },
+    { key: 'recipes', count: 4 },
+    { key: 'dataPrivacy', count: 3 },
+    { key: 'troubleshooting', count: 3 },
   ];
-}
 
-function FaqAccordion({ items }: { items: FaqItem[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  return (
-    <div className="space-y-2">
-      {items.map((item, idx) => (
-        <div key={idx} className="border rounded-lg overflow-hidden bg-white">
-          <button
-            onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-            className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
-          >
-            <span className="text-sm font-medium text-gray-900 pr-4">{item.question}</span>
-            {openIndex === idx ? (
-              <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
-            ) : (
-              <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
-            )}
-          </button>
-          {openIndex === idx && (
-            <div className="px-4 pb-4 text-sm text-gray-600 leading-relaxed border-t bg-gray-50">
-              <p className="pt-3">{item.answer}</p>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
+  const items: FaqItem[] = [];
+  for (const section of sections) {
+    for (let i = 1; i <= section.count; i++) {
+      items.push({
+        question: t(`helpFaq.sections.${section.key}.q${i}`),
+        answer: t(`helpFaq.sections.${section.key}.a${i}`),
+      });
+    }
+  }
+  return items;
 }
 
 export function HelpFaq() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const faqSections = useFaqSections();
+  const faqItems = useFaqItems();
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4">
-        <ArrowLeft className="w-4 h-4 mr-1" />
-        {t('helpFaq.backButton')}
-      </Button>
+    <div>
+      <WarmHeader
+        title={t('helpFaq.title')}
+        backButton
+        onBack={() => navigate(-1)}
+      />
 
-      <div className="flex items-center gap-3 mb-6">
-        <HelpCircle className="w-7 h-7 text-primary" />
-        <h1 className="text-2xl font-bold text-gray-900">{t('helpFaq.title')}</h1>
-      </div>
+      <div className="max-w-2xl mx-auto px-6 pb-8" style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingTop: '8px' }}>
+        <p
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: '14px',
+            color: 'var(--fs-text-secondary, #7A6E66)',
+          }}
+        >
+          {t('helpFaq.intro', 'Find answers to common questions below.')}
+        </p>
 
-      <div className="space-y-8 pb-8">
-        {faqSections.map((section, idx) => (
-          <div key={idx}>
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">{section.title}</h2>
-            <FaqAccordion items={section.items} />
+        {faqItems.map((item, idx) => (
+          <div
+            key={idx}
+            style={{
+              borderRadius: '14px',
+              backgroundColor: 'var(--fs-card-bg, #FFFFFF)',
+              border: '1px solid var(--fs-border-decorative, #E8DDD8)',
+              overflow: 'hidden',
+            }}
+          >
+            <button
+              onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+              aria-expanded={openIndex === idx}
+              className="w-full flex items-center justify-between text-left transition-colors"
+              style={{ padding: '16px' }}
+            >
+              <span
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  color: 'var(--fs-text-primary, #2D2522)',
+                  paddingRight: '16px',
+                }}
+              >
+                {item.question}
+              </span>
+              {openIndex === idx ? (
+                <ChevronDown className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
+              ) : (
+                <ChevronRight className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
+              )}
+            </button>
+            {openIndex === idx && (
+              <div style={{ padding: '0 16px 16px' }}>
+                <p
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: '14px',
+                    lineHeight: 1.5,
+                    color: 'var(--fs-text-secondary, #7A6E66)',
+                  }}
+                >
+                  {item.answer}
+                </p>
+              </div>
+            )}
           </div>
         ))}
       </div>

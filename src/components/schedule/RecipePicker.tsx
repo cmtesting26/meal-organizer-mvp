@@ -4,11 +4,11 @@
 
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { RecencyBadge } from '@/components/common/RecencyBadge';
 import { TagFilterChips } from '@/components/common/TagFilterChips';
-import { Search, UtensilsCrossed, Flame } from 'lucide-react';
+import { Search, X, UtensilsCrossed, Flame } from 'lucide-react';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useLastCooked } from '@/hooks/useLastCooked';
 import { useCookFrequency } from '@/hooks/useCookFrequency';
@@ -81,33 +81,78 @@ export function RecipePicker({ open, onOpenChange, onSelectRecipe }: RecipePicke
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[85vh] flex flex-col">
-        <SheetHeader>
-          <SheetTitle>{t('schedule.chooseMeal')}</SheetTitle>
-        </SheetHeader>
+      <SheetContent
+        side="bottom"
+        className="h-[85vh] flex flex-col !p-0 !gap-0 rounded-t-[20px] [&>button.absolute]:hidden"
+        style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)' }}
+      >
+        {/* DragHandleWrap — padding: [12, 0, 4, 0] */}
+        <div className="flex justify-center" style={{ padding: '12px 0 4px 0' }}>
+          <div style={{ width: 32, height: 4, borderRadius: 9999, backgroundColor: '#E8DDD8' }} />
+        </div>
 
-        {/* Tag Filter */}
+        {/* SheetHeader — padding: [8, 24, 12, 24] */}
+        <div className="flex items-center justify-between" style={{ padding: '8px 24px 12px 24px' }}>
+          <h2
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 18,
+              fontWeight: 600,
+              lineHeight: 1,
+              color: 'var(--fs-text-primary, #2D2522)',
+            }}
+          >
+            {t('schedule.chooseMeal')}
+          </h2>
+          <button
+            onClick={() => onOpenChange(false)}
+            className="flex items-center justify-center rounded-full hover:bg-[var(--fs-hover-bg)] transition-colors"
+            style={{ width: 44, height: 44 }}
+            aria-label={t('common.close', 'Close')}
+          >
+            <X style={{ width: 20, height: 20, color: 'var(--fs-text-secondary, #7A6E66)' }} />
+          </button>
+        </div>
+
+        {/* SearchWrap — padding: [12, 24] */}
+        <div className="relative" style={{ padding: '12px 24px' }}>
+          <Search
+            className="absolute top-1/2 -translate-y-1/2"
+            style={{ left: 38, width: 18, height: 18, color: 'var(--fs-text-muted, #7A6E66)' }}
+          />
+          <Input
+            placeholder={t('recipes.searchPlaceholder')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+            style={{
+              height: 40,
+              borderRadius: 12,
+              borderColor: 'var(--fs-border-default, #C5B5AB)',
+              boxShadow: '0 2px 8px rgba(45,37,34,0.03)',
+              backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
+              padding: '0 14px 0 40px',
+              fontSize: 14,
+            }}
+            aria-label={t('schedule.searchRecipes', 'Search recipes')}
+          />
+        </div>
+
+        {/* TagChips — padding: [0, 24, 4, 24], gap: 8 */}
         {allTags.length > 0 && (
-          <div className="mt-3">
+          <div style={{ padding: '0 24px 4px 24px' }}>
             <TagFilterChips availableTags={allTags} selectedTag={selectedTag} onSelectTag={setSelectedTag} />
           </div>
         )}
 
-        {/* Search */}
-        <div className="relative mt-3 mb-3">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <Input placeholder={t('schedule.searchPlaceholder')} value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} className="pl-9" />
-        </div>
-
-        {/* Recipe List */}
-        <div className="flex-1 overflow-y-auto -mx-6 px-6">
+        {/* RecipeList — padding: [0, 24], gap: 4, fill height */}
+        <div className="flex-1 overflow-y-auto" style={{ padding: '0 24px' }}>
           {loading ? (
-            <div className="flex items-center justify-center py-12 text-gray-500">
+            <div className="flex items-center justify-center py-12" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
               {t('schedule.loading', 'Loading...')}
             </div>
           ) : sortedAndFiltered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+            <div className="flex flex-col items-center justify-center py-12" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
               <UtensilsCrossed className="h-10 w-10 mb-3 text-gray-300" />
               <p className="text-sm font-medium">{t('schedule.noRecipes')}</p>
               <p className="text-xs mt-1">
@@ -115,35 +160,39 @@ export function RecipePicker({ open, onOpenChange, onSelectRecipe }: RecipePicke
               </p>
             </div>
           ) : (
-            <div className="space-y-1">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               {sortedAndFiltered.map((recipe) => (
                 <button key={recipe.id} onClick={() => handleSelect(recipe)}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors text-left">
+                  className="w-full flex items-center hover:bg-[var(--fs-bg-card-inner)] transition-colors text-left"
+                  style={{ gap: 12, padding: 12, borderRadius: 12 }}
+                >
                   {recipe.imageUrl ? (
-                    <img src={recipe.imageUrl} alt="" className="w-10 h-10 rounded object-cover shrink-0" />
+                    <img src={recipe.imageUrl} alt="" className="object-cover shrink-0" style={{ width: 48, height: 48, borderRadius: 10 }} />
                   ) : (
-                    <div className="w-10 h-10 rounded bg-gray-200 flex items-center justify-center shrink-0">
-                      <UtensilsCrossed className="h-5 w-5 text-gray-400" />
+                    <div className="flex items-center justify-center shrink-0" style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
+                      <UtensilsCrossed className="h-5 w-5" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
                     </div>
                   )}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{recipe.title}</p>
-                    <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  <div className="flex-1 min-w-0" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <p className="text-sm font-semibold truncate" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>{recipe.title}</p>
+                    <div className="flex items-center flex-wrap" style={{ gap: 6 }}>
                       <RecencyBadge date={getLastCookedDate(recipe.id)} compact />
-                      {/* S26-12: Cook count flame badge */}
                       {(() => {
                         const freq = frequencyMap.get(recipe.id);
                         const count = freq?.thisYear || 0;
                         if (count <= 0) return null;
                         return (
                           <span
-                            className="inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                            className="inline-flex items-center rounded-full text-[11px] font-semibold"
                             style={{
-                              backgroundColor: '#FEF3C7',
-                              color: '#92400E',
+                              gap: 4,
+                              padding: '3px 8px',
+                              backgroundColor: '#FEF0E8',
+                              color: '#B84835',
+                              border: '1px solid #E8C4B8',
                             }}
                           >
-                            <Flame className="w-2.5 h-2.5" />
+                            <Flame style={{ width: 12, height: 12 }} />
                             {count}× in {currentYear}
                           </span>
                         );

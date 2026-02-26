@@ -103,7 +103,7 @@ export function CookingTimer({
           <span
             className="inline-flex items-center gap-1 px-3 py-1 rounded-full"
             style={{
-              backgroundColor: '#D97706',
+              backgroundColor: 'var(--fs-accent, #D4644E)',
               color: 'white',
               fontSize: '11px',
               fontWeight: 600,
@@ -146,7 +146,7 @@ export function CookingTimer({
               fontSize: '40px',
               fontWeight: 700,
               fontVariantNumeric: 'tabular-nums',
-              color: isActive ? '#D97706' : 'var(--fs-text-primary)',
+              color: isActive ? 'var(--fs-accent, #D4644E)' : 'var(--fs-text-primary)',
               lineHeight: 1,
             }}
           >
@@ -169,7 +169,7 @@ export function CookingTimer({
                 style={{
                   width: `${progress}%`,
                   height: '100%',
-                  backgroundColor: '#D97706',
+                  backgroundColor: 'var(--fs-accent, #D4644E)',
                   borderRadius: '9999px',
                   transition: 'width 1s linear',
                 }}
@@ -204,7 +204,7 @@ export function CookingTimer({
             disabled={remaining <= 0}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-colors"
             style={{
-              backgroundColor: remaining > 0 ? '#D97706' : 'var(--fs-bg-elevated)',
+              backgroundColor: remaining > 0 ? 'var(--fs-accent, #D4644E)' : 'var(--fs-bg-elevated)',
               color: remaining > 0 ? 'white' : 'var(--fs-text-muted)',
               cursor: remaining > 0 ? 'pointer' : 'not-allowed',
             }}
@@ -223,6 +223,7 @@ export function CookingTimer({
                 backgroundColor: 'var(--fs-bg-elevated)',
                 color: 'var(--fs-text-muted)',
               }}
+              aria-label={t('cookingMode.timerReset', 'Reset timer')}
             >
               <RotateCcw className="w-4 h-4" />
             </button>
@@ -249,6 +250,7 @@ export function CookingTimer({
                 backgroundColor: 'var(--fs-bg-elevated)',
                 color: 'var(--fs-text-muted)',
               }}
+              aria-label={t('cookingMode.timerReset', 'Reset timer')}
             >
               <RotateCcw className="w-4 h-4" />
             </button>
@@ -256,7 +258,7 @@ export function CookingTimer({
               onClick={onResume}
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-colors"
               style={{
-                backgroundColor: '#D97706',
+                backgroundColor: 'var(--fs-accent, #D4644E)',
                 color: 'white',
               }}
             >

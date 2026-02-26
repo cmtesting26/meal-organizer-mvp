@@ -115,7 +115,7 @@ export function AddPhotoButton({ recipeId, onPhotoUploaded }: AddPhotoButtonProp
           bottom: '12px',
           right: '12px',
           backgroundColor: 'white',
-          border: '1px solid #E7E5E4',
+          border: '1px solid #C5B5AB',
           borderRadius: '9999px',
           padding: '6px 14px',
           fontFamily: "'DM Sans', sans-serif",
@@ -141,7 +141,7 @@ export function AddPhotoButton({ recipeId, onPhotoUploaded }: AddPhotoButtonProp
             right: '12px',
             backgroundColor: 'var(--fs-bg-surface, white)',
             borderRadius: '12px',
-            border: '1px solid var(--fs-border-default, #E7E5E4)',
+            border: '1px solid var(--fs-border-default, #C5B5AB)',
             boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
             width: '180px',
             zIndex: 20,
@@ -156,11 +156,11 @@ export function AddPhotoButton({ recipeId, onPhotoUploaded }: AddPhotoButtonProp
               fontFamily: "'DM Sans', sans-serif",
               fontSize: '13px',
               fontWeight: 500,
-              color: 'var(--fs-text-primary, #1C1917)',
-              borderBottom: '1px solid var(--fs-border-default, #E7E5E4)',
+              color: 'var(--fs-text-primary, #2D2522)',
+              borderBottom: '1px solid var(--fs-border-default, #C5B5AB)',
             }}
           >
-            <Camera className="w-4 h-4" style={{ stroke: '#D97706' }} />
+            <Camera className="w-4 h-4" style={{ stroke: 'var(--fs-accent, #D4644E)' }} />
             {t('photoUpload.takePhoto')}
           </button>
           <button
@@ -171,10 +171,10 @@ export function AddPhotoButton({ recipeId, onPhotoUploaded }: AddPhotoButtonProp
               fontFamily: "'DM Sans', sans-serif",
               fontSize: '13px',
               fontWeight: 500,
-              color: 'var(--fs-text-primary, #1C1917)',
+              color: 'var(--fs-text-primary, #2D2522)',
             }}
           >
-            <Upload className="w-4 h-4" style={{ stroke: '#D97706' }} />
+            <Upload className="w-4 h-4" style={{ stroke: 'var(--fs-accent, #D4644E)' }} />
             {t('photoUpload.uploadFile')}
           </button>
         </div>

@@ -23,11 +23,12 @@ export function SortSelect({ value, onChange }: SortSelectProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <ArrowUpDown className="w-4 h-4 text-gray-400" />
+      <ArrowUpDown className="w-4 h-4" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as SortOption)}
-        className="text-sm text-gray-600 bg-transparent border-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 rounded px-1 py-0.5"
+        className="text-sm bg-transparent border-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 rounded px-1 py-0.5"
+        style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}
         aria-label="Sort recipes by"
       >
         {(Object.keys(sortLabels) as SortOption[]).map((option) => (

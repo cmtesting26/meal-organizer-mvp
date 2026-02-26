@@ -94,40 +94,55 @@ export function RecipeLibrary({
   }
 
   return (
-    <div className="container mx-auto px-4 pt-0 pb-6 max-w-6xl">
-      {/* S26-05: Sticky header — search + tags + tabs stick below WarmHeader on scroll */}
+    <div className="pt-0 pb-6">
+      {/* S26-05: Sticky header — search + tags stick below WarmHeader on scroll */}
       <div
-        className="mb-4 sticky z-20 pb-3 -mx-4 px-4"
-        style={{ backgroundColor: 'var(--fs-bg-base, #FAF9F6)', top: 'var(--fs-warm-header-h, 53px)', paddingTop: '16px' }}
+        className="sticky z-20"
+        style={{
+          backgroundColor: 'var(--fs-bg-base, #FAF8F6)',
+          top: 'var(--fs-warm-header-h, 53px)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
       >
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+        {/* SearchFilterArea — padding: [0, 20], gap: 12, vertical */}
+        <div style={{ padding: '0', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div className="relative">
+            <Search
+              className="absolute top-1/2 -translate-y-1/2 pointer-events-none"
+              style={{ left: 14, width: 18, height: 18, color: 'var(--fs-text-secondary, #44403C)' }}
+            />
             <Input
               type="text"
               placeholder={t('recipes.searchPlaceholder')}
               value={searchQuery}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-              className="pl-10 text-sm w-full rounded-xl shadow-sm focus:ring-2 focus:ring-primary/20"
-              style={{ backgroundColor: 'var(--fs-card-bg, #FFFFFF)', borderColor: 'var(--fs-border-default, #E7E5E4)' }}
+              className="w-full text-sm focus:ring-2 focus:ring-primary/20"
+              style={{
+                height: 40,
+                borderRadius: 12,
+                borderColor: 'var(--fs-border-default, #C5B5AB)',
+                boxShadow: '0 2px 8px rgba(45,37,34,0.03)',
+                backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
+                padding: '0 14px 0 40px',
+                fontSize: 14,
+              }}
               aria-label={t('recipes.searchPlaceholder')}
             />
           </div>
-        </div>
 
-        {/* Tag filter chips */}
-        {allTags.length > 0 && (
-          <div className="mt-3">
+          {/* Tag filter chips */}
+          {allTags.length > 0 && (
             <TagFilterChips
               availableTags={allTags}
               selectedTag={selectedTag}
               onSelectTag={setSelectedTag}
             />
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* TextTabs — Sprint 23: replaces SegmentedControl + sort dropdown */}
-        <div className="mt-3">
+        {/* TextTabs — padding: [0, 20], gap: 24, width: 350 at 20px margins */}
+        <div style={{ padding: '0' }}>
           <TextTabs
             tabs={[
               { key: 'all', label: t('frequency.allRecipes', 'All Recipes') },
@@ -139,7 +154,7 @@ export function RecipeLibrary({
         </div>
 
         {(searchQuery || selectedTag) && (
-          <p className="text-sm mt-2" style={{ color: 'var(--fs-text-muted, #78716C)' }}>
+          <p className="text-sm" style={{ color: 'var(--fs-text-muted, #7A6E66)', padding: '4px 0 0' }}>
             {t('recipes.found', { count: filteredRecipes.length })}
           </p>
         )}
@@ -148,15 +163,15 @@ export function RecipeLibrary({
       {/* Recipe Grid */}
       {loading ? (
         <div className="text-center py-12" role="status" aria-live="polite">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto" />
-          <p className="mt-4 text-gray-600">{t('recipes.loading')}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto" style={{ borderColor: 'var(--fs-text-primary, #2D2522)' }} />
+          <p className="mt-4" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>{t('recipes.loading')}</p>
         </div>
       ) : filteredRecipes.length === 0 && activeSegment === 'all' ? (
         <div className="text-center py-12">
-          <p className="text-gray-600 text-lg">
+          <p className="text-lg" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
             {t('recipes.noMatch', { query: searchQuery || selectedTag })}
           </p>
-          <p className="text-gray-500 text-sm mt-2">
+          <p className="text-sm mt-2" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
             {t('recipes.tryDifferent')}
           </p>
         </div>
@@ -174,21 +189,22 @@ export function RecipeLibrary({
             />
           )}
 
+          {/* RecipeCardList — padding: [14, 20, 0, 20], gap: 10 */}
           <div
-          className="space-y-2"
-          role="list"
-          aria-label="Recipe cards"
-        >
-          {filteredRecipes.map((recipe) => (
-            <div key={recipe.id} role="listitem">
-              <RecipeCard
-                recipe={recipe}
-                onClick={() => handleCardClick(recipe)}
-                lastCookedDate={getLastCookedDate(recipe.id)}
-              />
-            </div>
-          ))}
-        </div>
+            style={{ padding: '14px 0 0 0', display: 'flex', flexDirection: 'column', gap: 10 }}
+            role="list"
+            aria-label="Recipe cards"
+          >
+            {filteredRecipes.map((recipe) => (
+              <div key={recipe.id} role="listitem">
+                <RecipeCard
+                  recipe={recipe}
+                  onClick={() => handleCardClick(recipe)}
+                  lastCookedDate={getLastCookedDate(recipe.id)}
+                />
+              </div>
+            ))}
+          </div>
         </>
       )}
 

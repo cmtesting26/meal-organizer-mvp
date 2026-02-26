@@ -54,7 +54,14 @@ export function TagInput({ tags, onChange, placeholder }: TagInputProps) {
 
   return (
     <div
-      className="flex flex-wrap gap-1.5 p-2 border rounded-md bg-white focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 min-h-[42px] cursor-text"
+      className="flex flex-wrap items-center gap-1.5 cursor-text outline-none focus-within:ring-2 focus-within:ring-[var(--fs-accent)]"
+      style={{
+        minHeight: 44,
+        borderRadius: 12,
+        border: '1px solid var(--fs-input-border, #C5B5AB)',
+        backgroundColor: 'var(--fs-input-bg, #FFFFFF)',
+        padding: '6px 14px',
+      }}
       onClick={() => inputRef.current?.focus()}
     >
       {tags.map(tag => (
@@ -63,8 +70,8 @@ export function TagInput({ tags, onChange, placeholder }: TagInputProps) {
           className="gap-1 px-2 py-0.5 text-xs"
           style={{
             backgroundColor: 'var(--fs-bg-elevated, #F5F5F4)',
-            color: 'var(--fs-text-secondary, #57534E)',
-            borderColor: 'var(--fs-border-default, #E7E5E4)',
+            color: 'var(--fs-text-secondary, #7A6E66)',
+            borderColor: 'var(--fs-border-default, #C5B5AB)',
           }}
         >
           {tag}
@@ -74,8 +81,8 @@ export function TagInput({ tags, onChange, placeholder }: TagInputProps) {
               e.stopPropagation();
               removeTag(tag);
             }}
-            className="ml-0.5"
-            style={{ color: 'var(--fs-text-muted, #78716C)' }}
+            className="ml-0.5 p-1.5 -mr-1 flex items-center justify-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1"
+            style={{ color: 'var(--fs-text-muted, #7A6E66)' }}
             aria-label={t('tags.removeTag', { tag })}
           >
             <X className="w-3 h-3" />

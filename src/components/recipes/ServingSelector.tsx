@@ -36,29 +36,44 @@ export function ServingSelector({
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-gray-500">{t('scaling.servings')}:</span>
-      <div className="inline-flex items-center rounded-lg border bg-white">
+      <span className="text-xs" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{t('scaling.servings')}:</span>
+      <div
+        className="inline-flex items-center bg-white"
+        style={{
+          height: '36px',
+          borderRadius: '10px',
+          border: '1px solid var(--fs-border-default, #C5B5AB)',
+        }}
+      >
         <button
           type="button"
           disabled={servings <= min}
           onClick={() => onChange(Math.max(min, servings - 1))}
-          className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-l-lg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] rounded-l-[9px]"
+          style={{ width: '36px', height: '100%', color: 'var(--fs-text-muted, #7A6E66)' }}
           aria-label={t('scaling.decrease')}
         >
           <Minus className="w-3.5 h-3.5" />
         </button>
+        <div style={{ width: '1px', height: '100%', backgroundColor: 'var(--fs-border-default, #C5B5AB)' }} />
         <span
-          className={`px-3 py-1 text-sm font-semibold tabular-nums min-w-[2.5rem] text-center ${
-            isOriginal ? 'text-gray-900' : 'text-green-700'
+          className={`text-sm font-semibold tabular-nums text-center ${
+            isOriginal ? '' : 'text-green-700'
           }`}
+          style={{
+            width: '48px',
+            ...(isOriginal ? { color: 'var(--fs-text-primary, #2D2522)' } : {}),
+          }}
         >
           {servings}
         </span>
+        <div style={{ width: '1px', height: '100%', backgroundColor: 'var(--fs-border-default, #C5B5AB)' }} />
         <button
           type="button"
           disabled={servings >= max}
           onClick={() => onChange(Math.min(max, servings + 1))}
-          className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-r-lg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] rounded-r-[9px]"
+          style={{ width: '36px', height: '100%', color: 'var(--fs-text-muted, #7A6E66)' }}
           aria-label={t('scaling.increase')}
         >
           <Plus className="w-3.5 h-3.5" />

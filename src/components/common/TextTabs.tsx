@@ -42,8 +42,8 @@ export const TextTabs: FC<TextTabsProps> = ({
       role="tablist"
       className="flex"
       style={{
-        borderBottom: '1px solid var(--fs-border-default, #E7E5E4)',
         gap: '24px',
+        boxShadow: 'inset 0 -1px 0 0 var(--fs-border-default, #C5B5AB)',
       }}
     >
       {tabs.map((tab) => {
@@ -51,33 +51,40 @@ export const TextTabs: FC<TextTabsProps> = ({
         return (
           <button
             key={tab.key}
+            id={`tab-${tab.key}`}
             role="tab"
             aria-selected={isActive}
+            aria-controls={`panel-${tab.key}`}
+            tabIndex={isActive ? 0 : -1}
             onClick={() => onTabChange(tab.key)}
-            className="bg-transparent border-none cursor-pointer relative"
+            className="bg-transparent border-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1"
             style={{
               fontFamily: "'DM Sans', sans-serif",
               fontSize: `${fontSize}px`,
-              fontWeight: isActive ? 600 : 400,
+              fontWeight: isActive ? 600 : 500,
               color: isActive
-                ? 'var(--fs-text-primary, #1C1917)'
-                : 'var(--fs-text-muted, #78716C)',
-              padding: '8px 0',
-              borderBottom: `2px solid ${isActive ? '#D97706' : 'transparent'}`,
-              marginBottom: '-1px',
+                ? 'var(--fs-text-primary, #2D2522)'
+                : 'var(--fs-text-muted, #7A6E66)',
+              padding: '10px 0',
+              borderBottom: `2px solid ${isActive ? 'var(--fs-accent, #D4644E)' : 'transparent'}`,
               transition: 'all 200ms ease-in-out',
-              outline: 'none',
             }}
             onKeyDown={(e) => {
               // Keyboard navigation: arrow keys move between tabs
               const idx = tabs.findIndex((t) => t.key === tab.key);
+              let nextKey: string | null = null;
               if (e.key === 'ArrowRight' && idx < tabs.length - 1) {
                 e.preventDefault();
-                onTabChange(tabs[idx + 1].key);
+                nextKey = tabs[idx + 1].key;
               }
               if (e.key === 'ArrowLeft' && idx > 0) {
                 e.preventDefault();
-                onTabChange(tabs[idx - 1].key);
+                nextKey = tabs[idx - 1].key;
+              }
+              if (nextKey) {
+                onTabChange(nextKey);
+                const nextEl = document.getElementById(`tab-${nextKey}`);
+                nextEl?.focus();
               }
             }}
           >

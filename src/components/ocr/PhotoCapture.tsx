@@ -165,7 +165,7 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
           {mode === 'choose' && (
             <div className="space-y-4">
               {!embedded && (
-                <p className="text-sm text-gray-600">
+                <p className="text-sm" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
                   {t('ocr.chooseSource')}
                 </p>
               )}
@@ -176,24 +176,41 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  variant="outline"
-                  className="h-24 flex flex-col gap-2"
+              {/* ButtonRow — gap: 12, fill */}
+              <div className="flex" style={{ gap: 12 }}>
+                <button
+                  className="flex-1 flex flex-col items-center justify-center transition-colors hover:bg-[var(--fs-hover-bg)]"
+                  style={{
+                    height: 100,
+                    borderRadius: 14,
+                    border: '1px solid var(--fs-border-default, #C5B5AB)',
+                    backgroundColor: '#FFFFFF',
+                    gap: 8,
+                  }}
                   onClick={startCamera}
                 >
-                  <Camera className="!w-8 !h-8 text-amber-600" />
-                  <span className="text-sm">{t('ocr.useCamera')}</span>
-                </Button>
+                  <Camera style={{ width: 28, height: 28, color: 'var(--fs-accent, #D4644E)' }} />
+                  <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500, color: 'var(--fs-text-primary, #2D2522)' }}>
+                    {t('ocr.useCamera')}
+                  </span>
+                </button>
 
-                <Button
-                  variant="outline"
-                  className="h-24 flex flex-col gap-2"
+                <button
+                  className="flex-1 flex flex-col items-center justify-center transition-colors hover:bg-[var(--fs-hover-bg)]"
+                  style={{
+                    height: 100,
+                    borderRadius: 14,
+                    border: '1px solid var(--fs-border-default, #C5B5AB)',
+                    backgroundColor: '#FFFFFF',
+                    gap: 8,
+                  }}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload className="!w-8 !h-8 text-amber-600" />
-                  <span className="text-sm">{t('ocr.uploadPhoto')}</span>
-                </Button>
+                  <Upload style={{ width: 28, height: 28, color: 'var(--fs-accent, #D4644E)' }} />
+                  <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500, color: 'var(--fs-text-primary, #2D2522)' }}>
+                    {t('ocr.uploadPhoto')}
+                  </span>
+                </button>
               </div>
 
               <input
@@ -238,7 +255,7 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
           {/* Mode: Preview */}
           {mode === 'preview' && capturedImage && (
             <div className="space-y-4">
-              <div className="rounded-lg overflow-hidden bg-gray-100">
+              <div className="rounded-lg overflow-hidden" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
                 <img
                   src={capturedImage}
                   alt={t('ocr.capturedPhoto')}
@@ -246,7 +263,7 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
                 />
               </div>
 
-              <p className="text-sm text-gray-600 text-center">
+              <p className="text-sm text-center" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
                 {t('ocr.previewHint')}
               </p>
 
@@ -267,14 +284,14 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
             <div className="space-y-4 py-8">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
-                <p className="text-sm font-medium text-gray-700">
+                <p className="text-sm font-medium" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
                   {progress?.message || t('ocr.processing')}
                 </p>
               </div>
 
               {/* Progress bar */}
               {progress && (
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
                   <div
                     className="bg-primary h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progress.progress}%` }}
@@ -282,7 +299,7 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
                 </div>
               )}
 
-              <p className="text-xs text-gray-500 text-center">
+              <p className="text-xs text-center" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
                 {t('ocr.processingHint')}
               </p>
             </div>

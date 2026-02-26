@@ -8,15 +8,16 @@
 
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Loader2,
-  ClipboardPaste,
+  Clipboard,
   AlertCircle,
+  CheckCircle2,
   Instagram,
+  Download,
+  X,
 } from 'lucide-react';
 import { detectSocialPlatform, fetchSocialMediaPost } from '@/lib/socialMediaFetcher';
 import { parseCaptionToRecipe } from '@/lib/captionRecipeParser';
@@ -105,38 +106,133 @@ export function SocialImportSheet({ open, onOpenChange, onRecipeImported }: Soci
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="rounded-t-[16px] pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))]">
-        <SheetHeader className="pb-1">
-          <SheetTitle>{t('import.socialTitle')}</SheetTitle>
-          <SheetDescription className="text-xs">{t('import.subtitle')}</SheetDescription>
-        </SheetHeader>
-        <div className="mt-3 space-y-3 pb-2">
-          {/* URL Input — always shows Instagram icon */}
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Instagram className="absolute left-3 top-1/2 transform -translate-y-1/2 text-pink-500 w-4 h-4" />
-              <Input
+      <SheetContent
+        side="bottom"
+        className="!p-0 !gap-0 rounded-t-[20px] [&>button.absolute]:hidden"
+        style={{ backgroundColor: '#FFFFFF' }}
+      >
+        {/* DragHandle — padding: [12, 0, 4, 0] */}
+        <div className="flex justify-center" style={{ padding: '12px 0 4px 0' }}>
+          <div style={{ width: 32, height: 4, borderRadius: 9999, backgroundColor: '#E8DDD8' }} />
+        </div>
+
+        {/* SheetHeader — padding: [8, 24, 12, 24] */}
+        <div className="flex items-center justify-between" style={{ padding: '8px 24px 12px 24px' }}>
+          <h2
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 18,
+              fontWeight: 600,
+              lineHeight: 1,
+              color: 'var(--fs-text-primary, #2D2522)',
+            }}
+          >
+            {t('import.socialTitle')}
+          </h2>
+          <button
+            onClick={() => onOpenChange(false)}
+            className="flex items-center justify-center rounded-full hover:bg-[var(--fs-hover-bg)] transition-colors"
+            style={{ width: 44, height: 44 }}
+            aria-label={t('common.close', 'Close')}
+          >
+            <X style={{ width: 20, height: 20, color: 'var(--fs-text-secondary, #7A6E66)' }} />
+          </button>
+        </div>
+
+        {/* SheetBody — padding: [4, 24, 32, 24], gap: 16 */}
+        <div style={{ padding: '4px 24px 32px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Description */}
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14,
+              fontWeight: 400,
+              color: 'var(--fs-text-secondary, #7A6E66)',
+            }}
+          >
+            {t('import.subtitle')}
+          </p>
+
+          {/* InputRow — gap: 8 */}
+          <div className="flex items-center" style={{ gap: 8 }}>
+            {/* UrlInput — h44, rounded-12, border, icon 16px */}
+            <div className="relative flex-1 min-w-0">
+              <Instagram
+                className="absolute top-1/2 -translate-y-1/2 pointer-events-none"
+                style={{ left: 14, width: 16, height: 16, color: 'var(--fs-text-secondary, #7A6E66)' }}
+              />
+              <input
                 type="url"
                 placeholder={t('import.urlPlaceholder')}
                 value={url}
                 onChange={(e) => { setUrl(e.target.value); setError(null); }}
                 onKeyDown={handleKeyDown}
                 disabled={loading}
-                className="pl-10"
+                className="w-full focus:outline-none focus:ring-2 focus:ring-[var(--fs-accent)]"
+                style={{
+                  height: 44,
+                  borderRadius: 12,
+                  border: '1px solid var(--fs-border-default, #C5B5AB)',
+                  backgroundColor: '#FFFFFF',
+                  padding: '0 14px 0 38px',
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 14,
+                  color: 'var(--fs-text-primary, #2D2522)',
+                }}
                 aria-label="Social media URL"
               />
             </div>
-            <Button variant="outline" onClick={handlePaste} disabled={loading} className="flex-shrink-0">
-              <ClipboardPaste className="w-4 h-4" />
-              {t('import.paste')}
-            </Button>
+
+            {/* PasteBtn — h44, rounded-12, border, gap: 6 */}
+            <button
+              onClick={handlePaste}
+              disabled={loading}
+              className="shrink-0 flex items-center justify-center transition-colors hover:bg-[var(--fs-hover-bg)] disabled:opacity-50"
+              style={{
+                height: 44,
+                borderRadius: 12,
+                border: '1px solid var(--fs-border-default, #C5B5AB)',
+                gap: 6,
+                padding: '0 16px',
+                backgroundColor: 'transparent',
+              }}
+            >
+              <Clipboard style={{ width: 14, height: 14, color: 'var(--fs-text-secondary, #7A6E66)' }} />
+              <span
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: 'var(--fs-text-primary, #2D2522)',
+                }}
+              >
+                {t('import.paste')}
+              </span>
+            </button>
           </div>
 
-          {/* Platform detection badge */}
+          {/* DetectedBadge — rounded-full, fill #FEF0E8, gap: 4, padding: [4, 10] */}
           {detectedPlatform && !loading && !error && (
-            <div className="flex items-center gap-2 text-sm text-pink-600 bg-pink-50 rounded-md px-3 py-2">
-              <Instagram className="w-4 h-4" />
-              <span>{t('import.socialDetected', { platform: platformLabel(detectedPlatform) })}</span>
+            <div
+              className="flex items-center self-start"
+              style={{
+                gap: 4,
+                padding: '4px 10px',
+                borderRadius: 99,
+                backgroundColor: '#FEF0E8',
+              }}
+            >
+              <CheckCircle2 style={{ width: 14, height: 14, color: '#D4644E' }} />
+              <span
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: '#B84835',
+                }}
+              >
+                {t('import.socialDetected', { platform: platformLabel(detectedPlatform) })}
+              </span>
             </div>
           )}
 
@@ -147,14 +243,35 @@ export function SocialImportSheet({ open, onOpenChange, onRecipeImported }: Soci
             </Alert>
           )}
 
-          {/* Import button — always shows Instagram icon */}
-          <Button onClick={handleImport} disabled={loading || !url.trim()} className="w-full" size="lg">
+          {/* ImportBtn — h48, rounded-14, fill #D4644E, gap: 8 */}
+          <button
+            onClick={handleImport}
+            disabled={loading || !url.trim()}
+            className="flex items-center justify-center w-full transition-colors disabled:opacity-50"
+            style={{
+              height: 48,
+              borderRadius: 14,
+              backgroundColor: 'var(--fs-accent, #D4644E)',
+              gap: 8,
+              border: 'none',
+            }}
+          >
             {loading ? (
-              <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{loadingText}</>
+              <>
+                <Loader2 style={{ width: 18, height: 18, color: '#FFFFFF' }} className="animate-spin" />
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>
+                  {loadingText}
+                </span>
+              </>
             ) : (
-              <><Instagram className="w-4 h-4 mr-2" />{t('import.importButton')}</>
+              <>
+                <Download style={{ width: 18, height: 18, color: '#FFFFFF' }} />
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>
+                  {t('import.importButton')}
+                </span>
+              </>
             )}
-          </Button>
+          </button>
         </div>
       </SheetContent>
     </Sheet>

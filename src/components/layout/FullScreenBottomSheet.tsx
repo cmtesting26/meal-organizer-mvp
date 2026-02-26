@@ -52,7 +52,7 @@ export const FullScreenBottomSheet: FC<FullScreenBottomSheetProps> = ({
                      data-[state=open]:animate-in data-[state=closed]:animate-out
                      data-[state=open]:slide-in-from-bottom-full data-[state=closed]:slide-out-to-bottom-full
                      duration-300 ease-out
-                     focus:outline-none"
+                     focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-inset"
           style={{
             backgroundColor: 'var(--fs-bg-surface)',
             boxShadow: 'var(--fs-shadow-lg)',
@@ -61,21 +61,21 @@ export const FullScreenBottomSheet: FC<FullScreenBottomSheetProps> = ({
         >
           {/* Drag handle */}
           <div className="flex justify-center pt-3 pb-1">
-            <div className="w-8 h-1 rounded-full" style={{ backgroundColor: 'var(--fs-border-strong)' }} />
+            <div className="w-8 h-1 rounded-full" style={{ backgroundColor: 'var(--fs-border-muted)' }} />
           </div>
 
           {/* Header with title and close button */}
           <div className="flex items-center justify-between px-6 pb-4 pt-2">
-            <Dialog.Title className="text-xl font-bold" style={{ color: 'var(--fs-text-primary)' }}>
+            <Dialog.Title className="font-semibold font-sans" style={{ fontSize: 18, color: 'var(--fs-text-primary)' }}>
               {title}
             </Dialog.Title>
             <Dialog.Close asChild>
               <button
                 className="flex items-center justify-center
-                           w-10 h-10 rounded-full
+                           w-11 h-11 rounded-full
                            transition-colors focus:outline-none
-                           focus:ring-2 focus:ring-amber-500"
-                style={{ color: 'var(--fs-text-muted)' }}
+                           focus:ring-2"
+                style={{ color: 'var(--fs-text-muted)', '--tw-ring-color': 'var(--fs-accent, #D4644E)' } as React.CSSProperties}
                 aria-label={t('common.close', 'Close')}
               >
                 <X className="w-5 h-5" />

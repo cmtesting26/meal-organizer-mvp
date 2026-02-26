@@ -1,8 +1,8 @@
 /**
- * AuthFlow Component Tests (Sprint 9 — S9-15)
+ * AuthFlow Component Tests — D3 Design
  *
- * Tests for the AuthFlow UI component screens.
- * Tests welcome screen, navigation between screens, close buttons, and i18n.
+ * Tests for the AuthFlow UI matching D3 Pencil design.
+ * Tests login screen (default), navigation between screens, close buttons, and i18n.
  */
 
 import React from 'react';
@@ -37,21 +37,28 @@ function renderAuthFlow(props?: { onSkip?: () => void; onComplete?: () => void }
   };
 }
 
-describe('AuthFlow — Welcome Screen', () => {
-  it('should render welcome screen by default', () => {
+describe('AuthFlow — Login Screen (Default)', () => {
+  it('should render login screen by default', () => {
     renderAuthFlow();
 
-    expect(screen.getByText('Fork and Spoon')).toBeInTheDocument();
-    expect(screen.getByText(/Create Account/i)).toBeInTheDocument();
-    expect(screen.getByText(/Sign In/i)).toBeInTheDocument();
-    expect(screen.getByText(/Continue without an account/i)).toBeInTheDocument();
+    expect(screen.getByText('Welcome Back')).toBeInTheDocument();
+    expect(screen.getByText('Sign in to your account')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Email address/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/^Password$/i)).toBeInTheDocument();
+    expect(screen.getByText('Sign In')).toBeInTheDocument();
+    expect(screen.getByText('Create Account')).toBeInTheDocument();
   });
 
-  it('should call onSkip when "Continue without account" is clicked', async () => {
+  it('should call onSkip when X close is clicked', async () => {
     const { onSkip } = renderAuthFlow();
 
-    await userEvent.click(screen.getByText(/Continue without an account/i));
+    await userEvent.click(screen.getByLabelText('Close'));
     expect(onSkip).toHaveBeenCalledTimes(1);
+  });
+
+  it('should show forgot password link', () => {
+    renderAuthFlow();
+    expect(screen.getByText(/Forgot your password/i)).toBeInTheDocument();
   });
 });
 
@@ -62,22 +69,28 @@ describe('AuthFlow — Navigation', () => {
     await userEvent.click(screen.getByRole('button', { name: /Create Account/i }));
 
     await waitFor(() => {
-      // On register screen, we should see the email input and heading
+      expect(screen.getByRole('heading', { name: /Create Account/i })).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/Email address/i)).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/^Password$/i)).toBeInTheDocument();
-      expect(screen.getByRole('heading', { name: /Create Account/i })).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/Confirm password/i)).toBeInTheDocument();
     });
   });
 
-  it('should navigate to login screen when Sign In is clicked', async () => {
+  it('should navigate to login from register via "Sign In Instead"', async () => {
     renderAuthFlow();
 
-    await userEvent.click(screen.getByRole('button', { name: /Sign In/i }));
+    // Go to register
+    await userEvent.click(screen.getByRole('button', { name: /Create Account/i }));
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText(/Email address/i)).toBeInTheDocument();
-      expect(screen.getByPlaceholderText(/^Password$/i)).toBeInTheDocument();
-      expect(screen.getByText(/Forgot your password/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /Create Account/i })).toBeInTheDocument();
+    });
+
+    // Switch back to login
+    await userEvent.click(screen.getByRole('button', { name: /Sign In Instead/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Welcome Back')).toBeInTheDocument();
     });
   });
 
@@ -94,47 +107,9 @@ describe('AuthFlow — Navigation', () => {
     expect(onSkip).toHaveBeenCalledTimes(1);
   });
 
-  it('should have X close button on login screen', async () => {
-    const { onSkip } = renderAuthFlow();
-
-    await userEvent.click(screen.getByRole('button', { name: /Sign In/i }));
-
-    await waitFor(() => {
-      expect(screen.getByLabelText('Close')).toBeInTheDocument();
-    });
-
-    await userEvent.click(screen.getByLabelText('Close'));
-    expect(onSkip).toHaveBeenCalledTimes(1);
-  });
-
-  it('should have Back button on register screen', async () => {
-    renderAuthFlow();
-
-    await userEvent.click(screen.getByRole('button', { name: /Create Account/i }));
-
-    await waitFor(() => {
-      expect(screen.getByLabelText('Back')).toBeInTheDocument();
-    });
-
-    await userEvent.click(screen.getByLabelText('Back'));
-
-    // Should be back on welcome screen
-    await waitFor(() => {
-      expect(screen.getByText(/Continue without an account/i)).toBeInTheDocument();
-    });
-  });
-
   it('should navigate from login to forgot password', async () => {
     renderAuthFlow();
 
-    // Go to login
-    await userEvent.click(screen.getByRole('button', { name: /Sign In/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText(/Forgot your password/i)).toBeInTheDocument();
-    });
-
-    // Go to forgot password
     await userEvent.click(screen.getByText(/Forgot your password/i));
 
     await waitFor(() => {
@@ -143,22 +118,20 @@ describe('AuthFlow — Navigation', () => {
     });
   });
 
-  it('should navigate from register to login via "Sign in" link', async () => {
+  it('should show "or" divider on login screen', () => {
     renderAuthFlow();
+    expect(screen.getByText('or')).toBeInTheDocument();
+  });
 
-    // Go to register
-    await userEvent.click(screen.getByRole('button', { name: /Create Account/i }));
+  it('should show app name and tagline on login screen', () => {
+    renderAuthFlow();
+    expect(screen.getByText('Fork and Spoon')).toBeInTheDocument();
+    expect(screen.getByText('Your household recipe planner')).toBeInTheDocument();
+  });
 
-    await waitFor(() => {
-      expect(screen.getByText(/Already have an account/i)).toBeInTheDocument();
-    });
-
-    // Switch to login
-    await userEvent.click(screen.getByText(/^Sign in$/i));
-
-    await waitFor(() => {
-      expect(screen.getByText(/Forgot your password/i)).toBeInTheDocument();
-    });
+  it('should show footer text', () => {
+    renderAuthFlow();
+    expect(screen.getByText(/Terms & Privacy Policy/i)).toBeInTheDocument();
   });
 });
 
@@ -166,6 +139,7 @@ describe('AuthFlow — Registration Validation', () => {
   it('should show password mismatch error', async () => {
     renderAuthFlow();
 
+    // Navigate to register
     await userEvent.click(screen.getByRole('button', { name: /Create Account/i }));
 
     await waitFor(() => {
@@ -176,7 +150,7 @@ describe('AuthFlow — Registration Validation', () => {
     await userEvent.type(screen.getByPlaceholderText(/^Password$/i), 'password123');
     await userEvent.type(screen.getByPlaceholderText(/Confirm password/i), 'different');
 
-    // Submit the form
+    // Submit the form — find the submit button within the form
     const submitButtons = screen.getAllByRole('button', { name: /Create Account/i });
     const formSubmit = submitButtons.find(btn => btn.getAttribute('type') === 'submit') ?? submitButtons[submitButtons.length - 1];
     await userEvent.click(formSubmit);
@@ -216,9 +190,10 @@ describe('AuthFlow — i18n', () => {
     renderAuthFlow();
 
     expect(screen.getByText('Fork and Spoon')).toBeInTheDocument();
-    expect(screen.getByText(/Konto erstellen/i)).toBeInTheDocument();
-    expect(screen.getByText(/Anmelden/i)).toBeInTheDocument();
-    expect(screen.getByText(/Ohne Konto fortfahren/i)).toBeInTheDocument();
+    expect(screen.getByText('Willkommen zurück')).toBeInTheDocument();
+    expect(screen.getByText(/Euer Rezeptplaner/i)).toBeInTheDocument();
+    expect(screen.getByText('Konto erstellen')).toBeInTheDocument();
+    expect(screen.getByText('Anmelden')).toBeInTheDocument();
 
     // Reset to English
     await i18n.changeLanguage('en');

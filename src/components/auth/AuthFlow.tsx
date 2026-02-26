@@ -1,23 +1,22 @@
 /**
- * Auth Flow Component (Sprint 9)
+ * Auth Flow Component — D3 Design
  *
- * Orchestrates the authentication screens:
- * - Welcome (with "Continue without account" option)
- * - Register (S9-07)
- * - Login (S9-08)
- * - Create Household (S9-09)
- * - Join Household (S9-10)
- * - Forgot Password (S9-12)
+ * Orchestrates authentication screens matching D3 Pencil design (RLhbL / tYJfj / 99utc):
+ *   Login (default) → Register → Household Setup
+ *   Forgot Password (from Login)
  *
- * All screens have an X close button to dismiss and go to the app (S9-11).
- * All strings are i18n'd (S9-13).
+ * Layout: Full-screen #FAF8F6 bg → TopBar (X) → LogoArea → CardWrap → Spacer → Footer
+ * Household setup: Back arrow → Title → Create card + Join card
+ *
+ * X close button on auth screens dismisses to local-only mode.
+ * All strings are i18n'd.
  */
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, ChefHat, Mail, Lock, User, Home, KeyRound, ArrowLeft } from 'lucide-react';
-import { Button } from '../ui/button';
+import { X, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { isInviteFlow } from '../onboarding/OnboardingInvitePath';
 import type { AuthScreen } from '../../types/auth';
 
 interface AuthFlowProps {
@@ -28,203 +27,289 @@ interface AuthFlowProps {
 }
 
 export function AuthFlow({ onSkip, onComplete }: AuthFlowProps) {
-  const [screen, setScreen] = useState<AuthScreen>('welcome');
+  const [screen, setScreen] = useState<AuthScreen>('login');
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm">
-        {screen === 'welcome' && (
-          <WelcomeScreen
-            onLogin={() => setScreen('login')}
-            onRegister={() => setScreen('register')}
-            onSkip={onSkip}
-          />
-        )}
-        {screen === 'register' && (
-          <RegisterScreen
-            onClose={onSkip}
-            onBack={() => setScreen('welcome')}
-            onSuccess={() => setScreen('create-household')}
-            onLoginInstead={() => setScreen('login')}
-          />
-        )}
-        {screen === 'login' && (
-          <LoginScreen
-            onClose={onSkip}
-            onBack={() => setScreen('welcome')}
-            onSuccess={onComplete}
-            onRegisterInstead={() => setScreen('register')}
-            onForgotPassword={() => setScreen('forgot-password')}
-          />
-        )}
-        {screen === 'forgot-password' && (
-          <ForgotPasswordScreen
-            onClose={onSkip}
-            onBack={() => setScreen('login')}
-          />
-        )}
-        {screen === 'create-household' && (
-          <CreateHouseholdScreen
-            onClose={onSkip}
-            onSuccess={onComplete}
-            onJoinInstead={() => setScreen('join-household')}
-          />
-        )}
-        {screen === 'join-household' && (
-          <JoinHouseholdScreen
-            onClose={onSkip}
-            onBack={() => setScreen('create-household')}
-            onSuccess={onComplete}
-          />
-        )}
-      </div>
+    <div
+      className="fixed inset-0 z-[100] overflow-y-auto"
+      style={{ backgroundColor: '#FAF8F6' }}
+    >
+      {screen === 'login' && (
+        <LoginScreen
+          onClose={onSkip}
+          onSuccess={onComplete}
+          onRegisterInstead={() => setScreen('register')}
+          onForgotPassword={() => setScreen('forgot-password')}
+        />
+      )}
+      {screen === 'register' && (
+        <RegisterScreen
+          onClose={onSkip}
+          onSuccess={() => setScreen('create-household')}
+          onLoginInstead={() => setScreen('login')}
+        />
+      )}
+      {screen === 'forgot-password' && (
+        <ForgotPasswordScreen
+          onClose={onSkip}
+          onBack={() => setScreen('login')}
+        />
+      )}
+      {(screen === 'create-household' || screen === 'join-household') && (
+        <HouseholdSetupScreen
+          onBack={() => setScreen('register')}
+          onSuccess={onComplete}
+        />
+      )}
     </div>
   );
 }
 
-// ─── Welcome Screen ────────────────────────────────────────────────────────
+// ─── Shared Layout Components ─────────────────────────────────────────────
 
-function WelcomeScreen({
-  onLogin,
-  onRegister,
-  onSkip,
-}: {
-  onLogin: () => void;
-  onRegister: () => void;
-  onSkip: () => void;
-}) {
+/** TopBar: height 44, padding [0,16], X button 44×44 rounded-16, icon 20×20 #7A6E66 */
+function TopBar({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
-
   return (
-    <div className="text-center">
-      <div className="mb-8">
-        <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <ChefHat className="w-8 h-8 text-green-600" />
-        </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.welcome.title')}</h1>
-        <p className="text-gray-500 text-sm">{t('auth.welcome.subtitle')}</p>
-      </div>
-
-      <div className="space-y-3">
-        <Button onClick={onRegister} className="w-full" size="lg">
-          {t('auth.welcome.createAccount')}
-        </Button>
-        <Button onClick={onLogin} variant="outline" className="w-full" size="lg">
-          {t('auth.welcome.signIn')}
-        </Button>
-        <button
-          onClick={onSkip}
-          className="w-full text-sm text-gray-500 hover:text-gray-700 py-2 transition-colors"
-        >
-          {t('auth.welcome.continueWithout')}
-        </button>
-      </div>
+    <div
+      className="flex items-center justify-end"
+      style={{ height: 44, padding: '0 16px' }}
+    >
+      <button
+        onClick={onClose}
+        className="flex items-center justify-center transition-colors"
+        style={{ width: 44, height: 44, borderRadius: 16, background: 'none', border: 'none', cursor: 'pointer' }}
+        aria-label={t('common.close')}
+      >
+        <X style={{ width: 20, height: 20, color: '#7A6E66' }} />
+      </button>
     </div>
   );
 }
 
-// ─── Register Screen (S9-07) ───────────────────────────────────────────────
-
-function RegisterScreen({
-  onClose,
-  onBack,
-  onSuccess,
-  onLoginInstead,
-}: {
-  onClose: () => void;
-  onBack: () => void;
-  onSuccess: () => void;
-  onLoginInstead: () => void;
-}) {
+/** LogoArea: vertical, center, gap 6, padding [16,24,32,24] — logo 48×48 r11, name #2D2522 Fraunces 28/600, tagline #7A6E66 DM Sans 14 */
+function LogoArea() {
   const { t } = useTranslation();
-  const { signUp } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (password !== confirmPassword) {
-      setError(t('auth.register.passwordMismatch'));
-      return;
-    }
-    if (password.length < 6) {
-      setError(t('auth.register.passwordTooShort'));
-      return;
-    }
-
-    setLoading(true);
-    const result = await signUp(email, password);
-    setLoading(false);
-
-    if (result.error) {
-      setError(result.error);
-    } else {
-      onSuccess();
-    }
-  };
-
   return (
-    <AuthCard onClose={onClose} onBack={onBack} title={t('auth.register.title')}>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <InputField
-          icon={<Mail className="w-4 h-4" />}
-          type="email"
-          placeholder={t('auth.register.email')}
-          value={email}
-          onChange={setEmail}
-          required
-          autoFocus
-        />
-        <InputField
-          icon={<Lock className="w-4 h-4" />}
-          type="password"
-          placeholder={t('auth.register.password')}
-          value={password}
-          onChange={setPassword}
-          required
-        />
-        <InputField
-          icon={<Lock className="w-4 h-4" />}
-          type="password"
-          placeholder={t('auth.register.confirmPassword')}
-          value={confirmPassword}
-          onChange={setConfirmPassword}
-          required
-        />
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? t('auth.register.creating') : t('auth.register.createAccount')}
-        </Button>
-
-        <p className="text-center text-sm text-gray-500">
-          {t('auth.register.haveAccount')}{' '}
-          <button type="button" onClick={onLoginInstead} className="text-green-600 font-medium hover:underline">
-            {t('auth.register.signInInstead')}
-          </button>
-        </p>
-      </form>
-    </AuthCard>
+    <div
+      className="flex flex-col items-center"
+      style={{ gap: 6, padding: '16px 24px 32px 24px', width: '100%' }}
+    >
+      <img
+        src="/icons/logo-mark.png"
+        alt="Fork & Spoon"
+        style={{ width: 48, height: 48, borderRadius: 11, objectFit: 'cover' }}
+      />
+      <h1
+        className="text-center"
+        style={{
+          fontFamily: "'Fraunces', serif",
+          fontSize: 28,
+          fontWeight: 600,
+          color: '#2D2522',
+          letterSpacing: '-0.5px',
+        }}
+      >
+        {t('app.name')}
+      </h1>
+      <p
+        className="text-center"
+        style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: 14,
+          fontWeight: 400,
+          color: '#7A6E66',
+        }}
+      >
+        {t('auth.tagline')}
+      </p>
+    </div>
   );
 }
 
-// ─── Login Screen (S9-08) ──────────────────────────────────────────────────
+/** AuthCard: white, rounded-20, shadow 0 2px blur 8 #0000001A, padding 24, gap 16 */
+function AuthCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="flex flex-col"
+      style={{
+        backgroundColor: '#FFFFFF',
+        borderRadius: 20,
+        padding: 24,
+        gap: 16,
+        boxShadow: '0 2px 8px #0000001A',
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** OrDivider: line + "or" + line, gap 12, text DM Sans 12/500 #7A6E66 */
+function OrDivider({ standalone }: { standalone?: boolean }) {
+  const { t } = useTranslation();
+  return (
+    <div
+      className="flex items-center"
+      style={{ gap: 12, ...(standalone ? { margin: '16px 0' } : {}) }}
+    >
+      <div className="flex-1" style={{ height: 1, backgroundColor: '#E8DDD8' }} />
+      <span
+        style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: 12,
+          fontWeight: 500,
+          color: '#7A6E66',
+        }}
+      >
+        {t('auth.or')}
+      </span>
+      <div className="flex-1" style={{ height: 1, backgroundColor: '#E8DDD8' }} />
+    </div>
+  );
+}
+
+/** Footer: DM Sans 11 #7A6E66 center, padding [20,24] */
+function AuthFooter() {
+  const { t } = useTranslation();
+  return (
+    <p
+      className="text-center"
+      style={{
+        padding: '20px 24px',
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: 11,
+        color: '#7A6E66',
+      }}
+    >
+      {t('auth.footer')}
+    </p>
+  );
+}
+
+/** Input: height 48, rounded-12, border 1px #C5B5AB inside, padding [0,14], DM Sans 14 #7A6E66 placeholder */
+function InputField({
+  type,
+  placeholder,
+  value,
+  onChange,
+  required,
+  autoFocus,
+  maxLength,
+}: {
+  type: string;
+  placeholder: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+  autoFocus?: boolean;
+  maxLength?: number;
+}) {
+  return (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      required={required}
+      autoFocus={autoFocus}
+      maxLength={maxLength}
+      aria-label={placeholder}
+      style={{
+        width: '100%',
+        height: 48,
+        borderRadius: 12,
+        border: '1px solid #C5B5AB',
+        padding: '0 14px',
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: 14,
+        color: '#2D2522',
+        backgroundColor: '#FFFFFF',
+        outline: 'none',
+      }}
+    />
+  );
+}
+
+/** Primary CTA: height 48, rounded-14, bg #D4644E, DM Sans 16/600 white */
+function PrimaryButton({
+  children,
+  type = 'button',
+  onClick,
+  disabled,
+}: {
+  children: React.ReactNode;
+  type?: 'button' | 'submit';
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className="w-full transition-colors disabled:opacity-50"
+      style={{
+        height: 48,
+        borderRadius: 14,
+        backgroundColor: '#D4644E',
+        color: '#FFFFFF',
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: 16,
+        fontWeight: 600,
+        border: 'none',
+        cursor: 'pointer',
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** Outline button: height 48, rounded-14, border 1px #C5B5AB, DM Sans 16/600 #2D2522 */
+function OutlineButton({
+  children,
+  type = 'button',
+  onClick,
+  disabled,
+}: {
+  children: React.ReactNode;
+  type?: 'button' | 'submit';
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className="w-full transition-colors disabled:opacity-50"
+      style={{
+        height: 48,
+        borderRadius: 14,
+        backgroundColor: '#FFFFFF',
+        color: '#2D2522',
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: 16,
+        fontWeight: 600,
+        border: '1px solid #C5B5AB',
+        cursor: 'pointer',
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ─── Login Screen ─────────────────────────────────────────────────────────
 
 function LoginScreen({
   onClose,
-  onBack,
   onSuccess,
   onRegisterInstead,
   onForgotPassword,
 }: {
   onClose: () => void;
-  onBack: () => void;
   onSuccess: () => void;
   onRegisterInstead: () => void;
   onForgotPassword: () => void;
@@ -240,10 +325,8 @@ function LoginScreen({
     e.preventDefault();
     setError('');
     setLoading(true);
-
     const result = await signIn(email, password);
     setLoading(false);
-
     if (result.error) {
       setError(result.error);
     } else {
@@ -252,52 +335,204 @@ function LoginScreen({
   };
 
   return (
-    <AuthCard onClose={onClose} onBack={onBack} title={t('auth.login.title')}>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <InputField
-          icon={<Mail className="w-4 h-4" />}
-          type="email"
-          placeholder={t('auth.login.email')}
-          value={email}
-          onChange={setEmail}
-          required
-          autoFocus
-        />
-        <InputField
-          icon={<Lock className="w-4 h-4" />}
-          type="password"
-          placeholder={t('auth.login.password')}
-          value={password}
-          onChange={setPassword}
-          required
-        />
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? t('auth.login.signingIn') : t('auth.login.signIn')}
-        </Button>
-
-        <button
-          type="button"
-          onClick={onForgotPassword}
-          className="w-full text-sm text-gray-500 hover:text-gray-700 transition-colors"
-        >
-          {t('auth.login.forgotPassword')}
-        </button>
-
-        <p className="text-center text-sm text-gray-500">
-          {t('auth.login.noAccount')}{' '}
-          <button type="button" onClick={onRegisterInstead} className="text-green-600 font-medium hover:underline">
-            {t('auth.login.createAccount')}
-          </button>
-        </p>
-      </form>
-    </AuthCard>
+    <div className="flex flex-col min-h-full">
+      <TopBar onClose={onClose} />
+      <LogoArea />
+      {/* CardWrap: padding [0,24] */}
+      <div style={{ padding: '0 24px' }}>
+        <AuthCard>
+          {/* Title: Fraunces 22/600 #2D2522 letterSpacing -0.5 */}
+          <h2
+            style={{
+              fontFamily: "'Fraunces', serif",
+              fontSize: 22,
+              fontWeight: 600,
+              color: '#2D2522',
+              letterSpacing: '-0.5px',
+            }}
+          >
+            {t('auth.login.welcomeBack')}
+          </h2>
+          {/* Subtitle: DM Sans 14 #7A6E66 */}
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14,
+              color: '#7A6E66',
+            }}
+          >
+            {t('auth.login.subtitle')}
+          </p>
+          {/* Form fields — each is a direct card child via gap 16 */}
+          <form onSubmit={handleSubmit} className="contents">
+            <InputField
+              type="email"
+              placeholder={t('auth.login.email')}
+              value={email}
+              onChange={setEmail}
+              required
+              autoFocus
+            />
+            <InputField
+              type="password"
+              placeholder={t('auth.login.password')}
+              value={password}
+              onChange={setPassword}
+              required
+            />
+            {error && (
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#DC2626' }}>
+                {error}
+              </p>
+            )}
+            {/* SignInGroup: vertical gap 10 — signInBtn + forgotLink */}
+            <div className="flex flex-col" style={{ gap: 10 }}>
+              <PrimaryButton type="submit" disabled={loading}>
+                {loading ? t('auth.login.signingIn') : t('auth.login.signIn')}
+              </PrimaryButton>
+              <button
+                type="button"
+                onClick={onForgotPassword}
+                className="transition-colors"
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: '#D4644E',
+                  textAlign: 'center',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                {t('auth.login.forgotPassword')}
+              </button>
+            </div>
+            <OrDivider />
+            <OutlineButton onClick={onRegisterInstead}>
+              {t('auth.welcome.createAccount')}
+            </OutlineButton>
+          </form>
+        </AuthCard>
+      </div>
+      {/* Spacer pushes footer to bottom */}
+      <div className="flex-1" />
+      <AuthFooter />
+    </div>
   );
 }
 
-// ─── Forgot Password Screen (S9-12) ───────────────────────────────────────
+// ─── Register Screen ──────────────────────────────────────────────────────
+
+function RegisterScreen({
+  onClose,
+  onSuccess,
+  onLoginInstead,
+}: {
+  onClose: () => void;
+  onSuccess: () => void;
+  onLoginInstead: () => void;
+}) {
+  const { t } = useTranslation();
+  const { signUp } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    if (password !== confirmPassword) {
+      setError(t('auth.register.passwordMismatch'));
+      return;
+    }
+    if (password.length < 6) {
+      setError(t('auth.register.passwordTooShort'));
+      return;
+    }
+    setLoading(true);
+    const result = await signUp(email, password);
+    setLoading(false);
+    if (result.error) {
+      setError(result.error);
+    } else {
+      onSuccess();
+    }
+  };
+
+  return (
+    <div className="flex flex-col min-h-full">
+      <TopBar onClose={onClose} />
+      <LogoArea />
+      <div style={{ padding: '0 24px' }}>
+        <AuthCard>
+          <h2
+            style={{
+              fontFamily: "'Fraunces', serif",
+              fontSize: 22,
+              fontWeight: 600,
+              color: '#2D2522',
+              letterSpacing: '-0.5px',
+            }}
+          >
+            {t('auth.register.title')}
+          </h2>
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14,
+              color: '#7A6E66',
+            }}
+          >
+            {t('auth.register.subtitle')}
+          </p>
+          <form onSubmit={handleSubmit} className="contents">
+            <InputField
+              type="email"
+              placeholder={t('auth.register.email')}
+              value={email}
+              onChange={setEmail}
+              required
+              autoFocus
+            />
+            <InputField
+              type="password"
+              placeholder={t('auth.register.password')}
+              value={password}
+              onChange={setPassword}
+              required
+            />
+            <InputField
+              type="password"
+              placeholder={t('auth.register.confirmPassword')}
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              required
+            />
+            {error && (
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#DC2626' }}>
+                {error}
+              </p>
+            )}
+            <PrimaryButton type="submit" disabled={loading}>
+              {loading ? t('auth.register.creating') : t('auth.register.createAccount')}
+            </PrimaryButton>
+            <OrDivider />
+            <OutlineButton onClick={onLoginInstead}>
+              {t('auth.register.signInInstead')}
+            </OutlineButton>
+          </form>
+        </AuthCard>
+      </div>
+      <div className="flex-1" />
+      <AuthFooter />
+    </div>
+  );
+}
+
+// ─── Forgot Password Screen ──────────────────────────────────────────────
 
 function ForgotPasswordScreen({
   onClose,
@@ -317,10 +552,8 @@ function ForgotPasswordScreen({
     e.preventDefault();
     setError('');
     setLoading(true);
-
     const result = await resetPassword(email);
     setLoading(false);
-
     if (result.error) {
       setError(result.error);
     } else {
@@ -328,278 +561,315 @@ function ForgotPasswordScreen({
     }
   };
 
-  if (sent) {
-    return (
-      <AuthCard onClose={onClose} onBack={onBack} title={t('auth.forgot.sentTitle')}>
-        <p className="text-gray-600 text-sm mb-4">{t('auth.forgot.sentMessage')}</p>
-        <Button onClick={onBack} variant="outline" className="w-full">
-          {t('auth.forgot.backToLogin')}
-        </Button>
-      </AuthCard>
-    );
-  }
-
   return (
-    <AuthCard onClose={onClose} onBack={onBack} title={t('auth.forgot.title')}>
-      <p className="text-gray-500 text-sm mb-4">{t('auth.forgot.description')}</p>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <InputField
-          icon={<Mail className="w-4 h-4" />}
-          type="email"
-          placeholder={t('auth.forgot.email')}
-          value={email}
-          onChange={setEmail}
-          required
-          autoFocus
-        />
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? t('auth.forgot.sending') : t('auth.forgot.sendReset')}
-        </Button>
-      </form>
-    </AuthCard>
+    <div className="flex flex-col min-h-full">
+      <TopBar onClose={onClose} />
+      <LogoArea />
+      <div style={{ padding: '0 24px' }}>
+        <AuthCard>
+          {sent ? (
+            <>
+              <h2
+                style={{
+                  fontFamily: "'Fraunces', serif",
+                  fontSize: 22,
+                  fontWeight: 600,
+                  color: '#2D2522',
+                  letterSpacing: '-0.5px',
+                }}
+              >
+                {t('auth.forgot.sentTitle')}
+              </h2>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 14,
+                  color: '#7A6E66',
+                }}
+              >
+                {t('auth.forgot.sentMessage')}
+              </p>
+              <OutlineButton onClick={onBack}>
+                {t('auth.forgot.backToLogin')}
+              </OutlineButton>
+            </>
+          ) : (
+            <>
+              <h2
+                style={{
+                  fontFamily: "'Fraunces', serif",
+                  fontSize: 22,
+                  fontWeight: 600,
+                  color: '#2D2522',
+                  letterSpacing: '-0.5px',
+                }}
+              >
+                {t('auth.forgot.title')}
+              </h2>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 14,
+                  color: '#7A6E66',
+                }}
+              >
+                {t('auth.forgot.description')}
+              </p>
+              <form onSubmit={handleSubmit} className="contents">
+                <InputField
+                  type="email"
+                  placeholder={t('auth.forgot.email')}
+                  value={email}
+                  onChange={setEmail}
+                  required
+                  autoFocus
+                />
+                {error && (
+                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#DC2626' }}>
+                    {error}
+                  </p>
+                )}
+                <PrimaryButton type="submit" disabled={loading}>
+                  {loading ? t('auth.forgot.sending') : t('auth.forgot.sendReset')}
+                </PrimaryButton>
+                <OutlineButton onClick={onBack}>
+                  {t('auth.forgot.backToLogin')}
+                </OutlineButton>
+              </form>
+            </>
+          )}
+        </AuthCard>
+      </div>
+      <div className="flex-1" />
+      <AuthFooter />
+    </div>
   );
 }
 
-// ─── Create Household Screen (S9-09) ──────────────────────────────────────
+// ─── Household Setup Screen (Combined Create + Join) ─────────────────────
 
-function CreateHouseholdScreen({
-  onClose,
+function HouseholdSetupScreen({
+  onBack,
   onSuccess,
-  onJoinInstead,
 }: {
-  onClose: () => void;
+  onBack: () => void;
   onSuccess: () => void;
-  onJoinInstead: () => void;
 }) {
   const { t } = useTranslation();
   const { createHousehold, joinHousehold } = useAuth();
-  const [householdName, setHouseholdName] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Create form state
+  const [createName, setCreateName] = useState('');
+  const [createHouseholdName, setCreateHouseholdName] = useState('');
+  const [createError, setCreateError] = useState('');
+  const [createLoading, setCreateLoading] = useState(false);
+
+  // Join form state
+  const [joinName, setJoinName] = useState('');
+  const [joinCode, setJoinCode] = useState(() =>
+    sessionStorage.getItem('fork-spoon-invite-code') || ''
+  );
+  const [joinError, setJoinError] = useState('');
+  const [joinLoading, setJoinLoading] = useState(false);
+
+  // Hide "Create Household" when user arrived via invite link
+  const inviteOnly = isInviteFlow();
+
+  const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    setCreateError('');
+    setCreateLoading(true);
 
     // S27-01: If invite code stored, try auto-join first
     const { getStoredInviteCode, clearStoredInviteCode } = await import('../onboarding/OnboardingInvitePath');
     const storedCode = getStoredInviteCode();
-    if (storedCode && displayName) {
-      const joinResult = await joinHousehold(storedCode, displayName);
+    if (storedCode && createName) {
+      const joinResult = await joinHousehold(storedCode, createName);
       if (!joinResult.error) {
         clearStoredInviteCode();
-        setLoading(false);
+        setCreateLoading(false);
         onSuccess();
         return;
       }
-      // Auto-join failed — redirect to join screen with pre-filled code
-      setLoading(false);
-      onJoinInstead();
-      return;
     }
 
     const result = await createHousehold(
-      householdName || t('auth.household.defaultName'),
-      displayName
+      createHouseholdName || t('auth.household.defaultName'),
+      createName
     );
-    setLoading(false);
-
+    setCreateLoading(false);
     if (result.error) {
-      setError(result.error);
+      setCreateError(result.error);
     } else {
       onSuccess();
     }
   };
 
-  return (
-    <AuthCard onClose={onClose} title={t('auth.household.createTitle')}>
-      <p className="text-gray-500 text-sm mb-4">{t('auth.household.createDescription')}</p>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <InputField
-          icon={<User className="w-4 h-4" />}
-          type="text"
-          placeholder={t('auth.household.yourName')}
-          value={displayName}
-          onChange={setDisplayName}
-          required
-          autoFocus
-        />
-        <InputField
-          icon={<Home className="w-4 h-4" />}
-          type="text"
-          placeholder={t('auth.household.householdName')}
-          value={householdName}
-          onChange={setHouseholdName}
-        />
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? t('auth.household.creating') : t('auth.household.create')}
-        </Button>
-
-        <p className="text-center text-sm text-gray-500">
-          {t('auth.household.haveInvite')}{' '}
-          <button type="button" onClick={onJoinInstead} className="text-green-600 font-medium hover:underline">
-            {t('auth.household.joinInstead')}
-          </button>
-        </p>
-      </form>
-    </AuthCard>
-  );
-}
-
-// ─── Join Household Screen (S9-10) ────────────────────────────────────────
-
-function JoinHouseholdScreen({
-  onClose,
-  onBack,
-  onSuccess,
-}: {
-  onClose: () => void;
-  onBack: () => void;
-  onSuccess: () => void;
-}) {
-  const { t } = useTranslation();
-  const { joinHousehold } = useAuth();
-  // S27-01: Pre-fill invite code from sessionStorage if available
-  const [inviteCode, setInviteCode] = useState(() => {
-    return sessionStorage.getItem('fork-spoon-invite-code') || '';
-  });
-  const [displayName, setDisplayName] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleJoin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    const result = await joinHousehold(inviteCode, displayName);
-    setLoading(false);
-
+    setJoinError('');
+    setJoinLoading(true);
+    const result = await joinHousehold(joinCode, joinName);
+    setJoinLoading(false);
     if (result.error) {
-      setError(result.error);
+      setJoinError(result.error);
     } else {
-      // S27-01: Clear stored invite code on success
       sessionStorage.removeItem('fork-spoon-invite-code');
       onSuccess();
     }
   };
 
   return (
-    <AuthCard onClose={onClose} onBack={onBack} title={t('auth.household.joinTitle')}>
-      <p className="text-gray-500 text-sm mb-4">{t('auth.household.joinDescription')}</p>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <InputField
-          icon={<User className="w-4 h-4" />}
-          type="text"
-          placeholder={t('auth.household.yourName')}
-          value={displayName}
-          onChange={setDisplayName}
-          required
-          autoFocus
-        />
-        <InputField
-          icon={<KeyRound className="w-4 h-4" />}
-          type="text"
-          placeholder={t('auth.household.inviteCode')}
-          value={inviteCode}
-          onChange={setInviteCode}
-          required
-          maxLength={6}
-        />
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? t('auth.household.joining') : t('auth.household.join')}
-        </Button>
-      </form>
-    </AuthCard>
-  );
-}
-
-// ─── Shared Components ─────────────────────────────────────────────────────
-
-function AuthCard({
-  children,
-  title,
-  onClose,
-  onBack,
-}: {
-  children: React.ReactNode;
-  title: string;
-  onClose: () => void;
-  onBack?: () => void;
-}) {
-  return (
-    <div className="bg-white rounded-xl border shadow-sm p-6 relative">
-      {/* X close button (S9-11) */}
-      <button
-        onClick={onClose}
-        className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-100 transition-colors"
-        aria-label="Close"
+    <div className="flex flex-col min-h-full">
+      {/* Top bar with back arrow */}
+      <div
+        className="flex items-center"
+        style={{ height: 44, padding: '0 16px' }}
       >
-        <X className="w-5 h-5 text-gray-400" />
-      </button>
-
-      {/* Back arrow */}
-      {onBack && (
         <button
           onClick={onBack}
-          className="absolute top-3 left-3 p-1 rounded-full hover:bg-gray-100 transition-colors"
+          className="flex items-center justify-center transition-colors"
+          style={{ width: 44, height: 44, borderRadius: 16, background: 'none', border: 'none', cursor: 'pointer' }}
           aria-label="Back"
         >
-          <ArrowLeft className="w-5 h-5 text-gray-400" />
+          <ArrowLeft style={{ width: 20, height: 20, color: '#2D2522' }} />
         </button>
-      )}
+      </div>
 
-      <h2 className="text-xl font-bold text-gray-900 mb-4 text-center pt-2">{title}</h2>
-      {children}
+      <div style={{ padding: '0 24px 48px' }}>
+        {/* Page title */}
+        <h1
+          style={{
+            fontFamily: "'Fraunces', serif",
+            fontSize: 26,
+            fontWeight: 700,
+            color: '#2D2522',
+            marginBottom: 8,
+          }}
+        >
+          {inviteOnly ? t('auth.household.joinTitle') : t('auth.household.createTitle')}
+        </h1>
+        <p
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 14,
+            color: '#7A6E66',
+            marginBottom: 24,
+            maxWidth: 280,
+          }}
+        >
+          {inviteOnly ? t('auth.household.joinDescription') : t('auth.household.setupSubtitle')}
+        </p>
+
+        {/* Create Household card — hidden when user arrived via invite link */}
+        {!inviteOnly && (
+          <>
+            <AuthCard>
+              <h3
+                style={{
+                  fontFamily: "'Fraunces', serif",
+                  fontSize: 18,
+                  fontWeight: 600,
+                  color: '#2D2522',
+                }}
+              >
+                {t('auth.household.createCardTitle')}
+              </h3>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 13,
+                  color: '#7A6E66',
+                }}
+              >
+                {t('auth.household.createCardSubtitle')}
+              </p>
+              <form onSubmit={handleCreate} className="contents">
+                <InputField
+                  type="text"
+                  placeholder={t('auth.household.yourName')}
+                  value={createName}
+                  onChange={setCreateName}
+                  required
+                  autoFocus
+                />
+                <InputField
+                  type="text"
+                  placeholder={t('auth.household.householdName')}
+                  value={createHouseholdName}
+                  onChange={setCreateHouseholdName}
+                />
+                {createError && (
+                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#DC2626' }}>
+                    {createError}
+                  </p>
+                )}
+                <PrimaryButton type="submit" disabled={createLoading}>
+                  {createLoading ? t('auth.household.creating') : t('auth.household.create')}
+                </PrimaryButton>
+              </form>
+            </AuthCard>
+
+            {/* "or" divider between cards */}
+            <OrDivider standalone />
+          </>
+        )}
+
+        {/* Join Household card */}
+        <AuthCard>
+          <h3
+            style={{
+              fontFamily: "'Fraunces', serif",
+              fontSize: 18,
+              fontWeight: 600,
+              color: '#2D2522',
+            }}
+          >
+            {t('auth.household.joinCardTitle')}
+          </h3>
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 13,
+              color: '#7A6E66',
+            }}
+          >
+            {t('auth.household.joinCardSubtitle')}
+          </p>
+          <form onSubmit={handleJoin} className="contents">
+            <InputField
+              type="text"
+              placeholder={t('auth.household.yourName')}
+              value={joinName}
+              onChange={setJoinName}
+              required
+              autoFocus={inviteOnly}
+            />
+            <InputField
+              type="text"
+              placeholder={t('auth.household.inviteCode')}
+              value={joinCode}
+              onChange={setJoinCode}
+              required
+              maxLength={6}
+            />
+            {joinError && (
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#DC2626' }}>
+                {joinError}
+              </p>
+            )}
+            {inviteOnly ? (
+              <PrimaryButton type="submit" disabled={joinLoading}>
+                {joinLoading ? t('auth.household.joining') : t('auth.household.join')}
+              </PrimaryButton>
+            ) : (
+              <OutlineButton type="submit" disabled={joinLoading}>
+                {joinLoading ? t('auth.household.joining') : t('auth.household.join')}
+              </OutlineButton>
+            )}
+          </form>
+        </AuthCard>
+      </div>
     </div>
   );
 }
-
-function InputField({
-  icon,
-  type,
-  placeholder,
-  value,
-  onChange,
-  required,
-  autoFocus,
-  maxLength,
-}: {
-  icon: React.ReactNode;
-  type: string;
-  placeholder: string;
-  value: string;
-  onChange: (v: string) => void;
-  required?: boolean;
-  autoFocus?: boolean;
-  maxLength?: number;
-}) {
-  return (
-    <div className="relative">
-      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">{icon}</span>
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        required={required}
-        autoFocus={autoFocus}
-        maxLength={maxLength}
-        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
-      />
-    </div>
-  );
-}
-
-

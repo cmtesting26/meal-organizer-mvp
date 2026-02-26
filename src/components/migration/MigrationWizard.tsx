@@ -126,25 +126,25 @@ export function MigrationWizard({ onDismiss, inline = false }: MigrationWizardPr
 
   const containerClass = inline
     ? 'bg-white rounded-lg border p-6'
-    : 'min-h-screen bg-gray-50 flex items-center justify-center p-4';
+    : 'min-h-screen flex items-center justify-center p-4';
 
   const cardClass = inline
     ? ''
     : 'bg-white rounded-xl shadow-lg max-w-md w-full p-6';
 
   return (
-    <div className={containerClass}>
+    <div className={containerClass} style={!inline ? { backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' } : undefined}>
       <div className={cardClass}>
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Upload className="w-5 h-5 text-green-600" />
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
               {t('migration.title')}
             </h2>
           </div>
           {step === 'ready' && (
-            <button onClick={onDismiss} className="text-gray-400 hover:text-gray-600">
+            <button onClick={onDismiss} className="hover:text-[var(--fs-text-secondary)]" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} aria-label={t('common.dismiss', 'Dismiss')}>
               <X className="w-5 h-5" />
             </button>
           )}
@@ -154,35 +154,35 @@ export function MigrationWizard({ onDismiss, inline = false }: MigrationWizardPr
         {step === 'detecting' && (
           <div className="flex flex-col items-center gap-3 py-8">
             <Loader2 className="w-8 h-8 text-green-600 animate-spin" />
-            <p className="text-sm text-gray-500">{t('migration.detecting')}</p>
+            <p className="text-sm" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{t('migration.detecting')}</p>
           </div>
         )}
 
         {/* Ready — show summary + migrate button */}
         {step === 'ready' && localSummary && (
           <div>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm mb-4" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
               {t('migration.description')}
             </p>
 
             {/* Data summary */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-4 space-y-3">
+            <div className="rounded-lg p-4 mb-4 space-y-3" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
               <div className="flex items-center gap-3">
-                <BookOpen className="w-4 h-4" style={{ color: '#D97706' }} />
-                <span className="text-sm text-gray-700">
+                <BookOpen className="w-4 h-4" style={{ color: 'var(--fs-accent, #D4644E)' }} />
+                <span className="text-sm" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
                   {t('migration.recipesCount', { count: localSummary.recipes })}
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <CalendarDays className="w-4 h-4 text-orange-500" />
-                <span className="text-sm text-gray-700">
+                <CalendarDays className="w-4 h-4" style={{ color: 'var(--fs-accent, #D4644E)' }} />
+                <span className="text-sm" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
                   {t('migration.scheduleCount', { count: localSummary.scheduleEntries })}
                 </span>
               </div>
               {localSummary.tags > 0 && (
                 <div className="flex items-center gap-3">
                   <Tag className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
                     {t('migration.tagsCount', { count: localSummary.tags })}
                   </span>
                 </div>
@@ -212,8 +212,8 @@ export function MigrationWizard({ onDismiss, inline = false }: MigrationWizardPr
         {step === 'migrating' && (
           <div className="flex flex-col items-center gap-3 py-8">
             <Loader2 className="w-8 h-8 text-green-600 animate-spin" />
-            <p className="text-sm text-gray-600">{t('migration.inProgress')}</p>
-            <p className="text-xs text-gray-400">{t('migration.doNotClose')}</p>
+            <p className="text-sm" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>{t('migration.inProgress')}</p>
+            <p className="text-xs" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{t('migration.doNotClose')}</p>
           </div>
         )}
 
@@ -222,7 +222,7 @@ export function MigrationWizard({ onDismiss, inline = false }: MigrationWizardPr
           <div>
             <div className="flex flex-col items-center gap-2 py-4">
               <CheckCircle2 className="w-10 h-10 text-green-500" />
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
                 {t('migration.successTitle')}
               </p>
             </div>
@@ -252,21 +252,21 @@ export function MigrationWizard({ onDismiss, inline = false }: MigrationWizardPr
         {step === 'partial' && result && (
           <div>
             <div className="flex flex-col items-center gap-2 py-4">
-              <AlertTriangle className="w-10 h-10 text-amber-500" />
-              <p className="text-sm font-medium text-gray-900">
+              <AlertTriangle className="w-10 h-10" style={{ color: 'var(--fs-accent, #D4644E)' }} />
+              <p className="text-sm font-medium" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
                 {t('migration.partialTitle')}
               </p>
             </div>
 
-            <div className="bg-amber-50 rounded-lg p-4 mb-4 space-y-2">
-              <p className="text-sm text-amber-800">
+            <div className="rounded-lg p-4 mb-4 space-y-2" style={{ backgroundColor: 'var(--fs-accent-light, #FEF0E8)' }}>
+              <p className="text-sm" style={{ color: 'var(--fs-accent-text, #B84835)' }}>
                 {t('migration.migratedRecipes', { count: result.summary.recipes })}
               </p>
-              <p className="text-sm text-amber-800">
+              <p className="text-sm" style={{ color: 'var(--fs-accent-text, #B84835)' }}>
                 {t('migration.migratedSchedule', { count: result.summary.scheduleEntries })}
               </p>
               {result.errors.length > 0 && (
-                <div className="mt-2 text-xs text-amber-700">
+                <div className="mt-2 text-xs" style={{ color: 'var(--fs-accent-text, #B84835)' }}>
                   <p className="font-medium">{t('migration.errorsTitle')}:</p>
                   {result.errors.slice(0, 3).map((err, i) => (
                     <p key={i}>• {err}</p>
@@ -296,7 +296,7 @@ export function MigrationWizard({ onDismiss, inline = false }: MigrationWizardPr
           <div>
             <div className="flex flex-col items-center gap-2 py-4">
               <AlertTriangle className="w-10 h-10 text-red-500" />
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
                 {t('migration.failedTitle')}
               </p>
             </div>
