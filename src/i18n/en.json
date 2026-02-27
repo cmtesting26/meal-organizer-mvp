@@ -625,7 +625,7 @@
     "exitMessage": "Your progress won't be saved. Are you sure you want to exit?",
     "exitConfirm": "Exit",
     "exitCancel": "Keep Cooking",
-    "startCooking": "Step-by-step instructions",
+    "startCooking": "Step-by-Step Instructions",
     "wakeLockActive": "Screen will stay on",
     "wakeLockUnsupported": "Tip: Adjust your screen timeout setting to keep the display on while cooking",
     "noSteps": "No steps found for this recipe.",
