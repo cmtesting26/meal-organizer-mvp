@@ -41,6 +41,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
   const [timers, setTimers] = useState<Map<number, TimerData>>(new Map());
   const intervalRefs = useRef<Map<number, ReturnType<typeof setInterval>>>(new Map());
   const pendingAlertRef = useRef(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
   // Visual flash state for timer-done alert
   const [timerFlash, setTimerFlash] = useState(false);
 
@@ -52,27 +53,65 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
   };
 
   /**
-   * Timer alert: uses Speech Synthesis API + visual flash.
-   * Speech synthesis uses the OS accessibility engine, not the media player,
-   * so it's not subject to iOS Safari autoplay restrictions.
+   * Create/resume AudioContext during a user gesture (timer start button).
+   * Must be called inside a click handler so iOS Safari "blesses" the context.
+   */
+  const ensureAudioContext = useCallback(() => {
+    const AC = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AC) return;
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new AC();
+    }
+    if (audioCtxRef.current.state === 'suspended') {
+      audioCtxRef.current.resume();
+    }
+  }, []);
+
+  /**
+   * Timer alert: Web Audio API beep + visual flash overlay.
+   * The AudioContext was created/resumed during the user's tap on "Start",
+   * so it should be in "running" state and allowed to produce sound.
    */
   const playAlert = useCallback(() => {
-    // Vibrate on Android (not supported on iOS, but harmless)
+    // Vibrate on Android
     if (navigator.vibrate) {
       navigator.vibrate([200, 100, 200, 100, 200]);
     }
-    // Speech synthesis — works on iOS without user gesture
-    if ('speechSynthesis' in window) {
-      const msg = new SpeechSynthesisUtterance(t('cookingMode.timerDone'));
-      msg.rate = 1;
-      msg.pitch = 1.2;
-      msg.volume = 1;
-      window.speechSynthesis.speak(msg);
+    // Web Audio API — play a C-E-G arpeggio chime
+    const ctx = audioCtxRef.current;
+    if (ctx) {
+      // Resume in case it got suspended (e.g. after backgrounding)
+      const play = () => {
+        const now = ctx.currentTime;
+        const playNote = (freq: number, start: number, dur: number) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.4, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(start);
+          osc.stop(start + dur);
+        };
+        playNote(1047, now, 0.35);       // C6
+        playNote(1319, now + 0.15, 0.35); // E6
+        playNote(1568, now + 0.3, 0.45);  // G6
+        // Repeat pattern for emphasis
+        playNote(1047, now + 0.6, 0.35);
+        playNote(1319, now + 0.75, 0.35);
+        playNote(1568, now + 0.9, 0.45);
+      };
+      if (ctx.state === 'suspended') {
+        ctx.resume().then(play).catch(() => {});
+      } else {
+        play();
+      }
     }
     // Visual flash
     setTimerFlash(true);
-    setTimeout(() => setTimerFlash(false), 3000);
-  }, [t]);
+  }, []);
 
   // When the app returns from background, fire any pending alert
   useEffect(() => {
@@ -152,6 +191,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
 
   // ─── Timer action handlers ────────────────────────────────────────
   const handleTimerStart = useCallback((seconds: number) => {
+    ensureAudioContext();
     setTimers((prev) => {
       const next = new Map(prev);
       next.set(currentStepIndex, {
@@ -163,7 +203,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
       });
       return next;
     });
-  }, [currentStepIndex]);
+  }, [currentStepIndex, ensureAudioContext]);
 
   const handleTimerPause = useCallback(() => {
     setTimers((prev) => {
