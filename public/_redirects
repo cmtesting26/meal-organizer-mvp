@@ -1,0 +1,7 @@
+# Auth callback redirect — must come BEFORE the SPA catch-all.
+# Supabase sends users back with tokens in hash/query params;
+# this ensures the SPA handles them correctly.
+/auth/callback  /index.html  200
+
+# SPA catch-all — all routes served by index.html
+/*  /index.html  200
