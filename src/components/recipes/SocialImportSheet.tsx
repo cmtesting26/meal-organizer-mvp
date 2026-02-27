@@ -6,7 +6,7 @@
  * and routes through caption-based recipe parsing.
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -50,6 +50,7 @@ export function SocialImportSheet({ open, onOpenChange, onRecipeImported }: Soci
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const detectedPlatform = useMemo(() => {
     if (!url.trim()) return null;
@@ -59,10 +60,14 @@ export function SocialImportSheet({ open, onOpenChange, onRecipeImported }: Soci
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      setUrl(text.trim());
-      setError(null);
+      if (text.trim()) {
+        setUrl(text.trim());
+        setError(null);
+      } else {
+        inputRef.current?.focus();
+      }
     } catch {
-      setError(t('import.clipboardError'));
+      inputRef.current?.focus();
     }
   };
 
@@ -162,6 +167,7 @@ export function SocialImportSheet({ open, onOpenChange, onRecipeImported }: Soci
                 style={{ left: 14, width: 16, height: 16, color: 'var(--fs-text-secondary, #7A6E66)' }}
               />
               <input
+                ref={inputRef}
                 type="url"
                 placeholder={t('import.urlPlaceholder')}
                 value={url}

@@ -247,6 +247,7 @@ function AppContent() {
   const handleRecipeImported = (recipe: ParsedRecipe) => {
     setImportedRecipe(recipe);
     setShowImportSheet(false);
+    setShowSocialImportSheet(false);
     setShowRecipeForm(true);
     if (!recipe.success) {
       toast.info(t('import.completeMissing'));

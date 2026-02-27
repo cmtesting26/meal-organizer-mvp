@@ -13,7 +13,7 @@
  * Implementation Plan Phase 18 · Roadmap V1.3 Epic 2
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Loader2,
@@ -58,6 +58,7 @@ export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportShee
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Detect social media platform in real-time
   const detectedPlatform = useMemo(() => {
@@ -68,10 +69,16 @@ export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportShee
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      setUrl(text.trim());
-      setError(null);
+      if (text.trim()) {
+        setUrl(text.trim());
+        setError(null);
+      } else {
+        // Clipboard empty — focus input so user can paste manually
+        inputRef.current?.focus();
+      }
     } catch {
-      setError(t('import.clipboardError'));
+      // Clipboard API failed (common in mobile PWA) — focus input for manual paste
+      inputRef.current?.focus();
     }
   };
 
@@ -176,6 +183,7 @@ export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportShee
               />
             )}
             <input
+              ref={inputRef}
               type="url"
               placeholder={t('import.urlPlaceholder', 'https://example.com/recipe')}
               value={url}
