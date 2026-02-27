@@ -95,8 +95,9 @@ body {
   body {
     font-size: 1rem; /* 16px */
   }
-  /* Ensure inputs are at least 16px to prevent iOS auto-zoom */
+  /* Ensure inputs are at least 16px to prevent iOS auto-zoom.
+     !important needed to override inline fontSize: 14 styles. */
   input, textarea, select {
-    font-size: 1rem;
+    font-size: 1rem !important;
   }
 }

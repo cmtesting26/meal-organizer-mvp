@@ -570,6 +570,15 @@ function AppContent() {
   );
 }
 
+/** Scroll to top on every route change */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   const [splashDone, setSplashDone] = useState(() => {
     // Skip splash on HMR / subsequent renders within same session
@@ -585,6 +594,7 @@ function App() {
     <>
       {!splashDone && <SplashScreen onComplete={handleSplashComplete} />}
       <BrowserRouter>
+        <ScrollToTop />
         <AuthProvider>
           <SyncProvider>
             <AppContent />
