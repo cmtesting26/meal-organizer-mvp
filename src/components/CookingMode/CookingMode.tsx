@@ -117,24 +117,23 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
   };
 
   // Play the chime via the pre-unlocked <audio> element.
-  // The audio is already looping silently — just turn up the volume,
-  // let it play through once, then resume silent looping.
+  // The audio is ALREADY looping silently — we never call .play() again.
+  // We only change volume and currentTime, which iOS allows freely.
   const playAlert = useCallback(() => {
     if (navigator.vibrate) {
       navigator.vibrate([200, 100, 200, 100, 200]);
     }
     const audio = alarmAudioRef.current;
     if (audio) {
-      audio.loop = false;  // Stop looping so 'ended' fires after one play
-      audio.volume = 1;
+      // Just turn up volume and seek to start — no .play() call needed
       audio.currentTime = 0;
-      audio.play().catch(() => { pendingAlertRef.current = true; });
-      // After the chime finishes, resume silent looping to keep session alive
-      audio.addEventListener('ended', () => {
-        audio.volume = 0;
-        audio.loop = true;
-        audio.play().catch(() => {});
-      }, { once: true });
+      audio.volume = 1;
+      // Turn volume back to 0 after the chime finishes (~1.3s)
+      setTimeout(() => {
+        if (alarmAudioRef.current) {
+          alarmAudioRef.current.volume = 0;
+        }
+      }, 1400);
       return;
     }
     pendingAlertRef.current = true;
@@ -147,9 +146,20 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
         pendingAlertRef.current = false;
         const audio = alarmAudioRef.current;
         if (audio) {
-          audio.volume = 1;
-          audio.currentTime = 0;
+          // Audio may have been paused by iOS while backgrounded — restart it
+          audio.volume = 0;
+          audio.loop = true;
           audio.play().catch(() => {});
+          // Then play the alert chime
+          setTimeout(() => {
+            if (alarmAudioRef.current) {
+              alarmAudioRef.current.currentTime = 0;
+              alarmAudioRef.current.volume = 1;
+              setTimeout(() => {
+                if (alarmAudioRef.current) alarmAudioRef.current.volume = 0;
+              }, 1400);
+            }
+          }, 100);
         }
         if (navigator.vibrate) {
           navigator.vibrate([200, 100, 200, 100, 200]);
