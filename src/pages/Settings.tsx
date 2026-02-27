@@ -60,7 +60,7 @@ export function Settings() {
 
         {/* Migration Button */}
         {isAuthenticated && canMigrate && !showMigrationWizard && (
-          <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-warning-bg, #FAF8F6)', boxShadow: '0 2px 12px #2D252208' }}>
+          <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-warning-bg, #FAF8F6)', boxShadow: 'var(--fs-shadow-sm)' }}>
             <div className="flex items-center gap-3 mb-2">
               <Upload className="w-5 h-5" style={{ color: 'var(--fs-accent, #D4644E)' }} />
               <div>
@@ -94,7 +94,7 @@ export function Settings() {
         )}
 
         {/* Appearance / Theme — using OptionButton */}
-        <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}>
+        <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: 'var(--fs-shadow-sm)' }}>
           <div className="flex items-center gap-3 mb-3">
             <Palette className="w-5 h-5" style={{ color: 'var(--fs-text-muted)' }} />
             <div>
@@ -114,7 +114,7 @@ export function Settings() {
         </div>
 
         {/* Language — using OptionButton */}
-        <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}>
+        <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: 'var(--fs-shadow-sm)' }}>
           <div className="flex items-center gap-3 mb-3">
             <Globe className="w-5 h-5" style={{ color: 'var(--fs-text-muted)' }} />
             <div>
@@ -140,7 +140,7 @@ export function Settings() {
           <button
             onClick={() => navigate('/help')}
             className="w-full flex items-center gap-3 p-3 rounded-2xl transition-colors text-left"
-            style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}
+            style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: 'var(--fs-shadow-sm)' }}
           >
             <LifeBuoy className="w-5 h-5" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
             <div>
@@ -152,7 +152,7 @@ export function Settings() {
           <button
             onClick={() => navigate('/privacy')}
             className="w-full flex items-center gap-3 p-3 rounded-2xl transition-colors text-left"
-            style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}
+            style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: 'var(--fs-shadow-sm)' }}
           >
             <Shield className="w-5 h-5" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
             <div>

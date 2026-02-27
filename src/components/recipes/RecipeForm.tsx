@@ -168,7 +168,8 @@ export function RecipeForm({ open, onOpenChange, recipe, onSave }: RecipeFormPro
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="!p-0 !gap-0 !border-t-0 rounded-t-[20px] flex flex-col max-h-[90vh] [&>button]:hidden !bg-white"
+        className="!p-0 !gap-0 !border-t-0 rounded-t-[20px] flex flex-col max-h-[90vh] [&>button]:hidden"
+        style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)' }}
       >
         {/* Header — padding [24,24,0,24], gap 4 */}
         <SheetHeader className="!space-y-0 flex flex-col gap-1 px-6 pt-6 text-left">

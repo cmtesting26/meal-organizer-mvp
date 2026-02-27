@@ -47,7 +47,7 @@ function SignOutConfirmDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl p-6 max-w-sm mx-4 shadow-xl">
+      <div className="rounded-xl p-6 max-w-sm mx-4 shadow-xl" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)' }}>
         <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
           {t('account.signOutConfirmTitle')}
         </h3>
@@ -329,7 +329,7 @@ export function AccountSection() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}>
+      <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: 'var(--fs-shadow-sm)' }}>
         <div className="flex items-center gap-3">
           <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
           <span className="text-sm" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{t('common.loading')}</span>
@@ -342,7 +342,7 @@ export function AccountSection() {
 
   if (!isAuthenticated) {
     return (
-      <div className="rounded-2xl p-4 mb-3" style={{ backgroundImage: 'linear-gradient(to bottom right, var(--fs-accent-light, #FEF0E8), #FFF7ED)', boxShadow: '0 2px 12px #2D252208' }}>
+      <div className="rounded-2xl p-4 mb-3" style={{ backgroundImage: 'linear-gradient(to bottom right, var(--fs-accent-light, #FEF0E8), var(--fs-bg-surface, #FFF7ED))', boxShadow: 'var(--fs-shadow-sm)' }}>
         <div className="flex items-center gap-3 mb-2">
           <Cloud className="w-5 h-5 text-green-600" />
           <p className="font-medium text-sm" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>{t('account.guestTitle')}</p>
@@ -366,7 +366,7 @@ export function AccountSection() {
   // ─── Authenticated State (S12-05) ───────────────────────────────────
 
   return (
-    <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}>
+    <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: 'var(--fs-shadow-sm)' }}>
       {/* User Info */}
       <div className="flex items-center gap-3">
         <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
