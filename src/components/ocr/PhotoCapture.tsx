@@ -11,14 +11,12 @@ import { Camera, Upload, X, RotateCcw, Aperture } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { extractRecipeWithVision, type ClaudeVisionResult } from '@/lib/claudeVisionOcr';
-import { performOcr, type OcrProgress } from '@/lib/ocrProcessor';
-import type { OcrResult } from '@/lib/ocrProcessor';
+import type { OcrProgress } from '@/lib/ocrProcessor';
 
-/** Combined result: either a structured Vision result or raw OCR text */
+/** Result from photo capture + AI extraction */
 export interface PhotoCaptureResult {
-  type: 'vision' | 'ocr';
+  type: 'vision';
   vision?: ClaudeVisionResult;
-  ocr?: OcrResult;
   imageUrl: string | null;
 }
 
@@ -135,27 +133,11 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
     setMode('processing');
     setProgress({ stage: 'loading', progress: 0, message: 'Starting…' });
 
-    // Try Claude Vision first (much better quality)
-    try {
-      const visionResult = await extractRecipeWithVision(capturedImage, (p) => {
-        setProgress(p);
-      });
-
-      if (visionResult.success) {
-        onComplete({ type: 'vision', vision: visionResult, imageUrl: capturedImage });
-        return;
-      }
-    } catch {
-      // Vision failed — fall through to Tesseract
-    }
-
-    // Fallback to Tesseract OCR
-    setProgress({ stage: 'loading', progress: 10, message: 'Falling back to local OCR…' });
-    const ocrResult = await performOcr(capturedImage, 'eng+deu', (p) => {
+    const visionResult = await extractRecipeWithVision(capturedImage, (p) => {
       setProgress(p);
     });
 
-    onComplete({ type: 'ocr', ocr: ocrResult, imageUrl: capturedImage });
+    onComplete({ type: 'vision', vision: visionResult, imageUrl: capturedImage });
   }, [capturedImage, onComplete]);
 
   // Inner content shared by both modes

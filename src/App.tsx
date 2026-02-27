@@ -37,7 +37,7 @@ import { hasLocalData, getMigrationStatus } from './lib/migrationService';
 import { type PhotoCaptureResult } from './components/ocr/PhotoCapture';
 import { PhotoImportSheet } from './components/ocr/PhotoImportSheet';
 import { OcrReviewForm } from './components/ocr/OcrReviewForm';
-import { parseOcrText, type OcrParsedRecipe } from './lib/ocrRecipeParser';
+import { type OcrParsedRecipe } from './lib/ocrRecipeParser';
 import { OnboardingFlow, isOnboardingComplete } from './components/onboarding/OnboardingFlow';
 import { InviteHighlights, isInviteFlow } from './components/onboarding/OnboardingInvitePath';
 import type { ParsedRecipe, Recipe } from './types/recipe';
@@ -275,8 +275,7 @@ function AppContent() {
     setShowOcrCapture(false);
     setOcrImageUrl(result.imageUrl);
 
-    if (result.type === 'vision' && result.vision?.success) {
-      // Claude Vision returned structured data — create OcrParsedRecipe directly
+    if (result.vision?.success) {
       const parsed: OcrParsedRecipe = {
         title: result.vision.title,
         ingredients: result.vision.ingredients,
@@ -293,14 +292,8 @@ function AppContent() {
       };
       setOcrParsedRecipe(parsed);
       setShowOcrReview(true);
-    } else if (result.type === 'ocr' && result.ocr?.success && result.ocr.text) {
-      // Tesseract fallback — parse raw text
-      const parsed = parseOcrText(result.ocr.text);
-      setOcrParsedRecipe(parsed);
-      setShowOcrReview(true);
     } else {
-      const error = result.vision?.error || result.ocr?.error || t('ocr.ocrFailed');
-      toast.error(error);
+      toast.error(result.vision?.error || t('ocr.ocrFailed'));
     }
   };
 

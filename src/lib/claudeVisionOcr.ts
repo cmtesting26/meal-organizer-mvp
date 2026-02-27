@@ -1,13 +1,8 @@
 /**
- * Claude Vision Recipe Extractor (Sprint 14 — S14-01 improvement)
+ * Claude Vision Recipe Extractor
  *
- * Uses Claude's vision capabilities via the Anthropic API to extract
- * recipes from photos. Far more accurate than Tesseract for:
- * - Decorative/handwritten fonts
- * - Complex layouts with images mixed in
- * - Understanding recipe structure (title, ingredients, instructions)
- *
- * Falls back to Tesseract if the API is unavailable.
+ * Calls the /api/ocr Cloudflare Pages Function which proxies
+ * requests to the Claude Vision API server-side.
  *
  * @module claudeVisionOcr
  */
@@ -60,7 +55,7 @@ function blobToBase64(blob: Blob): Promise<{ data: string; mediaType: string }> 
 }
 
 /**
- * Extract a recipe from an image using Claude Vision API.
+ * Extract a recipe from an image using the /api/ocr Pages Function.
  *
  * @param imageSource - File, Blob, or data URL
  * @param onProgress - Progress callback
@@ -77,7 +72,6 @@ export async function extractRecipeWithVision(
       message: 'Preparing image…',
     });
 
-    // Convert image to base64
     const { data, mediaType } = await imageToBase64(imageSource);
 
     onProgress?.({
@@ -86,43 +80,10 @@ export async function extractRecipeWithVision(
       message: 'Analyzing recipe with AI…',
     });
 
-    // Call Claude API
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('/api/ocr', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1500,
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'image',
-                source: {
-                  type: 'base64',
-                  media_type: mediaType,
-                  data,
-                },
-              },
-              {
-                type: 'text',
-                text: `Extract the recipe from this image. Return ONLY valid JSON with no other text, in this exact format:
-{"title":"Recipe Name","ingredients":["ingredient 1","ingredient 2"],"instructions":["step 1","step 2"]}
-
-Rules:
-- Extract the actual recipe title, not decorative text like "Today Recipe"
-- Include quantities and units with each ingredient (e.g. "1 1/2 cups flour")
-- Each instruction should be a complete step
-- If text is partially illegible, make your best guess based on context
-- Return valid JSON only, no markdown backticks`,
-              },
-            ],
-          },
-        ],
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: data, mediaType }),
     });
 
     onProgress?.({
@@ -131,28 +92,18 @@ Rules:
       message: 'Parsing results…',
     });
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.warn('Claude Vision API error:', response.status, errorBody);
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
       return {
         success: false,
         title: '',
         ingredients: [],
         instructions: [],
         confidence: 'low',
-        error: `API error (${response.status}). Falling back to local OCR.`,
+        error: result.error || `Server error (${response.status}).`,
       };
     }
-
-    const result = await response.json();
-    const textContent = result.content
-      ?.filter((c: any) => c.type === 'text')
-      ?.map((c: any) => c.text)
-      ?.join('') || '';
-
-    // Parse the JSON response
-    const cleaned = textContent.replace(/```json\s*|```/g, '').trim();
-    const parsed = JSON.parse(cleaned);
 
     onProgress?.({
       stage: 'done',
@@ -160,29 +111,12 @@ Rules:
       message: 'Recipe extracted',
     });
 
-    // Validate
-    const title = parsed.title || '';
-    const ingredients = Array.isArray(parsed.ingredients) ? parsed.ingredients.filter(Boolean) : [];
-    const instructions = Array.isArray(parsed.instructions) ? parsed.instructions.filter(Boolean) : [];
-
-    const success = Boolean(title && (ingredients.length > 0 || instructions.length > 0));
-
-    // Determine confidence based on completeness
-    let confidence: 'high' | 'medium' | 'low' = 'high';
-    if (!title || ingredients.length === 0 || instructions.length === 0) {
-      confidence = 'medium';
-    }
-    if (!title && ingredients.length === 0) {
-      confidence = 'low';
-    }
-
     return {
-      success,
-      title,
-      ingredients,
-      instructions,
-      confidence,
-      error: success ? undefined : 'Could not extract recipe from image',
+      success: result.success,
+      title: result.title,
+      ingredients: result.ingredients,
+      instructions: result.instructions,
+      confidence: result.confidence,
     };
   } catch (error) {
     onProgress?.({
@@ -191,25 +125,13 @@ Rules:
       message: 'Extraction failed',
     });
 
-    // JSON parse errors usually mean Claude returned unexpected format
-    if (error instanceof SyntaxError) {
-      return {
-        success: false,
-        title: '',
-        ingredients: [],
-        instructions: [],
-        confidence: 'low',
-        error: 'Could not parse recipe from image. Try a clearer photo.',
-      };
-    }
-
     return {
       success: false,
       title: '',
       ingredients: [],
       instructions: [],
       confidence: 'low',
-      error: error instanceof Error ? error.message : 'Vision extraction failed',
+      error: error instanceof Error ? error.message : 'Recipe extraction failed',
     };
   }
 }
