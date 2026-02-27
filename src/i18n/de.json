@@ -15,8 +15,8 @@
     "newRecipes": "{{count}} neue Rezepte"
   },
   "header": {
-    "mealPlanner": "Essensplaner",
-    "recipeLibrary": "Rezeptsammlung",
+    "mealPlanner": "Wochenplan",
+    "recipeLibrary": "Rezepte",
     "addRecipe": "Rezept hinzufügen"
   },
   "recipes": {
@@ -74,8 +74,8 @@
     "moreActions": "Weitere Aktionen"
   },
   "schedule": {
-    "lunch": "Mittagessen",
-    "dinner": "Abendessen",
+    "lunch": "Mittag",
+    "dinner": "Abend",
     "emptySlot": "+ Hinzufügen",
     "chooseMeal": "Rezept auswählen",
     "noRecipes": "Keine Rezepte gefunden",
@@ -497,9 +497,9 @@
     "ctaButton": "Kostenlos starten"
   },
   "account": {
-    "guestTitle": "Cloud-Sync",
-    "guestDescription": "Melde dich an, um deine Rezepte auf allen Geräten zu synchronisieren und mit deinem Haushalt zu teilen.",
-    "signInCta": "Anmelden für Cloud-Sync",
+    "guestTitle": "Benutzerkonto",
+    "guestDescription": "Melde dich an, um Rezepte und Wochenplan mit deinem Haushalt zu teilen und Daten geräteübergreifend zu synchronisieren.",
+    "signInCta": "Anmelden oder Konto erstellen",
     "anonymous": "Anonymer Benutzer",
     "syncNow": "Jetzt synchronisieren",
     "pendingChanges": "{{count}} ausstehende Änderungen",

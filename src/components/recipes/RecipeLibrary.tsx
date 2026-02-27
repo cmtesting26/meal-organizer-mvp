@@ -153,11 +153,6 @@ export function RecipeLibrary({
           />
         </div>
 
-        {(searchQuery || selectedTag) && (
-          <p className="text-sm" style={{ color: 'var(--fs-text-muted, #7A6E66)', padding: '4px 0 0' }}>
-            {t('recipes.found', { count: filteredRecipes.length })}
-          </p>
-        )}
       </div>
 
       {/* Recipe Grid */}

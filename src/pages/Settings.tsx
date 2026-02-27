@@ -54,7 +54,7 @@ export function Settings() {
         onBack={() => navigate(-1)}
       />
 
-      <div className="max-w-2xl mx-auto px-5 pt-4 pb-8">
+      <div className="max-w-2xl mx-auto px-5 pb-8">
         {/* Account Section */}
         <AccountSection />
 
@@ -162,19 +162,6 @@ export function Settings() {
           </button>
         </div>
 
-        {/* App Info */}
-        <div className="text-xs space-y-1" style={{ color: 'var(--fs-text-secondary, #44403C)', paddingTop: '32px' }}>
-          <p>{t('app.name')} {t('app.version')}</p>
-          <p>{t('app.dataLocal')}</p>
-          <a
-            href="https://github.com/cmtesting26/meal-organizer-mvp"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: 'var(--fs-accent-text, #B84835)' }}
-          >
-            {t('app.viewOnGithub')}
-          </a>
-        </div>
       </div>
     </div>
   );

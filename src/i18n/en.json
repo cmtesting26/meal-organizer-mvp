@@ -499,9 +499,9 @@
     "ctaButton": "Get Started Free"
   },
   "account": {
-    "guestTitle": "Cloud Sync",
-    "guestDescription": "Sign in to sync your recipes across devices and share with your household.",
-    "signInCta": "Sign in to enable cloud sync",
+    "guestTitle": "User Account",
+    "guestDescription": "Sign in to share recipes and schedule with your household and sync data across devices.",
+    "signInCta": "Sign In or Create Account",
     "anonymous": "Anonymous User",
     "syncNow": "Sync now",
     "pendingChanges": "{{count}} pending changes",

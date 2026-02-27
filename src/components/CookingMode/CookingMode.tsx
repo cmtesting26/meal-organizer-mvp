@@ -41,6 +41,25 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
   const [timers, setTimers] = useState<Map<number, TimerData>>(new Map());
   const intervalRefs = useRef<Map<number, ReturnType<typeof setInterval>>>(new Map());
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const audioElRef = useRef<HTMLAudioElement | null>(null);
+
+  // Pre-warm an <audio> element on first user gesture so mobile Safari allows playback later
+  useEffect(() => {
+    const warmup = () => {
+      if (!audioElRef.current) {
+        audioElRef.current = new Audio();
+        audioElRef.current.volume = 1;
+      }
+      window.removeEventListener('touchstart', warmup);
+      window.removeEventListener('click', warmup);
+    };
+    window.addEventListener('touchstart', warmup, { once: true });
+    window.addEventListener('click', warmup, { once: true });
+    return () => {
+      window.removeEventListener('touchstart', warmup);
+      window.removeEventListener('click', warmup);
+    };
+  }, []);
 
   // Format mm:ss
   const formatTimerDisplay = (secs: number): string => {
@@ -49,24 +68,39 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  // Play alert sound
+  // Play a pleasant kitchen-timer chime (C6–E6–G6 arpeggio, repeated twice)
   const playAlert = useCallback(() => {
     try {
       const ctx = audioCtxRef.current || new AudioContext();
       audioCtxRef.current = ctx;
-      [0, 0.2, 0.4].forEach((delay) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = 880;
-        osc.type = 'sine';
-        gain.gain.value = 0.3;
-        osc.start(ctx.currentTime + delay);
-        osc.stop(ctx.currentTime + delay + 0.15);
+      if (ctx.state === 'suspended') ctx.resume();
+
+      // Two rounds of a C-E-G major arpeggio for a friendly chime
+      const notes = [1047, 1319, 1568]; // C6, E6, G6
+      [0, 0.6].forEach((roundDelay) => {
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freq;
+          osc.type = 'triangle';
+          const t = ctx.currentTime + roundDelay + i * 0.15;
+          gain.gain.setValueAtTime(0.5, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+          osc.start(t);
+          osc.stop(t + 0.4);
+        });
       });
     } catch {
-      // Web Audio not available
+      // Web Audio not available — try HTML Audio fallback
+      try {
+        if (audioElRef.current) {
+          // Use a short data URI tone as last resort
+          audioElRef.current.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ==';
+          audioElRef.current.play().catch(() => {});
+        }
+      } catch { /* silent */ }
     }
   }, []);
 
