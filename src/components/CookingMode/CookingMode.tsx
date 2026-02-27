@@ -40,74 +40,9 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
   // Map of stepIndex → TimerData (supports one timer per step)
   const [timers, setTimers] = useState<Map<number, TimerData>>(new Map());
   const intervalRefs = useRef<Map<number, ReturnType<typeof setInterval>>>(new Map());
-  const alarmAudioRef = useRef<HTMLAudioElement | null>(null);
   const pendingAlertRef = useRef(false);
-
-  /**
-   * Build a WAV chime as a base64 data URI (more compatible than blob URLs on iOS).
-   * C6-E6-G6 arpeggio, ~1.2s, 16-bit PCM, 22050 Hz mono.
-   */
-  const chimeDataUri = useMemo(() => {
-    const sampleRate = 22050;
-    const duration = 1.2;
-    const numSamples = Math.floor(sampleRate * duration);
-    const pcm = new Int16Array(numSamples);
-    const notes = [
-      { freq: 1047, start: 0, end: 0.4 },
-      { freq: 1319, start: 0.15, end: 0.55 },
-      { freq: 1568, start: 0.3, end: 0.7 },
-      { freq: 1047, start: 0.6, end: 1.0 },
-      { freq: 1319, start: 0.75, end: 1.15 },
-      { freq: 1568, start: 0.9, end: 1.2 },
-    ];
-    for (let i = 0; i < numSamples; i++) {
-      const t = i / sampleRate;
-      let sample = 0;
-      for (const n of notes) {
-        if (t >= n.start && t < n.end) {
-          const e = t - n.start;
-          sample += Math.sin(2 * Math.PI * n.freq * e) * Math.max(0, 1 - e / (n.end - n.start)) * 0.3;
-        }
-      }
-      pcm[i] = Math.max(-32768, Math.min(32767, Math.round(sample * 32767)));
-    }
-    const dataSize = numSamples * 2;
-    const wav = new Uint8Array(44 + dataSize);
-    const v = new DataView(wav.buffer);
-    const w = (o: number, s: string) => { for (let i = 0; i < s.length; i++) wav[o + i] = s.charCodeAt(i); };
-    w(0, 'RIFF'); v.setUint32(4, 36 + dataSize, true); w(8, 'WAVE');
-    w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true);
-    v.setUint16(22, 1, true); v.setUint32(24, sampleRate, true);
-    v.setUint32(28, sampleRate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
-    w(36, 'data'); v.setUint32(40, dataSize, true);
-    wav.set(new Uint8Array(pcm.buffer), 44);
-    // Convert to base64 data URI
-    let binary = '';
-    for (let i = 0; i < wav.length; i++) binary += String.fromCharCode(wav[i]);
-    return 'data:audio/wav;base64,' + btoa(binary);
-  }, []);
-
-  /**
-   * Unlock <audio> during a user gesture (required by iOS Safari).
-   * Called from handleTimerStart which runs inside a click handler.
-   *
-   * Key trick: set loop=true so the audio keeps playing silently forever.
-   * This prevents iOS from deactivating the audio session. When the timer
-   * fires, we turn the volume up, play once, then resume silent looping.
-   */
-  const unlockAudio = useCallback(() => {
-    if (!alarmAudioRef.current) {
-      const audio = new Audio(chimeDataUri);
-      audio.setAttribute('playsinline', '');
-      audio.loop = true;  // Keep audio session alive on iOS
-      audio.volume = 0;   // Silent until timer fires
-      alarmAudioRef.current = audio;
-    }
-    const audio = alarmAudioRef.current;
-    audio.volume = 0;
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-  }, [chimeDataUri]);
+  // Visual flash state for timer-done alert
+  const [timerFlash, setTimerFlash] = useState(false);
 
   // Format mm:ss
   const formatTimerDisplay = (secs: number): string => {
@@ -116,59 +51,40 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  // Play the chime via the pre-unlocked <audio> element.
-  // The audio is ALREADY looping silently — we never call .play() again.
-  // We only change volume and currentTime, which iOS allows freely.
+  /**
+   * Timer alert: uses Speech Synthesis API + visual flash.
+   * Speech synthesis uses the OS accessibility engine, not the media player,
+   * so it's not subject to iOS Safari autoplay restrictions.
+   */
   const playAlert = useCallback(() => {
+    // Vibrate on Android (not supported on iOS, but harmless)
     if (navigator.vibrate) {
       navigator.vibrate([200, 100, 200, 100, 200]);
     }
-    const audio = alarmAudioRef.current;
-    if (audio) {
-      // Just turn up volume and seek to start — no .play() call needed
-      audio.currentTime = 0;
-      audio.volume = 1;
-      // Turn volume back to 0 after the chime finishes (~1.3s)
-      setTimeout(() => {
-        if (alarmAudioRef.current) {
-          alarmAudioRef.current.volume = 0;
-        }
-      }, 1400);
-      return;
+    // Speech synthesis — works on iOS without user gesture
+    if ('speechSynthesis' in window) {
+      const msg = new SpeechSynthesisUtterance(t('cookingMode.timerDone'));
+      msg.rate = 1;
+      msg.pitch = 1.2;
+      msg.volume = 1;
+      window.speechSynthesis.speak(msg);
     }
-    pendingAlertRef.current = true;
-  }, []);
+    // Visual flash
+    setTimerFlash(true);
+    setTimeout(() => setTimerFlash(false), 3000);
+  }, [t]);
 
-  // When the app returns from background, play any pending alert
+  // When the app returns from background, fire any pending alert
   useEffect(() => {
     const onVisible = () => {
       if (document.visibilityState === 'visible' && pendingAlertRef.current) {
         pendingAlertRef.current = false;
-        const audio = alarmAudioRef.current;
-        if (audio) {
-          // Audio may have been paused by iOS while backgrounded — restart it
-          audio.volume = 0;
-          audio.loop = true;
-          audio.play().catch(() => {});
-          // Then play the alert chime
-          setTimeout(() => {
-            if (alarmAudioRef.current) {
-              alarmAudioRef.current.currentTime = 0;
-              alarmAudioRef.current.volume = 1;
-              setTimeout(() => {
-                if (alarmAudioRef.current) alarmAudioRef.current.volume = 0;
-              }, 1400);
-            }
-          }, 100);
-        }
-        if (navigator.vibrate) {
-          navigator.vibrate([200, 100, 200, 100, 200]);
-        }
+        playAlert();
       }
     };
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
-  }, []);
+  }, [playAlert]);
 
   // Find any running/paused timer that's NOT on the current step (for mini-bar)
   const backgroundTimer = useMemo(() => {
@@ -236,8 +152,6 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
 
   // ─── Timer action handlers ────────────────────────────────────────
   const handleTimerStart = useCallback((seconds: number) => {
-    // Unlock audio on the first timer start (runs inside a click handler)
-    unlockAudio();
     setTimers((prev) => {
       const next = new Map(prev);
       next.set(currentStepIndex, {
@@ -249,7 +163,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
       });
       return next;
     });
-  }, [currentStepIndex, unlockAudio]);
+  }, [currentStepIndex]);
 
   const handleTimerPause = useCallback(() => {
     setTimers((prev) => {
@@ -720,6 +634,34 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
 
       {/* S27-04: Persistent mini-timer bar — shown when a timer is running on a different step */}
       {/* Rendered INSIDE the nav bar area to avoid overlapping the current step's timer */}
+
+      {/* Timer-done visual flash overlay */}
+      {timerFlash && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center animate-pulse pointer-events-none"
+          style={{ backgroundColor: 'rgba(212, 100, 78, 0.25)' }}
+        >
+          <div
+            className="rounded-2xl px-8 py-6 shadow-2xl text-center pointer-events-auto"
+            style={{ backgroundColor: 'var(--fs-bg-elevated)', border: '2px solid var(--fs-accent, #D4644E)' }}
+          >
+            <Timer className="w-10 h-10 mx-auto mb-2" style={{ color: 'var(--fs-accent, #D4644E)' }} />
+            <p
+              className="text-lg font-bold"
+              style={{ color: 'var(--fs-text-primary)', fontFamily: "'Fraunces', serif" }}
+            >
+              {t('cookingMode.timerDone')}
+            </p>
+            <button
+              onClick={() => setTimerFlash(false)}
+              className="mt-3 px-4 py-2 rounded-lg text-sm font-medium"
+              style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: '#fff' }}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
 
       {showWakeLockToast && (
         <div className="fixed top-16 left-4 right-4 z-[60] animate-fade-in">

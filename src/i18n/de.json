@@ -636,7 +636,8 @@
     "setTimer": "Timer stellen",
     "timerRunning": "Timer: {{time}}",
     "showAllIngredients": "Alle Zutaten anzeigen",
-    "closeOverlay": "Schließen"
+    "closeOverlay": "Schließen",
+    "timerDone": "Timer fertig!"
   },
   "photoUpload": {
     "addPhoto": "Foto hinzufügen",

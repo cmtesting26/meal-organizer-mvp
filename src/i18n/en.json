@@ -638,7 +638,8 @@
     "setTimer": "Set Timer",
     "timerRunning": "Timer: {{time}}",
     "showAllIngredients": "Show all ingredients",
-    "closeOverlay": "Close"
+    "closeOverlay": "Close",
+    "timerDone": "Timer done!"
   },
   "photoUpload": {
     "addPhoto": "Add Photo",
