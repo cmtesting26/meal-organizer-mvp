@@ -342,7 +342,7 @@ export function AccountSection() {
 
   if (!isAuthenticated) {
     return (
-      <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-accent-light, #FEF0E8)', boxShadow: 'var(--fs-shadow-sm)' }}>
+      <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: 'var(--fs-shadow-sm)' }}>
         <div className="flex items-center gap-3 mb-2">
           <Cloud className="w-5 h-5 text-green-600" />
           <p className="font-medium text-sm" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>{t('account.guestTitle')}</p>
