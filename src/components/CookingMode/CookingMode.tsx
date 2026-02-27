@@ -95,13 +95,13 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
           osc.start(start);
           osc.stop(start + dur);
         };
-        playNote(1047, now, 0.35);       // C6
-        playNote(1319, now + 0.15, 0.35); // E6
-        playNote(1568, now + 0.3, 0.45);  // G6
-        // Repeat pattern for emphasis
-        playNote(1047, now + 0.6, 0.35);
-        playNote(1319, now + 0.75, 0.35);
-        playNote(1568, now + 0.9, 0.45);
+        // Three rounds of C-E-G arpeggio (~3.5s total)
+        for (let round = 0; round < 3; round++) {
+          const offset = round * 1.1;
+          playNote(1047, now + offset, 0.4);        // C6
+          playNote(1319, now + offset + 0.2, 0.4);  // E6
+          playNote(1568, now + offset + 0.4, 0.55); // G6
+        }
       };
       if (ctx.state === 'suspended') {
         ctx.resume().then(play).catch(() => {});
