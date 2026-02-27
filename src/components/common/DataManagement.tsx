@@ -80,7 +80,7 @@ export function DataManagement({ onImportComplete }: DataManagementProps) {
   const cancelImport = () => { setPreview(null); setPendingFile(null); setError(null); };
 
   return (
-    <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: '#FFFFFF', boxShadow: '0 2px 12px #2D252208' }}>
+    <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}>
       {/* Header: icon + text */}
       <div className="flex items-center gap-3 mb-3">
         <Database className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
@@ -98,9 +98,9 @@ export function DataManagement({ onImportComplete }: DataManagementProps) {
           style={{
             height: '36px',
             borderRadius: '8px',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
             color: 'var(--fs-text-secondary, #7A6E66)',
-            border: '1px solid #C5B5AB',
+            border: '1px solid var(--fs-border-default, #C5B5AB)',
             cursor: 'pointer',
           }}
         >
@@ -116,9 +116,9 @@ export function DataManagement({ onImportComplete }: DataManagementProps) {
           style={{
             height: '36px',
             borderRadius: '8px',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
             color: 'var(--fs-text-secondary, #7A6E66)',
-            border: '1px solid #C5B5AB',
+            border: '1px solid var(--fs-border-default, #C5B5AB)',
             cursor: 'pointer',
           }}
         >

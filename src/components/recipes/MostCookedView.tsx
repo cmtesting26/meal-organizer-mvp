@@ -146,7 +146,7 @@ export function MostCookedView({ recipes, onRecipeClick }: MostCookedViewProps) 
                   color: 'var(--fs-accent-text, #B84835)',
                   padding: '3px 8px',
                   gap: 4,
-                  border: '1px solid #E8C4B8',
+                  border: '1px solid var(--fs-border-accent, #E8C4B8)',
                 }}
               >
                 <Flame style={{ width: 12, height: 12 }} />
@@ -174,7 +174,7 @@ export function MostCookedView({ recipes, onRecipeClick }: MostCookedViewProps) 
                   height: 24,
                   borderRadius: 9999,
                   backgroundColor: 'var(--fs-accent, #D4644E)',
-                  color: '#FFFFFF',
+                  color: 'var(--fs-text-inverse, #FFFFFF)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',

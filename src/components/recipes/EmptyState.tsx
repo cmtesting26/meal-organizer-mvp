@@ -34,7 +34,7 @@ export function EmptyState({ onImportClick, onManualAddClick }: EmptyStateProps)
       </p>
       <div className="flex flex-col sm:flex-row gap-4">
         <Button onClick={onImportClick} size="lg" className="min-w-[160px]"
-          style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: 'white' }}>
+          style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: 'var(--fs-text-inverse, #FFFFFF)' }}>
           <Link className="w-4 h-4 mr-2" />
           {t('emptyState.importButton')}
         </Button>

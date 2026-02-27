@@ -88,7 +88,7 @@ export function RecipePicker({ open, onOpenChange, onSelectRecipe }: RecipePicke
       >
         {/* DragHandleWrap — padding: [12, 0, 4, 0] */}
         <div className="flex justify-center" style={{ padding: '12px 0 4px 0' }}>
-          <div style={{ width: 32, height: 4, borderRadius: 9999, backgroundColor: '#E8DDD8' }} />
+          <div style={{ width: 32, height: 4, borderRadius: 9999, backgroundColor: 'var(--fs-border-muted, #E8DDD8)' }} />
         </div>
 
         {/* SheetHeader — padding: [8, 24, 12, 24] */}
@@ -187,9 +187,9 @@ export function RecipePicker({ open, onOpenChange, onSelectRecipe }: RecipePicke
                             style={{
                               gap: 4,
                               padding: '3px 8px',
-                              backgroundColor: '#FEF0E8',
-                              color: '#B84835',
-                              border: '1px solid #E8C4B8',
+                              backgroundColor: 'var(--fs-accent-light, #FEF0E8)',
+                              color: 'var(--fs-accent-text, #B84835)',
+                              border: '1px solid var(--fs-accent-muted, #E8C4B8)',
                             }}
                           >
                             <Flame style={{ width: 12, height: 12 }} />

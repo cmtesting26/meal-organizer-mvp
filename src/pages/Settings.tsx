@@ -71,7 +71,7 @@ export function Settings() {
             <Button
               size="sm"
               className="w-full"
-              style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: 'white' }}
+              style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: 'var(--fs-text-inverse, #FFFFFF)' }}
               onClick={() => setShowMigrationWizard(true)}
             >
               <Upload className="w-4 h-4 mr-2" />
@@ -94,7 +94,7 @@ export function Settings() {
         )}
 
         {/* Appearance / Theme — using OptionButton */}
-        <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: '#FFFFFF', boxShadow: '0 2px 12px #2D252208' }}>
+        <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}>
           <div className="flex items-center gap-3 mb-3">
             <Palette className="w-5 h-5" style={{ color: 'var(--fs-text-muted)' }} />
             <div>
@@ -114,7 +114,7 @@ export function Settings() {
         </div>
 
         {/* Language — using OptionButton */}
-        <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: '#FFFFFF', boxShadow: '0 2px 12px #2D252208' }}>
+        <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}>
           <div className="flex items-center gap-3 mb-3">
             <Globe className="w-5 h-5" style={{ color: 'var(--fs-text-muted)' }} />
             <div>
@@ -140,7 +140,7 @@ export function Settings() {
           <button
             onClick={() => navigate('/help')}
             className="w-full flex items-center gap-3 p-3 rounded-2xl transition-colors text-left"
-            style={{ backgroundColor: '#FFFFFF', boxShadow: '0 2px 12px #2D252208' }}
+            style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}
           >
             <LifeBuoy className="w-5 h-5" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
             <div>
@@ -152,7 +152,7 @@ export function Settings() {
           <button
             onClick={() => navigate('/privacy')}
             className="w-full flex items-center gap-3 p-3 rounded-2xl transition-colors text-left"
-            style={{ backgroundColor: '#FFFFFF', boxShadow: '0 2px 12px #2D252208' }}
+            style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}
           >
             <Shield className="w-5 h-5" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
             <div>
@@ -163,7 +163,7 @@ export function Settings() {
         </div>
 
         {/* App Info */}
-        <div className="text-xs space-y-1" style={{ color: '#44403C', paddingTop: '32px' }}>
+        <div className="text-xs space-y-1" style={{ color: 'var(--fs-text-secondary, #44403C)', paddingTop: '32px' }}>
           <p>{t('app.name')} {t('app.version')}</p>
           <p>{t('app.dataLocal')}</p>
           <a

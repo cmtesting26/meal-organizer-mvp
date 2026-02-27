@@ -243,7 +243,7 @@ export function ImportSheet({ open, onOpenChange, onRecipeImported }: ImportShee
             height: 48,
             gap: 8,
             backgroundColor: 'var(--fs-accent, #D4644E)',
-            color: '#FFFFFF',
+            color: 'var(--fs-text-inverse, #FFFFFF)',
           }}
         >
           {loading ? (

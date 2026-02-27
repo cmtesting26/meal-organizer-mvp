@@ -109,11 +109,11 @@ export function SocialImportSheet({ open, onOpenChange, onRecipeImported }: Soci
       <SheetContent
         side="bottom"
         className="!p-0 !gap-0 rounded-t-[20px] [&>button.absolute]:hidden"
-        style={{ backgroundColor: '#FFFFFF' }}
+        style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)' }}
       >
         {/* DragHandle — padding: [12, 0, 4, 0] */}
         <div className="flex justify-center" style={{ padding: '12px 0 4px 0' }}>
-          <div style={{ width: 32, height: 4, borderRadius: 9999, backgroundColor: '#E8DDD8' }} />
+          <div style={{ width: 32, height: 4, borderRadius: 9999, backgroundColor: 'var(--fs-border-muted, #E8DDD8)' }} />
         </div>
 
         {/* SheetHeader — padding: [8, 24, 12, 24] */}
@@ -173,7 +173,7 @@ export function SocialImportSheet({ open, onOpenChange, onRecipeImported }: Soci
                   height: 44,
                   borderRadius: 12,
                   border: '1px solid var(--fs-border-default, #C5B5AB)',
-                  backgroundColor: '#FFFFFF',
+                  backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
                   padding: '0 14px 0 38px',
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 14,
@@ -219,16 +219,16 @@ export function SocialImportSheet({ open, onOpenChange, onRecipeImported }: Soci
                 gap: 4,
                 padding: '4px 10px',
                 borderRadius: 99,
-                backgroundColor: '#FEF0E8',
+                backgroundColor: 'var(--fs-accent-light, #FEF0E8)',
               }}
             >
-              <CheckCircle2 style={{ width: 14, height: 14, color: '#D4644E' }} />
+              <CheckCircle2 style={{ width: 14, height: 14, color: 'var(--fs-accent, #D4644E)' }} />
               <span
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 12,
                   fontWeight: 500,
-                  color: '#B84835',
+                  color: 'var(--fs-accent-text, #B84835)',
                 }}
               >
                 {t('import.socialDetected', { platform: platformLabel(detectedPlatform) })}
@@ -258,15 +258,15 @@ export function SocialImportSheet({ open, onOpenChange, onRecipeImported }: Soci
           >
             {loading ? (
               <>
-                <Loader2 style={{ width: 18, height: 18, color: '#FFFFFF' }} className="animate-spin" />
-                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>
+                <Loader2 style={{ width: 18, height: 18, color: 'var(--fs-text-inverse, #FFFFFF)' }} className="animate-spin" />
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 700, color: 'var(--fs-text-inverse, #FFFFFF)' }}>
                   {loadingText}
                 </span>
               </>
             ) : (
               <>
-                <Download style={{ width: 18, height: 18, color: '#FFFFFF' }} />
-                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>
+                <Download style={{ width: 18, height: 18, color: 'var(--fs-text-inverse, #FFFFFF)' }} />
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 700, color: 'var(--fs-text-inverse, #FFFFFF)' }}>
                   {t('import.importButton')}
                 </span>
               </>

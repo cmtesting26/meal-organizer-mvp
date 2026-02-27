@@ -538,7 +538,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
                 className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl transition-colors whitespace-nowrap"
                 style={{
                   backgroundColor: 'var(--fs-accent, #D4644E)',
-                  color: 'white',
+                  color: 'var(--fs-text-inverse, #FFFFFF)',
                   minWidth: 0,
                 }}
                 aria-label={t('cookingMode.timerRunning', { time: formatTimerDisplay(backgroundTimer.timer.remaining) })}

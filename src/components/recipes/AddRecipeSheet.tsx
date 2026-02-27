@@ -45,7 +45,7 @@ const ImportOption: FC<ImportOptionProps> = ({ icon, title, description, onClick
     >
       <div
         className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center"
-        style={{ backgroundColor: '#FEF0E8', color: '#D4644E' }}
+        style={{ backgroundColor: 'var(--fs-accent-light, #FEF0E8)', color: 'var(--fs-accent, #D4644E)' }}
       >
         {icon}
       </div>

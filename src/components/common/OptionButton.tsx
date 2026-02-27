@@ -51,7 +51,7 @@ export const OptionButton: FC<OptionButtonProps> = ({
               fontWeight: isActive ? 600 : 500,
               backgroundColor: isActive
                 ? 'var(--fs-accent-light, #FEF0E8)'
-                : '#FFFFFF',
+                : 'var(--fs-bg-surface, #FFFFFF)',
               color: isActive
                 ? 'var(--fs-accent-text, #B84835)'
                 : 'var(--fs-text-secondary, #7A6E66)',

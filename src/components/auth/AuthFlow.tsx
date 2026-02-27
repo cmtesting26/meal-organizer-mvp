@@ -32,7 +32,7 @@ export function AuthFlow({ onSkip, onComplete }: AuthFlowProps) {
   return (
     <div
       className="fixed inset-0 z-[100] overflow-y-auto"
-      style={{ backgroundColor: '#FAF8F6' }}
+      style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)' }}
     >
       {screen === 'login' && (
         <LoginScreen
@@ -81,7 +81,7 @@ function TopBar({ onClose }: { onClose: () => void }) {
         style={{ width: 44, height: 44, borderRadius: 16, background: 'none', border: 'none', cursor: 'pointer' }}
         aria-label={t('common.close')}
       >
-        <X style={{ width: 20, height: 20, color: '#7A6E66' }} />
+        <X style={{ width: 20, height: 20, color: 'var(--fs-text-secondary, #7A6E66)' }} />
       </button>
     </div>
   );
@@ -106,7 +106,7 @@ function LogoArea() {
           fontFamily: "'Fraunces', serif",
           fontSize: 28,
           fontWeight: 600,
-          color: '#2D2522',
+          color: 'var(--fs-text-primary, #2D2522)',
           letterSpacing: '-0.5px',
         }}
       >
@@ -118,7 +118,7 @@ function LogoArea() {
           fontFamily: "'DM Sans', sans-serif",
           fontSize: 14,
           fontWeight: 400,
-          color: '#7A6E66',
+          color: 'var(--fs-text-secondary, #7A6E66)',
         }}
       >
         {t('auth.tagline')}
@@ -133,11 +133,11 @@ function AuthCard({ children }: { children: React.ReactNode }) {
     <div
       className="flex flex-col"
       style={{
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
         borderRadius: 20,
         padding: 24,
         gap: 16,
-        boxShadow: '0 2px 8px #0000001A',
+        boxShadow: 'var(--fs-shadow-md, 0 2px 8px #0000001A)',
       }}
     >
       {children}
@@ -153,18 +153,18 @@ function OrDivider({ standalone }: { standalone?: boolean }) {
       className="flex items-center"
       style={{ gap: 12, ...(standalone ? { margin: '16px 0' } : {}) }}
     >
-      <div className="flex-1" style={{ height: 1, backgroundColor: '#E8DDD8' }} />
+      <div className="flex-1" style={{ height: 1, backgroundColor: 'var(--fs-border-muted, #E8DDD8)' }} />
       <span
         style={{
           fontFamily: "'DM Sans', sans-serif",
           fontSize: 12,
           fontWeight: 500,
-          color: '#7A6E66',
+          color: 'var(--fs-text-secondary, #7A6E66)',
         }}
       >
         {t('auth.or')}
       </span>
-      <div className="flex-1" style={{ height: 1, backgroundColor: '#E8DDD8' }} />
+      <div className="flex-1" style={{ height: 1, backgroundColor: 'var(--fs-border-muted, #E8DDD8)' }} />
     </div>
   );
 }
@@ -179,7 +179,7 @@ function AuthFooter() {
         padding: '20px 24px',
         fontFamily: "'DM Sans', sans-serif",
         fontSize: 11,
-        color: '#7A6E66',
+        color: 'var(--fs-text-secondary, #7A6E66)',
       }}
     >
       {t('auth.footer')}
@@ -219,12 +219,12 @@ function InputField({
         width: '100%',
         height: 48,
         borderRadius: 12,
-        border: '1px solid #C5B5AB',
+        border: '1px solid var(--fs-border-default, #C5B5AB)',
         padding: '0 14px',
         fontFamily: "'DM Sans', sans-serif",
         fontSize: 14,
-        color: '#2D2522',
-        backgroundColor: '#FFFFFF',
+        color: 'var(--fs-text-primary, #2D2522)',
+        backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
         outline: 'none',
       }}
     />
@@ -252,8 +252,8 @@ function PrimaryButton({
       style={{
         height: 48,
         borderRadius: 14,
-        backgroundColor: '#D4644E',
-        color: '#FFFFFF',
+        backgroundColor: 'var(--fs-accent, #D4644E)',
+        color: 'var(--fs-text-inverse, #FFFFFF)',
         fontFamily: "'DM Sans', sans-serif",
         fontSize: 16,
         fontWeight: 600,
@@ -287,12 +287,12 @@ function OutlineButton({
       style={{
         height: 48,
         borderRadius: 14,
-        backgroundColor: '#FFFFFF',
-        color: '#2D2522',
+        backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
+        color: 'var(--fs-text-primary, #2D2522)',
         fontFamily: "'DM Sans', sans-serif",
         fontSize: 16,
         fontWeight: 600,
-        border: '1px solid #C5B5AB',
+        border: '1px solid var(--fs-border-default, #C5B5AB)',
         cursor: 'pointer',
       }}
     >
@@ -347,7 +347,7 @@ function LoginScreen({
               fontFamily: "'Fraunces', serif",
               fontSize: 22,
               fontWeight: 600,
-              color: '#2D2522',
+              color: 'var(--fs-text-primary, #2D2522)',
               letterSpacing: '-0.5px',
             }}
           >
@@ -358,7 +358,7 @@ function LoginScreen({
             style={{
               fontFamily: "'DM Sans', sans-serif",
               fontSize: 14,
-              color: '#7A6E66',
+              color: 'var(--fs-text-secondary, #7A6E66)',
             }}
           >
             {t('auth.login.subtitle')}
@@ -381,7 +381,7 @@ function LoginScreen({
               required
             />
             {error && (
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#DC2626' }}>
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--fs-error, #DC2626)' }}>
                 {error}
               </p>
             )}
@@ -398,7 +398,7 @@ function LoginScreen({
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 13,
                   fontWeight: 500,
-                  color: '#D4644E',
+                  color: 'var(--fs-accent, #D4644E)',
                   textAlign: 'center',
                   background: 'none',
                   border: 'none',
@@ -473,7 +473,7 @@ function RegisterScreen({
               fontFamily: "'Fraunces', serif",
               fontSize: 22,
               fontWeight: 600,
-              color: '#2D2522',
+              color: 'var(--fs-text-primary, #2D2522)',
               letterSpacing: '-0.5px',
             }}
           >
@@ -483,7 +483,7 @@ function RegisterScreen({
             style={{
               fontFamily: "'DM Sans', sans-serif",
               fontSize: 14,
-              color: '#7A6E66',
+              color: 'var(--fs-text-secondary, #7A6E66)',
             }}
           >
             {t('auth.register.subtitle')}
@@ -512,7 +512,7 @@ function RegisterScreen({
               required
             />
             {error && (
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#DC2626' }}>
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--fs-error, #DC2626)' }}>
                 {error}
               </p>
             )}
@@ -574,7 +574,7 @@ function ForgotPasswordScreen({
                   fontFamily: "'Fraunces', serif",
                   fontSize: 22,
                   fontWeight: 600,
-                  color: '#2D2522',
+                  color: 'var(--fs-text-primary, #2D2522)',
                   letterSpacing: '-0.5px',
                 }}
               >
@@ -584,7 +584,7 @@ function ForgotPasswordScreen({
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 14,
-                  color: '#7A6E66',
+                  color: 'var(--fs-text-secondary, #7A6E66)',
                 }}
               >
                 {t('auth.forgot.sentMessage')}
@@ -600,7 +600,7 @@ function ForgotPasswordScreen({
                   fontFamily: "'Fraunces', serif",
                   fontSize: 22,
                   fontWeight: 600,
-                  color: '#2D2522',
+                  color: 'var(--fs-text-primary, #2D2522)',
                   letterSpacing: '-0.5px',
                 }}
               >
@@ -610,7 +610,7 @@ function ForgotPasswordScreen({
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 14,
-                  color: '#7A6E66',
+                  color: 'var(--fs-text-secondary, #7A6E66)',
                 }}
               >
                 {t('auth.forgot.description')}
@@ -625,7 +625,7 @@ function ForgotPasswordScreen({
                   autoFocus
                 />
                 {error && (
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#DC2626' }}>
+                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--fs-error, #DC2626)' }}>
                     {error}
                   </p>
                 )}
@@ -732,7 +732,7 @@ function HouseholdSetupScreen({
           style={{ width: 44, height: 44, borderRadius: 16, background: 'none', border: 'none', cursor: 'pointer' }}
           aria-label="Back"
         >
-          <ArrowLeft style={{ width: 20, height: 20, color: '#2D2522' }} />
+          <ArrowLeft style={{ width: 20, height: 20, color: 'var(--fs-text-primary, #2D2522)' }} />
         </button>
       </div>
 
@@ -743,7 +743,7 @@ function HouseholdSetupScreen({
             fontFamily: "'Fraunces', serif",
             fontSize: 26,
             fontWeight: 700,
-            color: '#2D2522',
+            color: 'var(--fs-text-primary, #2D2522)',
             marginBottom: 8,
           }}
         >
@@ -753,7 +753,7 @@ function HouseholdSetupScreen({
           style={{
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 14,
-            color: '#7A6E66',
+            color: 'var(--fs-text-secondary, #7A6E66)',
             marginBottom: 24,
             maxWidth: 280,
           }}
@@ -770,7 +770,7 @@ function HouseholdSetupScreen({
                   fontFamily: "'Fraunces', serif",
                   fontSize: 18,
                   fontWeight: 600,
-                  color: '#2D2522',
+                  color: 'var(--fs-text-primary, #2D2522)',
                 }}
               >
                 {t('auth.household.createCardTitle')}
@@ -779,7 +779,7 @@ function HouseholdSetupScreen({
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 13,
-                  color: '#7A6E66',
+                  color: 'var(--fs-text-secondary, #7A6E66)',
                 }}
               >
                 {t('auth.household.createCardSubtitle')}
@@ -800,7 +800,7 @@ function HouseholdSetupScreen({
                   onChange={setCreateHouseholdName}
                 />
                 {createError && (
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#DC2626' }}>
+                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--fs-error, #DC2626)' }}>
                     {createError}
                   </p>
                 )}
@@ -822,7 +822,7 @@ function HouseholdSetupScreen({
               fontFamily: "'Fraunces', serif",
               fontSize: 18,
               fontWeight: 600,
-              color: '#2D2522',
+              color: 'var(--fs-text-primary, #2D2522)',
             }}
           >
             {t('auth.household.joinCardTitle')}
@@ -831,7 +831,7 @@ function HouseholdSetupScreen({
             style={{
               fontFamily: "'DM Sans', sans-serif",
               fontSize: 13,
-              color: '#7A6E66',
+              color: 'var(--fs-text-secondary, #7A6E66)',
             }}
           >
             {t('auth.household.joinCardSubtitle')}
@@ -854,7 +854,7 @@ function HouseholdSetupScreen({
               maxLength={6}
             />
             {joinError && (
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#DC2626' }}>
+              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--fs-error, #DC2626)' }}>
                 {joinError}
               </p>
             )}

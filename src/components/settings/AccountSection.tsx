@@ -113,7 +113,7 @@ function SyncStatusDisplay() {
     : null;
 
   return (
-    <div className="pt-3 mt-3" style={{ borderTop: '1px solid #E8DDD8' }}>
+    <div className="pt-3 mt-3" style={{ borderTop: '1px solid var(--fs-border-muted, #E8DDD8)' }}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className={config.color}>{config.icon}</span>
@@ -242,7 +242,7 @@ function HouseholdSection() {
   };
 
   return (
-    <div className="pt-3 mt-3" style={{ borderTop: '1px solid #E8DDD8' }}>
+    <div className="pt-3 mt-3" style={{ borderTop: '1px solid var(--fs-border-muted, #E8DDD8)' }}>
       <div className="flex items-center gap-2 mb-3">
         <Users className="w-4 h-4" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
         <span className="text-sm font-medium" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}>
@@ -259,7 +259,7 @@ function HouseholdSection() {
       <div
         className="rounded-xl p-3"
         style={{
-          backgroundColor: '#FAF6F3',
+          backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)',
         }}
       >
         <p className="text-xs mb-2" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>
@@ -272,7 +272,7 @@ function HouseholdSection() {
           style={{
             height: '40px',
             backgroundColor: 'var(--fs-accent, #D4644E)',
-            color: 'white',
+            color: 'var(--fs-text-inverse, #FFFFFF)',
           }}
         >
           {generatingLink ? (
@@ -329,7 +329,7 @@ export function AccountSection() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: '#FFFFFF', boxShadow: '0 2px 12px #2D252208' }}>
+      <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}>
         <div className="flex items-center gap-3">
           <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--fs-text-muted, #7A6E66)' }} />
           <span className="text-sm" style={{ color: 'var(--fs-text-muted, #7A6E66)' }}>{t('common.loading')}</span>
@@ -366,11 +366,11 @@ export function AccountSection() {
   // ─── Authenticated State (S12-05) ───────────────────────────────────
 
   return (
-    <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: '#FFFFFF', boxShadow: '0 2px 12px #2D252208' }}>
+    <div className="rounded-2xl p-4 mb-3" style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)', boxShadow: '0 2px 12px #2D252208' }}>
       {/* User Info */}
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: '#FAF6F3' }}>
-          <User className="w-[18px] h-[18px]" style={{ color: '#7A6E66' }} />
+        <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-card-inner, #FAF6F3)' }}>
+          <User className="w-[18px] h-[18px]" style={{ color: 'var(--fs-text-secondary, #7A6E66)' }} />
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-medium text-sm truncate" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
@@ -389,13 +389,13 @@ export function AccountSection() {
       <SyncStatusDisplay />
 
       {/* Sign Out (S12-07) */}
-      <div className="pt-3 mt-3" style={{ borderTop: '1px solid #E8DDD8' }}>
+      <div className="pt-3 mt-3" style={{ borderTop: '1px solid var(--fs-border-muted, #E8DDD8)' }}>
         <button
           className="w-full flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
           style={{
             height: '40px',
-            color: '#D4644E',
-            border: '1px solid #D4644E',
+            color: 'var(--fs-accent, #D4644E)',
+            border: '1px solid var(--fs-accent, #D4644E)',
             backgroundColor: 'transparent',
             cursor: 'pointer',
           }}

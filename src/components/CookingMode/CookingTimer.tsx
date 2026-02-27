@@ -104,7 +104,7 @@ export function CookingTimer({
             className="inline-flex items-center gap-1 px-3 py-1 rounded-full"
             style={{
               backgroundColor: 'var(--fs-accent, #D4644E)',
-              color: 'white',
+              color: 'var(--fs-text-inverse, #FFFFFF)',
               fontSize: '11px',
               fontWeight: 600,
             }}
@@ -205,7 +205,7 @@ export function CookingTimer({
             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-colors"
             style={{
               backgroundColor: remaining > 0 ? 'var(--fs-accent, #D4644E)' : 'var(--fs-bg-elevated)',
-              color: remaining > 0 ? 'white' : 'var(--fs-text-muted)',
+              color: remaining > 0 ? 'var(--fs-text-inverse, #FFFFFF)' : 'var(--fs-text-muted)',
               cursor: remaining > 0 ? 'pointer' : 'not-allowed',
             }}
           >
@@ -259,7 +259,7 @@ export function CookingTimer({
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-colors"
               style={{
                 backgroundColor: 'var(--fs-accent, #D4644E)',
-                color: 'white',
+                color: 'var(--fs-text-inverse, #FFFFFF)',
               }}
             >
               <Play className="w-4 h-4" />

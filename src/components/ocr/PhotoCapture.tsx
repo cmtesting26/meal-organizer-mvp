@@ -184,7 +184,7 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
                     height: 100,
                     borderRadius: 14,
                     border: '1px solid var(--fs-border-default, #C5B5AB)',
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
                     gap: 8,
                   }}
                   onClick={startCamera}
@@ -201,7 +201,7 @@ export function PhotoCapture({ onComplete, onClose, embedded = false }: PhotoCap
                     height: 100,
                     borderRadius: 14,
                     border: '1px solid var(--fs-border-default, #C5B5AB)',
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
                     gap: 8,
                   }}
                   onClick={() => fileInputRef.current?.click()}

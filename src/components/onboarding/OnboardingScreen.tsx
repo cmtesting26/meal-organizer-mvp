@@ -38,7 +38,7 @@ export const OnboardingScreen: FC<OnboardingScreenProps> = ({
   return (
     <div
       className="fixed inset-0 z-[100] flex flex-col justify-between"
-      style={{ backgroundColor: '#FAF8F6' }}
+      style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)' }}
     >
       {/* Skip row — top right */}
       <div
@@ -52,7 +52,7 @@ export const OnboardingScreen: FC<OnboardingScreenProps> = ({
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 14,
             fontWeight: 500,
-            color: '#7A6E66',
+            color: 'var(--fs-text-secondary, #7A6E66)',
           }}
           aria-label={t('onboarding.skip')}
         >
@@ -80,7 +80,7 @@ export const OnboardingScreen: FC<OnboardingScreenProps> = ({
               fontSize: 26,
               fontWeight: 600,
               letterSpacing: '-0.5px',
-              color: '#2D2522',
+              color: 'var(--fs-text-primary, #2D2522)',
               lineHeight: 1.2,
             }}
           >
@@ -93,7 +93,7 @@ export const OnboardingScreen: FC<OnboardingScreenProps> = ({
               fontFamily: "'DM Sans', sans-serif",
               fontSize: 15,
               fontWeight: 400,
-              color: '#7A6E66',
+              color: 'var(--fs-text-secondary, #7A6E66)',
               lineHeight: 1.5,
               maxWidth: 280,
             }}
@@ -125,7 +125,7 @@ export const OnboardingScreen: FC<OnboardingScreenProps> = ({
               style={{
                 width: 8,
                 height: 8,
-                backgroundColor: i === currentIndex ? '#D4644E' : '#E8DDD8',
+                backgroundColor: i === currentIndex ? 'var(--fs-accent, #D4644E)' : 'var(--fs-border-muted, #E8DDD8)',
               }}
             />
           ))}
@@ -138,8 +138,8 @@ export const OnboardingScreen: FC<OnboardingScreenProps> = ({
           style={{
             height: 48,
             borderRadius: 14,
-            backgroundColor: '#D4644E',
-            color: '#FFFFFF',
+            backgroundColor: 'var(--fs-accent, #D4644E)',
+            color: 'var(--fs-text-inverse, #FFFFFF)',
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 16,
             fontWeight: 600,

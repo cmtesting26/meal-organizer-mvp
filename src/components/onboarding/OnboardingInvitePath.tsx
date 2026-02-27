@@ -84,7 +84,7 @@ export const InviteHighlights: FC<InviteHighlightsProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-[#FAFAF9]">
+    <div className="fixed inset-0 z-[100] flex flex-col" style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)' }}>
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         {/* Welcome message */}
         <div className="text-center mb-10">

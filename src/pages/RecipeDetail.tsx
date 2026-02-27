@@ -122,7 +122,7 @@ export function RecipeDetail() {
           <button
             onClick={() => navigate('/')}
             className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium"
-            style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: 'white' }}
+            style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: 'var(--fs-text-inverse, #FFFFFF)' }}
           >
             {t('recipeDetail.back')}
           </button>
@@ -279,7 +279,7 @@ export function RecipeDetail() {
                     fontFamily: "'DM Sans', sans-serif",
                     fontSize: '13px',
                     fontWeight: 500,
-                    color: '#DC2626',
+                    color: 'var(--fs-error, #DC2626)',
                   }}
                   role="menuitem"
                 >
@@ -389,7 +389,7 @@ export function RecipeDetail() {
                     <span className="shrink-0 flex items-center justify-center"
                       style={{
                         width: '24px', height: '24px', borderRadius: '9999px',
-                        backgroundColor: '#FEF0E8', color: '#B84835',
+                        backgroundColor: 'var(--fs-accent-light, #FEF0E8)', color: 'var(--fs-accent-text, #B84835)',
                         fontSize: '12px', fontWeight: 700,
                       }}>
                       {index + 1}
@@ -414,7 +414,7 @@ export function RecipeDetail() {
             <button onClick={() => setShowCookingMode(true)}
               className="w-full flex items-center justify-center gap-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--fs-accent)]"
               style={{
-                backgroundColor: '#D4644E', color: 'white', borderRadius: '14px',
+                backgroundColor: 'var(--fs-accent, #D4644E)', color: 'var(--fs-text-inverse, #FFFFFF)', borderRadius: '14px',
                 height: '48px', fontSize: '14px', fontWeight: 700,
                 boxShadow: '0 4px 12px rgba(212,100,78,0.3)',
               }}>

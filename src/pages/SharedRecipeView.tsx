@@ -73,7 +73,7 @@ export function SharedRecipeView() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)' }}>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: '#D4644E' }} />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--fs-accent, #D4644E)' }} />
       </div>
     );
   }
@@ -114,8 +114,8 @@ export function SharedRecipeView() {
       <header
         className="sticky top-0 z-40"
         style={{
-          background: 'linear-gradient(180deg, #FAF8F6 0%, #FAF8F6 100%)',
-          borderBottom: '1px solid #E8C4B8',
+          background: 'linear-gradient(180deg, var(--fs-bg-base, #FAF8F6) 0%, var(--fs-bg-base, #FAF8F6) 100%)',
+          borderBottom: '1px solid var(--fs-border-muted, #E8C4B8)',
         }}
       >
         <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between">
@@ -126,7 +126,7 @@ export function SharedRecipeView() {
                 Fork &amp; Spoon
               </span>
               <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: '#FEF0E8', color: '#B84835' }}>
+                style={{ backgroundColor: 'var(--fs-accent-light, #FEF0E8)', color: 'var(--fs-accent-text, #B84835)' }}>
                 <BookOpen className="w-3 h-3" />
                 {t('publicRecipe.sharedRecipe')}
               </span>
@@ -134,7 +134,7 @@ export function SharedRecipeView() {
           </div>
           <Link to="/">
             <Button size="sm" variant="outline" className="text-xs"
-              style={{ borderColor: '#D4644E', color: '#D4644E' }}>
+              style={{ borderColor: 'var(--fs-accent, #D4644E)', color: 'var(--fs-accent, #D4644E)' }}>
               {t('publicRecipe.openApp')}
             </Button>
           </Link>
@@ -213,7 +213,7 @@ export function SharedRecipeView() {
                     className="flex items-start gap-2 text-sm"
                     style={{ color: 'var(--fs-text-secondary, #7A6E66)' }}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: '#D4644E' }} />
+                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: 'var(--fs-accent, #D4644E)' }} />
                     <span style={{ color: 'var(--fs-text-primary, #2D2522)' }}>{ingredient}</span>
                   </li>
                 ))}
@@ -229,7 +229,7 @@ export function SharedRecipeView() {
                     <span className="shrink-0 flex items-center justify-center"
                       style={{
                         width: '24px', height: '24px', borderRadius: '9999px',
-                        backgroundColor: '#FEF0E8', color: '#B84835',
+                        backgroundColor: 'var(--fs-accent-light, #FEF0E8)', color: 'var(--fs-accent-text, #B84835)',
                         fontSize: '12px', fontWeight: 700,
                       }}>
                       {index + 1}
@@ -244,8 +244,8 @@ export function SharedRecipeView() {
 
         {/* CTA — warm amber style */}
         <div className="rounded-xl p-6 text-center mt-8 mb-8"
-          style={{ backgroundColor: '#FAF8F6', border: '1px solid #E8C4B8' }}>
-          <ChefHat className="w-8 h-8 mx-auto mb-2" style={{ color: '#D4644E' }} />
+          style={{ backgroundColor: 'var(--fs-bg-base, #FAF8F6)', border: '1px solid var(--fs-border-muted, #E8C4B8)' }}>
+          <ChefHat className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--fs-accent, #D4644E)' }} />
           <p className="text-sm font-medium mb-1" style={{ color: 'var(--fs-text-primary, #2D2522)' }}>
             {t('publicRecipe.ctaTitle')}
           </p>
@@ -253,7 +253,7 @@ export function SharedRecipeView() {
             {t('publicRecipe.ctaDescription')}
           </p>
           <Link to="/">
-            <Button size="sm" style={{ backgroundColor: '#D4644E', color: 'white' }}>
+            <Button size="sm" style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: 'var(--fs-text-inverse, #FFFFFF)' }}>
               {t('publicRecipe.ctaButton')}
             </Button>
           </Link>
@@ -271,7 +271,7 @@ export function SharedRecipeView() {
             <button onClick={() => setShowCookingMode(true)}
               className="w-full flex items-center justify-center gap-2 transition-colors"
               style={{
-                backgroundColor: '#D4644E', color: 'white', borderRadius: '14px',
+                backgroundColor: 'var(--fs-accent, #D4644E)', color: 'var(--fs-text-inverse, #FFFFFF)', borderRadius: '14px',
                 padding: '14px', fontSize: '15px', fontWeight: 700,
                 boxShadow: '0 4px 12px rgba(212,100,78,0.3)',
               }}>

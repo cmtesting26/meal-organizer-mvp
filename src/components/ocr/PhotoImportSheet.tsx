@@ -41,11 +41,11 @@ export const PhotoImportSheet: FC<PhotoImportSheetProps> = ({
       <SheetContent
         side="bottom"
         className="!p-0 !gap-0 rounded-t-[20px] [&>button.absolute]:hidden"
-        style={{ backgroundColor: '#FFFFFF' }}
+        style={{ backgroundColor: 'var(--fs-bg-surface, #FFFFFF)' }}
       >
         {/* DragHandle — padding: [12, 0, 4, 0] */}
         <div className="flex justify-center" style={{ padding: '12px 0 4px 0' }}>
-          <div style={{ width: 32, height: 4, borderRadius: 9999, backgroundColor: '#E8DDD8' }} />
+          <div style={{ width: 32, height: 4, borderRadius: 9999, backgroundColor: 'var(--fs-border-muted, #E8DDD8)' }} />
         </div>
 
         {/* SheetHeader — padding: [8, 24, 12, 24] */}

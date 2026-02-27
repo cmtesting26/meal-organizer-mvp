@@ -75,7 +75,7 @@ export function MealSlot({ mealType, date, recipe, entryId, onAdd, onRemove, onR
           {/* Drag handle */}
           <button
             className="touch-none cursor-grab active:cursor-grabbing shrink-0 hover:text-[var(--fs-text-muted)] p-1 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fs-accent)] focus-visible:ring-offset-1 rounded"
-            style={{ color: '#D4D4D4' }}
+            style={{ color: 'var(--fs-text-placeholder, #D4D4D4)' }}
             aria-label={t('schedule.dragMeal', { title: recipe.title })}
             {...listeners}
           >
@@ -125,7 +125,7 @@ export function MealSlot({ mealType, date, recipe, entryId, onAdd, onRemove, onR
             padding: '6px 14px',
             borderRadius: 12,
             backgroundColor: 'var(--fs-accent, #D4644E)',
-            color: '#FFFFFF',
+            color: 'var(--fs-text-inverse, #FFFFFF)',
             fontSize: '12px',
             fontFamily: "'DM Sans', sans-serif",
           }}

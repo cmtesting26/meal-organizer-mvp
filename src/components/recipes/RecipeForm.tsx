@@ -221,7 +221,7 @@ export function RecipeForm({ open, onOpenChange, recipe, onSave }: RecipeFormPro
                     if (!photoFile) setImageUrl('');
                   }}
                   className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: '#FFFFFF' }}
+                  style={{ backgroundColor: 'var(--fs-accent, #D4644E)', color: 'var(--fs-text-inverse, #FFFFFF)' }}
                   aria-label="Remove photo"
                 >
                   <X className="w-3 h-3" />
@@ -487,14 +487,14 @@ export function RecipeForm({ open, onOpenChange, recipe, onSave }: RecipeFormPro
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 text-white animate-spin" />
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--fs-text-inverse, #FFFFFF)' }}>
                     {t('recipeForm.saving')}
                   </span>
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4 text-white" />
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--fs-text-inverse, #FFFFFF)' }}>
                     {t('recipeForm.save')}
                   </span>
                 </>

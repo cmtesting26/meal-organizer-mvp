@@ -23,7 +23,7 @@ interface SplashScreenProps {
 
 const SplashScreen = ({
   duration = 400,
-  backgroundColor = '#FAF8F6',
+  backgroundColor = 'var(--fs-bg-base, #FAF8F6)',
   onComplete = () => {},
   iconSrc = '/icon-512.png',
 }: SplashScreenProps) => {
@@ -92,7 +92,7 @@ const SplashScreen = ({
             fontFamily: "'Fraunces', 'Lora', Georgia, serif",
             fontSize: 32,
             fontWeight: 600,
-            color: '#2D2522',
+            color: 'var(--fs-text-primary, #2D2522)',
             letterSpacing: '-0.5px',
           }}
         >
@@ -113,7 +113,7 @@ const SplashScreen = ({
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 15,
             fontWeight: 400,
-            color: '#7A6E66',
+            color: 'var(--fs-text-secondary, #7A6E66)',
           }}
         >
           Your household recipe planner
@@ -132,7 +132,7 @@ const SplashScreen = ({
             width: 40,
             height: 4,
             borderRadius: 9999,
-            backgroundColor: '#D4644E',
+            backgroundColor: 'var(--fs-accent, #D4644E)',
           }}
         />
       </div>

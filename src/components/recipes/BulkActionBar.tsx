@@ -23,12 +23,12 @@ export function BulkActionBar({ selectedCount, onBulkDelete, onBulkTag, onClearS
 
   return (
     <div className="fixed bottom-20 left-0 right-0 z-50 flex justify-center px-4 animate-in slide-in-from-bottom-4">
-      <div className="text-white rounded-full shadow-lg px-4 py-2 flex items-center gap-3 max-w-md" style={{ backgroundColor: '#1C1917' }}>
+      <div className="text-white rounded-full shadow-lg px-4 py-2 flex items-center gap-3 max-w-md" style={{ backgroundColor: 'var(--fs-toast-bg, #1C1917)' }}>
         <span className="text-sm font-medium whitespace-nowrap">
           {t('bulk.selected', { count: selectedCount })}
         </span>
 
-        <div className="h-4 w-px" style={{ backgroundColor: '#57534E' }} />
+        <div className="h-4 w-px" style={{ backgroundColor: 'var(--fs-toast-divider, #57534E)' }} />
 
         <Button
           variant="ghost"
@@ -50,7 +50,7 @@ export function BulkActionBar({ selectedCount, onBulkDelete, onBulkTag, onClearS
           <span className="text-sm">{t('bulk.delete')}</span>
         </Button>
 
-        <div className="h-4 w-px" style={{ backgroundColor: '#57534E' }} />
+        <div className="h-4 w-px" style={{ backgroundColor: 'var(--fs-toast-divider, #57534E)' }} />
 
         <Button
           variant="ghost"

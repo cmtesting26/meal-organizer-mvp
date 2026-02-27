@@ -81,7 +81,7 @@ export function BottomNav({ onAddClick, showLibraryBadge, newRecipeCount }: Bott
           width: '340px',
           height: '56px',
           borderRadius: '28px',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--fs-bg-surface, #FFFFFF)',
           boxShadow: '0 4px 24px rgba(45, 37, 34, 0.09)',
           marginBottom: '12px',
         }}
