@@ -53,7 +53,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1500,
         messages: [
           {
@@ -87,9 +87,16 @@ Rules:
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error('Claude API error:', response.status, errorBody);
+      let detail = '';
+      try {
+        const parsed = JSON.parse(errorBody);
+        detail = parsed.error?.message || errorBody;
+      } catch {
+        detail = errorBody;
+      }
+      console.error('Claude API error:', response.status, detail);
       return Response.json(
-        { success: false, error: `AI service error (${response.status}).` },
+        { success: false, error: `AI service error (${response.status}): ${detail}` },
         { status: 502 },
       );
     }
