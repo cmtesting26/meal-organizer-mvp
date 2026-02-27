@@ -41,24 +41,26 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
   const [timers, setTimers] = useState<Map<number, TimerData>>(new Map());
   const intervalRefs = useRef<Map<number, ReturnType<typeof setInterval>>>(new Map());
   const audioCtxRef = useRef<AudioContext | null>(null);
-  const audioElRef = useRef<HTMLAudioElement | null>(null);
+  const audioUnlockedRef = useRef(false);
 
-  // Pre-warm an <audio> element on first user gesture so mobile Safari allows playback later
-  useEffect(() => {
-    const warmup = () => {
-      if (!audioElRef.current) {
-        audioElRef.current = new Audio();
-        audioElRef.current.volume = 1;
-      }
-      window.removeEventListener('touchstart', warmup);
-      window.removeEventListener('click', warmup);
-    };
-    window.addEventListener('touchstart', warmup, { once: true });
-    window.addEventListener('click', warmup, { once: true });
-    return () => {
-      window.removeEventListener('touchstart', warmup);
-      window.removeEventListener('click', warmup);
-    };
+  /**
+   * Unlock AudioContext during a user gesture (required by iOS Safari).
+   * Called from handleTimerStart which runs inside a click handler.
+   */
+  const unlockAudio = useCallback(() => {
+    if (audioUnlockedRef.current) return;
+    try {
+      const ctx = new AudioContext();
+      audioCtxRef.current = ctx;
+      // Play a silent buffer to unlock the context
+      const buffer = ctx.createBuffer(1, 1, ctx.sampleRate);
+      const src = ctx.createBufferSource();
+      src.buffer = buffer;
+      src.connect(ctx.destination);
+      src.start(0);
+      if (ctx.state === 'suspended') ctx.resume();
+      audioUnlockedRef.current = true;
+    } catch { /* silent */ }
   }, []);
 
   // Format mm:ss
@@ -92,16 +94,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
           osc.stop(t + 0.4);
         });
       });
-    } catch {
-      // Web Audio not available — try HTML Audio fallback
-      try {
-        if (audioElRef.current) {
-          // Use a short data URI tone as last resort
-          audioElRef.current.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ==';
-          audioElRef.current.play().catch(() => {});
-        }
-      } catch { /* silent */ }
-    }
+    } catch { /* Web Audio not available */ }
   }, []);
 
   // Find any running/paused timer that's NOT on the current step (for mini-bar)
@@ -171,6 +164,8 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
 
   // ─── Timer action handlers ────────────────────────────────────────
   const handleTimerStart = useCallback((seconds: number) => {
+    // Unlock audio on the first timer start (runs inside a click handler)
+    unlockAudio();
     setTimers((prev) => {
       const next = new Map(prev);
       next.set(currentStepIndex, {
@@ -181,7 +176,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
       });
       return next;
     });
-  }, [currentStepIndex]);
+  }, [currentStepIndex, unlockAudio]);
 
   const handleTimerPause = useCallback(() => {
     setTimers((prev) => {
