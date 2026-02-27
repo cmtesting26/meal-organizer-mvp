@@ -41,67 +41,73 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
   const [timers, setTimers] = useState<Map<number, TimerData>>(new Map());
   const intervalRefs = useRef<Map<number, ReturnType<typeof setInterval>>>(new Map());
   const alarmAudioRef = useRef<HTMLAudioElement | null>(null);
+  const pendingAlertRef = useRef(false);
 
   /**
-   * Build a WAV chime in-memory (C6-E6-G6 arpeggio, ~1.2s, 16-bit PCM).
-   * Returns a blob URL that works with <audio>.
+   * Build a WAV chime as a base64 data URI (more compatible than blob URLs on iOS).
+   * C6-E6-G6 arpeggio, ~1.2s, 16-bit PCM, 22050 Hz mono.
    */
-  const chimeUrlRef = useRef<string | null>(null);
-  if (!chimeUrlRef.current && typeof window !== 'undefined') {
+  const chimeDataUri = useMemo(() => {
     const sampleRate = 22050;
     const duration = 1.2;
     const numSamples = Math.floor(sampleRate * duration);
-    const buffer = new Int16Array(numSamples);
+    const pcm = new Int16Array(numSamples);
     const notes = [
-      { freq: 1047, start: 0, end: 0.4 },     // C6
-      { freq: 1319, start: 0.15, end: 0.55 },  // E6
-      { freq: 1568, start: 0.3, end: 0.7 },    // G6
-      { freq: 1047, start: 0.6, end: 1.0 },    // C6 (repeat)
-      { freq: 1319, start: 0.75, end: 1.15 },  // E6
-      { freq: 1568, start: 0.9, end: 1.2 },    // G6
+      { freq: 1047, start: 0, end: 0.4 },
+      { freq: 1319, start: 0.15, end: 0.55 },
+      { freq: 1568, start: 0.3, end: 0.7 },
+      { freq: 1047, start: 0.6, end: 1.0 },
+      { freq: 1319, start: 0.75, end: 1.15 },
+      { freq: 1568, start: 0.9, end: 1.2 },
     ];
     for (let i = 0; i < numSamples; i++) {
       const t = i / sampleRate;
       let sample = 0;
-      for (const note of notes) {
-        if (t >= note.start && t < note.end) {
-          const elapsed = t - note.start;
-          const noteDur = note.end - note.start;
-          const env = Math.max(0, 1 - elapsed / noteDur); // linear decay
-          sample += Math.sin(2 * Math.PI * note.freq * elapsed) * env * 0.3;
+      for (const n of notes) {
+        if (t >= n.start && t < n.end) {
+          const e = t - n.start;
+          sample += Math.sin(2 * Math.PI * n.freq * e) * Math.max(0, 1 - e / (n.end - n.start)) * 0.3;
         }
       }
-      buffer[i] = Math.max(-32768, Math.min(32767, Math.round(sample * 32767)));
+      pcm[i] = Math.max(-32768, Math.min(32767, Math.round(sample * 32767)));
     }
-    // Build WAV file
-    const wavHeader = new ArrayBuffer(44);
-    const view = new DataView(wavHeader);
     const dataSize = numSamples * 2;
-    const writeStr = (o: number, s: string) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
-    writeStr(0, 'RIFF'); view.setUint32(4, 36 + dataSize, true); writeStr(8, 'WAVE');
-    writeStr(12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true);
-    view.setUint16(22, 1, true); view.setUint32(24, sampleRate, true);
-    view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true);
-    writeStr(36, 'data'); view.setUint32(40, dataSize, true);
-    const blob = new Blob([wavHeader, buffer.buffer], { type: 'audio/wav' });
-    chimeUrlRef.current = URL.createObjectURL(blob);
-  }
+    const wav = new Uint8Array(44 + dataSize);
+    const v = new DataView(wav.buffer);
+    const w = (o: number, s: string) => { for (let i = 0; i < s.length; i++) wav[o + i] = s.charCodeAt(i); };
+    w(0, 'RIFF'); v.setUint32(4, 36 + dataSize, true); w(8, 'WAVE');
+    w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true);
+    v.setUint16(22, 1, true); v.setUint32(24, sampleRate, true);
+    v.setUint32(28, sampleRate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+    w(36, 'data'); v.setUint32(40, dataSize, true);
+    wav.set(new Uint8Array(pcm.buffer), 44);
+    // Convert to base64 data URI
+    let binary = '';
+    for (let i = 0; i < wav.length; i++) binary += String.fromCharCode(wav[i]);
+    return 'data:audio/wav;base64,' + btoa(binary);
+  }, []);
 
   /**
    * Unlock <audio> during a user gesture (required by iOS Safari).
    * Called from handleTimerStart which runs inside a click handler.
+   *
+   * Key trick: set loop=true so the audio keeps playing silently forever.
+   * This prevents iOS from deactivating the audio session. When the timer
+   * fires, we turn the volume up, play once, then resume silent looping.
    */
   const unlockAudio = useCallback(() => {
-    if (!chimeUrlRef.current) return;
     if (!alarmAudioRef.current) {
-      alarmAudioRef.current = new Audio(chimeUrlRef.current);
-      alarmAudioRef.current.volume = 1;
+      const audio = new Audio(chimeDataUri);
+      audio.setAttribute('playsinline', '');
+      audio.loop = true;  // Keep audio session alive on iOS
+      audio.volume = 0;   // Silent until timer fires
+      alarmAudioRef.current = audio;
     }
-    // iOS requires .play() during a user gesture to unlock
     const audio = alarmAudioRef.current;
+    audio.volume = 0;
     audio.currentTime = 0;
-    audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(() => {});
-  }, []);
+    audio.play().catch(() => {});
+  }, [chimeDataUri]);
 
   // Format mm:ss
   const formatTimerDisplay = (secs: number): string => {
@@ -110,17 +116,48 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  // Play the chime via the pre-unlocked <audio> element
+  // Play the chime via the pre-unlocked <audio> element.
+  // The audio is already looping silently — just turn up the volume,
+  // let it play through once, then resume silent looping.
   const playAlert = useCallback(() => {
-    const audio = alarmAudioRef.current;
-    if (audio) {
-      audio.currentTime = 0;
-      audio.play().catch(() => {});
-    }
-    // Also vibrate on mobile if supported
     if (navigator.vibrate) {
       navigator.vibrate([200, 100, 200, 100, 200]);
     }
+    const audio = alarmAudioRef.current;
+    if (audio) {
+      audio.loop = false;  // Stop looping so 'ended' fires after one play
+      audio.volume = 1;
+      audio.currentTime = 0;
+      audio.play().catch(() => { pendingAlertRef.current = true; });
+      // After the chime finishes, resume silent looping to keep session alive
+      audio.addEventListener('ended', () => {
+        audio.volume = 0;
+        audio.loop = true;
+        audio.play().catch(() => {});
+      }, { once: true });
+      return;
+    }
+    pendingAlertRef.current = true;
+  }, []);
+
+  // When the app returns from background, play any pending alert
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && pendingAlertRef.current) {
+        pendingAlertRef.current = false;
+        const audio = alarmAudioRef.current;
+        if (audio) {
+          audio.volume = 1;
+          audio.currentTime = 0;
+          audio.play().catch(() => {});
+        }
+        if (navigator.vibrate) {
+          navigator.vibrate([200, 100, 200, 100, 200]);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
   }, []);
 
   // Find any running/paused timer that's NOT on the current step (for mini-bar)
