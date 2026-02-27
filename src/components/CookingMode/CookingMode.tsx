@@ -40,27 +40,67 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
   // Map of stepIndex → TimerData (supports one timer per step)
   const [timers, setTimers] = useState<Map<number, TimerData>>(new Map());
   const intervalRefs = useRef<Map<number, ReturnType<typeof setInterval>>>(new Map());
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const audioUnlockedRef = useRef(false);
+  const alarmAudioRef = useRef<HTMLAudioElement | null>(null);
 
   /**
-   * Unlock AudioContext during a user gesture (required by iOS Safari).
+   * Build a WAV chime in-memory (C6-E6-G6 arpeggio, ~1.2s, 16-bit PCM).
+   * Returns a blob URL that works with <audio>.
+   */
+  const chimeUrlRef = useRef<string | null>(null);
+  if (!chimeUrlRef.current && typeof window !== 'undefined') {
+    const sampleRate = 22050;
+    const duration = 1.2;
+    const numSamples = Math.floor(sampleRate * duration);
+    const buffer = new Int16Array(numSamples);
+    const notes = [
+      { freq: 1047, start: 0, end: 0.4 },     // C6
+      { freq: 1319, start: 0.15, end: 0.55 },  // E6
+      { freq: 1568, start: 0.3, end: 0.7 },    // G6
+      { freq: 1047, start: 0.6, end: 1.0 },    // C6 (repeat)
+      { freq: 1319, start: 0.75, end: 1.15 },  // E6
+      { freq: 1568, start: 0.9, end: 1.2 },    // G6
+    ];
+    for (let i = 0; i < numSamples; i++) {
+      const t = i / sampleRate;
+      let sample = 0;
+      for (const note of notes) {
+        if (t >= note.start && t < note.end) {
+          const elapsed = t - note.start;
+          const noteDur = note.end - note.start;
+          const env = Math.max(0, 1 - elapsed / noteDur); // linear decay
+          sample += Math.sin(2 * Math.PI * note.freq * elapsed) * env * 0.3;
+        }
+      }
+      buffer[i] = Math.max(-32768, Math.min(32767, Math.round(sample * 32767)));
+    }
+    // Build WAV file
+    const wavHeader = new ArrayBuffer(44);
+    const view = new DataView(wavHeader);
+    const dataSize = numSamples * 2;
+    const writeStr = (o: number, s: string) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
+    writeStr(0, 'RIFF'); view.setUint32(4, 36 + dataSize, true); writeStr(8, 'WAVE');
+    writeStr(12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true); view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true);
+    writeStr(36, 'data'); view.setUint32(40, dataSize, true);
+    const blob = new Blob([wavHeader, buffer.buffer], { type: 'audio/wav' });
+    chimeUrlRef.current = URL.createObjectURL(blob);
+  }
+
+  /**
+   * Unlock <audio> during a user gesture (required by iOS Safari).
    * Called from handleTimerStart which runs inside a click handler.
    */
   const unlockAudio = useCallback(() => {
-    if (audioUnlockedRef.current) return;
-    try {
-      const ctx = new AudioContext();
-      audioCtxRef.current = ctx;
-      // Play a silent buffer to unlock the context
-      const buffer = ctx.createBuffer(1, 1, ctx.sampleRate);
-      const src = ctx.createBufferSource();
-      src.buffer = buffer;
-      src.connect(ctx.destination);
-      src.start(0);
-      if (ctx.state === 'suspended') ctx.resume();
-      audioUnlockedRef.current = true;
-    } catch { /* silent */ }
+    if (!chimeUrlRef.current) return;
+    if (!alarmAudioRef.current) {
+      alarmAudioRef.current = new Audio(chimeUrlRef.current);
+      alarmAudioRef.current.volume = 1;
+    }
+    // iOS requires .play() during a user gesture to unlock
+    const audio = alarmAudioRef.current;
+    audio.currentTime = 0;
+    audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(() => {});
   }, []);
 
   // Format mm:ss
@@ -70,31 +110,17 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  // Play a pleasant kitchen-timer chime (C6–E6–G6 arpeggio, repeated twice)
+  // Play the chime via the pre-unlocked <audio> element
   const playAlert = useCallback(() => {
-    try {
-      const ctx = audioCtxRef.current || new AudioContext();
-      audioCtxRef.current = ctx;
-      if (ctx.state === 'suspended') ctx.resume();
-
-      // Two rounds of a C-E-G major arpeggio for a friendly chime
-      const notes = [1047, 1319, 1568]; // C6, E6, G6
-      [0, 0.6].forEach((roundDelay) => {
-        notes.forEach((freq, i) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.frequency.value = freq;
-          osc.type = 'triangle';
-          const t = ctx.currentTime + roundDelay + i * 0.15;
-          gain.gain.setValueAtTime(0.5, t);
-          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
-          osc.start(t);
-          osc.stop(t + 0.4);
-        });
-      });
-    } catch { /* Web Audio not available */ }
+    const audio = alarmAudioRef.current;
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    }
+    // Also vibrate on mobile if supported
+    if (navigator.vibrate) {
+      navigator.vibrate([200, 100, 200, 100, 200]);
+    }
   }, []);
 
   // Find any running/paused timer that's NOT on the current step (for mini-bar)
@@ -114,32 +140,31 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
   const otherTimerRunning = backgroundTimer !== null;
 
   // ─── Timer interval management ────────────────────────────────────
-  // Start/stop intervals when timer states change
+  // Uses targetEndTime + Date.now() so the timer catches up after backgrounding.
   useEffect(() => {
     for (const [stepIdx, timer] of timers.entries()) {
       const hasInterval = intervalRefs.current.has(stepIdx);
 
       if (timer.timerState === 'running' && !hasInterval) {
-        // Start interval
         const id = setInterval(() => {
           setTimers((prev) => {
             const next = new Map(prev);
             const t = next.get(stepIdx);
-            if (!t || t.timerState !== 'running') return prev;
-            if (t.remaining <= 1) {
+            if (!t || t.timerState !== 'running' || !t.targetEndTime) return prev;
+            const remaining = Math.max(0, Math.round((t.targetEndTime - Date.now()) / 1000));
+            if (remaining <= 0) {
               clearInterval(intervalRefs.current.get(stepIdx)!);
               intervalRefs.current.delete(stepIdx);
-              next.set(stepIdx, { ...t, timerState: 'idle', remaining: 0 });
+              next.set(stepIdx, { ...t, timerState: 'idle', remaining: 0, targetEndTime: undefined });
               playAlert();
             } else {
-              next.set(stepIdx, { ...t, remaining: t.remaining - 1 });
+              next.set(stepIdx, { ...t, remaining });
             }
             return next;
           });
-        }, 1000);
+        }, 500); // 500ms for snappier catch-up after backgrounding
         intervalRefs.current.set(stepIdx, id);
       } else if (timer.timerState !== 'running' && hasInterval) {
-        // Stop interval
         clearInterval(intervalRefs.current.get(stepIdx)!);
         intervalRefs.current.delete(stepIdx);
       }
@@ -173,6 +198,7 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
         duration: seconds,
         remaining: seconds,
         sourceStepIndex: currentStepIndex,
+        targetEndTime: Date.now() + seconds * 1000,
       });
       return next;
     });
@@ -191,7 +217,11 @@ export function CookingMode({ recipe, onExit }: CookingModeProps) {
     setTimers((prev) => {
       const next = new Map(prev);
       const t = next.get(currentStepIndex);
-      if (t) next.set(currentStepIndex, { ...t, timerState: 'running' });
+      if (t) next.set(currentStepIndex, {
+        ...t,
+        timerState: 'running',
+        targetEndTime: Date.now() + t.remaining * 1000,
+      });
       return next;
     });
   }, [currentStepIndex]);

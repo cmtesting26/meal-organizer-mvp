@@ -19,6 +19,8 @@ export interface TimerData {
   duration: number;
   remaining: number;
   sourceStepIndex: number;
+  /** Epoch ms when the timer should fire (set when running, used for background-safe countdown) */
+  targetEndTime?: number;
 }
 
 interface CookingTimerProps {
